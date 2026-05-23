@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include fps_erpnext *.css
+recursive-include fps_erpnext *.csv
+recursive-include fps_erpnext *.html
+recursive-include fps_erpnext *.ico
+recursive-include fps_erpnext *.js
+recursive-include fps_erpnext *.json
+recursive-include fps_erpnext *.md
+recursive-include fps_erpnext *.png
+recursive-include fps_erpnext *.svg
+recursive-include fps_erpnext *.py
+recursive-include fps_erpnext *.txt
+recursive-exclude fps_erpnext *.pyc
