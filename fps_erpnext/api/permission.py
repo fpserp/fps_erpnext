@@ -10,6 +10,7 @@ def has_app_permission():
     allowed_roles = {
         "System Manager",
         "FPS Viewer",
+        "FPS Operations",
         "Sales User",
         "Sales Manager",
         "Accounts User",
