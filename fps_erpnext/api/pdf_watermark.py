@@ -1,19 +1,18 @@
 """
-Per-page watermark for FPS PDF generation.
+Per-page watermark for FPS PDF generation (v0.0.9).
 
-Approach (v0.0.8):
-  1. The watermark is INJECTED INTO THE BODY HTML as a position:fixed element.
-     wkhtmltopdf renders position:fixed elements on every page (its native
-     behavior for fixed-positioned direct children of body).
-  2. The address bar (letter head footer field) is passed as wkhtmltopdf's
-     --footer-html so it appears at the bottom of every page in its own strip.
-  3. This separation lets the watermark sit in the body bottom-right area
-     (just above the footer strip) on every page — fully visible, never
-     clipped by the footer strip boundary.
+Strategy: POST-PROCESS THE PDF after wkhtmltopdf generates it.
+  1. Frappe calls frappe.utils.pdf.get_pdf to render the HTML to PDF.
+  2. We monkey-patch get_pdf so AFTER wkhtmltopdf returns the PDF bytes,
+     we stamp a watermark image onto every page using pypdf (PyPDF2 fork).
+  3. The watermark page is generated in-memory with Pillow (RGBA → PDF)
+     and merged onto every page via pypdf.merge_page().
+  4. This sidesteps wkhtmltopdf's quirky support for position:fixed and
+     CSS3 page rules entirely.
 """
 
 import os
-import re
+import io
 import tempfile
 import base64
 import frappe
@@ -21,29 +20,13 @@ import frappe
 
 # Module-level state
 _patch_installed = False
-_watermark_b64_cache = None
+_watermark_pdf_cache = None  # cached watermark PDF bytes
 
 
-def _get_watermark_base64():
-    """Read the bundled watermark PNG and return base64. Cached per process."""
-    global _watermark_b64_cache
-    if _watermark_b64_cache is not None:
-        return _watermark_b64_cache
-    try:
-        wm_path = frappe.get_app_path(
-            "fps_erpnext", "public", "images", "fps_watermark.png"
-        )
-        if not os.path.exists(wm_path):
-            return ""
-        with open(wm_path, "rb") as fh:
-            _watermark_b64_cache = base64.b64encode(fh.read()).decode("ascii")
-        return _watermark_b64_cache
-    except Exception:
-        return ""
-
-
+# ---------------------------------------------------------------------------
+# Letter head footer (address bar) → wkhtmltopdf --footer-html
+# ---------------------------------------------------------------------------
 def _get_letter_head_footer_html():
-    """Return the raw HTML stored in Letter Head FPS Standard's footer field."""
     try:
         lh = frappe.get_cached_doc("Letter Head", "FPS Standard")
         return lh.footer or ""
@@ -52,11 +35,7 @@ def _get_letter_head_footer_html():
 
 
 def _build_address_only_footer_file():
-    """Footer-html file with ONLY the address bar (no watermark).
-
-    The watermark goes in the body via position:fixed; this file just renders
-    the address line in wkhtmltopdf's footer strip on every page.
-    """
+    """Footer-html file with ONLY the address bar (no watermark here)."""
     try:
         lh_footer = _get_letter_head_footer_html()
         html = (
@@ -81,41 +60,105 @@ def _build_address_only_footer_file():
         return None
 
 
-def _build_watermark_html_block():
-    """Build the <img> tag for the watermark, styled to sit at body bottom-right.
+# ---------------------------------------------------------------------------
+# Watermark PDF page (built once per worker, cached)
+# ---------------------------------------------------------------------------
+def _build_watermark_pdf_bytes():
+    """Build a 1-page A4 PDF with the watermark at body bottom-right.
 
-    position: fixed makes wkhtmltopdf render it on EVERY page at the same
-    spot. bottom:30mm + height:55mm = watermark occupies 30mm to 85mm from
-    page bottom — visible in the body area, just above the footer strip.
+    Uses Pillow to create the watermark page. Pillow's RGBA→PDF save preserves
+    transparency in version 9+ (which is bundled with Frappe v15+).
+    Returns PDF bytes or None on failure.
     """
-    wm_b64 = _get_watermark_base64()
-    if not wm_b64:
-        return ""
-    return (
-        '<img src="data:image/png;base64,' + wm_b64 + '" '
-        'class="fps-page-watermark" '
-        'style="position:fixed;bottom:30mm;right:10mm;height:55mm;'
-        'width:auto;opacity:0.18;z-index:-1;pointer-events:none;" alt=""/>'
-    )
+    global _watermark_pdf_cache
+    if _watermark_pdf_cache is not None:
+        return _watermark_pdf_cache
+
+    try:
+        from PIL import Image
+
+        wm_path = frappe.get_app_path(
+            "fps_erpnext", "public", "images", "fps_watermark.png"
+        )
+        if not os.path.exists(wm_path):
+            return None
+
+        # Constants
+        PT_PER_MM = 2.834645669
+        A4_W = int(210 * PT_PER_MM)  # 595 pt
+        A4_H = int(297 * PT_PER_MM)  # 842 pt
+
+        # Load + resize watermark to 55mm height (at 72 DPI = 1pt/px)
+        img = Image.open(wm_path).convert("RGBA")
+        target_h = int(55 * PT_PER_MM)  # ~156 pt
+        aspect = img.width / img.height
+        target_w = int(target_h * aspect)
+        img_resized = img.resize((target_w, target_h), Image.LANCZOS)
+
+        # Reduce alpha to ~22% so it acts as a watermark (semi-transparent)
+        alpha = img_resized.split()[3]
+        alpha = alpha.point(lambda p: int(p * 0.22))
+        img_resized.putalpha(alpha)
+
+        # Create transparent A4 canvas and paste the watermark at body bottom-right.
+        # Position: 10mm from right edge, 30mm from bottom edge.
+        canvas = Image.new("RGBA", (A4_W, A4_H), (255, 255, 255, 0))
+        x = A4_W - target_w - int(10 * PT_PER_MM)
+        y = A4_H - target_h - int(30 * PT_PER_MM)
+        # In PIL, y=0 is the TOP of the image. So we computed y as distance
+        # from top, equivalent to (A4_H - 30mm - height) from the top.
+        canvas.paste(img_resized, (x, y), img_resized)
+
+        # Save as PDF (PIL preserves RGBA → PDF transparency in v9+)
+        buf = io.BytesIO()
+        canvas.save(buf, "PDF", resolution=72.0)
+        _watermark_pdf_cache = buf.getvalue()
+        return _watermark_pdf_cache
+    except Exception:
+        frappe.log_error(
+            frappe.get_traceback(),
+            "FPS Watermark: build_watermark_pdf failed",
+        )
+        return None
 
 
-def _inject_watermark_into_html(html):
-    """Insert the fixed-position watermark <img> right after the <body> tag."""
-    block = _build_watermark_html_block()
-    if not block:
-        return html
-    # Skip if already injected (defensive)
-    if "fps-page-watermark" in html:
-        return html
-    # Insert after the FIRST <body ...> tag
-    new_html, count = re.subn(
-        r"(<body[^>]*>)", r"\1\n" + block, html, count=1
-    )
-    return new_html if count else html
+# ---------------------------------------------------------------------------
+# Post-process the PDF → stamp watermark on every page
+# ---------------------------------------------------------------------------
+def _stamp_watermark_on_pdf(pdf_bytes):
+    """Merge the watermark page onto every page of the input PDF."""
+    try:
+        from pypdf import PdfReader, PdfWriter
+
+        wm_pdf_bytes = _build_watermark_pdf_bytes()
+        if not wm_pdf_bytes:
+            return pdf_bytes
+
+        wm_reader = PdfReader(io.BytesIO(wm_pdf_bytes))
+        wm_page = wm_reader.pages[0]
+
+        main_reader = PdfReader(io.BytesIO(pdf_bytes))
+        writer = PdfWriter()
+
+        for page in main_reader.pages:
+            page.merge_page(wm_page)
+            writer.add_page(page)
+
+        out = io.BytesIO()
+        writer.write(out)
+        return out.getvalue()
+    except Exception:
+        # Never break PDF generation — log and return original bytes
+        frappe.log_error(
+            frappe.get_traceback(), "FPS Watermark: stamp on pdf failed"
+        )
+        return pdf_bytes
 
 
+# ---------------------------------------------------------------------------
+# FPS print-format detection
+# ---------------------------------------------------------------------------
 def _is_fps_format(html):
-    """Detect FPS print formats."""
     if not html:
         return False
     needles = (
@@ -130,16 +173,17 @@ def _is_fps_format(html):
     return any(n in html for n in needles)
 
 
+# ---------------------------------------------------------------------------
+# Patched get_pdf
+# ---------------------------------------------------------------------------
 def _make_patched_get_pdf(original_get_pdf):
     def patched(html, options=None, output=None):
         options = dict(options or {})
-        try:
-            if _is_fps_format(html):
-                # Inject the position:fixed watermark into body HTML.
-                # wkhtmltopdf renders fixed-position elements on every page.
-                html = _inject_watermark_into_html(html)
+        is_fps = _is_fps_format(html)
 
-                # Address-only footer strip (small, just the address line)
+        try:
+            if is_fps:
+                # Address bar as wkhtmltopdf --footer-html (rendered every page)
                 addr_path = _build_address_only_footer_file()
                 if addr_path:
                     options["footer-html"] = addr_path
@@ -147,10 +191,30 @@ def _make_patched_get_pdf(original_get_pdf):
                     options["footer-spacing"] = "0"
         except Exception:
             frappe.log_error(
-                frappe.get_traceback(), "FPS Watermark: patched get_pdf failed"
+                frappe.get_traceback(),
+                "FPS Watermark: option-build failed",
             )
 
-        return original_get_pdf(html, options=options, output=output)
+        # Let wkhtmltopdf produce the PDF
+        result = original_get_pdf(html, options=options, output=output)
+
+        # Post-process: stamp the watermark on every page.
+        # Only do this when we got bytes back (output=None case).
+        try:
+            if (
+                is_fps
+                and output is None
+                and isinstance(result, (bytes, bytearray))
+                and len(result) > 0
+            ):
+                result = _stamp_watermark_on_pdf(result)
+        except Exception:
+            frappe.log_error(
+                frappe.get_traceback(),
+                "FPS Watermark: post-process failed",
+            )
+
+        return result
 
     return patched
 
@@ -190,13 +254,12 @@ def check_watermark_status():
         import frappe.utils.pdf as _frappe_pdf
         fn = getattr(_frappe_pdf, "get_pdf", None)
         is_patched = bool(getattr(fn, "_fps_watermark_patched", False))
-        wm_b64_len = len(_get_watermark_base64())
-        lh_footer_len = len(_get_letter_head_footer_html())
+        wm_bytes = _build_watermark_pdf_bytes()
         return {
             "patched": is_patched,
-            "watermark_b64_chars": wm_b64_len,
-            "letter_head_footer_chars": lh_footer_len,
             "patch_installed_flag": _patch_installed,
+            "watermark_pdf_bytes": len(wm_bytes) if wm_bytes else 0,
+            "letter_head_footer_chars": len(_get_letter_head_footer_html()),
         }
     except Exception as e:
         return {"error": str(e)}
