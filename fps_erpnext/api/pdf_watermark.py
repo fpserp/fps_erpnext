@@ -69,12 +69,20 @@ def _build_combined_footer_html_file():
         #   - footer strip is ~35mm tall (set via margin-bottom)
         #   - watermark at top-right of strip (offset to overlap into body area)
         #   - address bar at the bottom of the strip
+        # Watermark sizing notes:
+        #   - The wkhtmltopdf footer area is sized via the print format's
+        #     margin_bottom (we set 35mm in the patched options below).
+        #   - We size the watermark to ~22mm (≈ 85px @ 96dpi) so it fits
+        #     comfortably inside the 35mm strip without overflowing the
+        #     page and without overlapping body content above.
+        #   - The address bar sits at the very bottom of the strip;
+        #     the watermark sits above it, right-aligned.
         watermark_block = ""
         if wm_b64:
             watermark_block = (
                 f'<img src="data:image/png;base64,{wm_b64}" '
-                'style="position:absolute;right:8mm;top:0mm;width:180px;'
-                'opacity:0.18;pointer-events:none;z-index:0;" alt=""/>'
+                'style="position:absolute;right:8mm;top:1mm;height:22mm;'
+                'width:auto;opacity:0.18;pointer-events:none;z-index:0;" alt=""/>'
             )
 
         html = (
