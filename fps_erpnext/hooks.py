@@ -167,7 +167,7 @@ add_to_apps_screen = [
 
 # Request Events
 # ----------------
-# before_request = ["fps_erpnext.utils.before_request"]
+before_request = ["fps_erpnext.api.pdf_watermark.install_watermark_patch"]
 # after_request = ["fps_erpnext.utils.after_request"]
 
 # Job Events
