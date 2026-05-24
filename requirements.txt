@@ -1,2 +1,8 @@
 # Frappe and ERPNext are managed by the bench - do not list them here.
 # Add any additional Python dependencies your custom logic requires below.
+
+# Used by fps_erpnext.api.pdf_watermark to generate the per-page watermark
+# PDF page with proper transparency. Reportlab handles RGBA→PDF transparency
+# reliably (Pillow's PDF save flattens alpha unpredictably).
+reportlab>=4.0.0
+
