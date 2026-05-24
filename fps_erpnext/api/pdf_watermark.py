@@ -2,12 +2,12 @@
 Per-page watermark for FPS PDF generation.
 
 How it works:
-1. Monkey-patches frappe.utils.pdf.get_pdf to add wkhtmltopdf's --footer-html option.
-2. The --footer-html points to a small HTML file containing the FPS watermark image
-   positioned at the bottom-right of the page.
-3. wkhtmltopdf renders the footer-html on EVERY page (this is its native behavior),
-   so the watermark appears on every page of multi-page PDFs.
-4. We only patch once per worker process, guarded by a module-level flag.
+1. Monkey-patches frappe.utils.pdf.get_pdf to write a custom --footer-html
+   that contains BOTH the FPS watermark image AND the existing footer content
+   (address line) from the Letter Head footer field.
+2. wkhtmltopdf renders --footer-html on EVERY page, so the watermark appears
+   on every page of multi-page PDFs.
+3. Patches once per worker process.
 """
 
 import os
@@ -18,67 +18,98 @@ import frappe
 
 # Module-level state
 _patch_installed = False
-_watermark_html_path = None
+_watermark_b64_cache = None
 
 
-def _build_watermark_html_file():
-    """Create the temporary HTML file used as wkhtmltopdf's --footer-html.
-
-    Returns the absolute path to the temp file, or None if the watermark image
-    cannot be located. The file is created once per worker process and reused.
-    """
-    global _watermark_html_path
-
-    if _watermark_html_path and os.path.exists(_watermark_html_path):
-        return _watermark_html_path
-
+def _get_watermark_base64():
+    """Read the bundled watermark PNG and return base64. Cached per process."""
+    global _watermark_b64_cache
+    if _watermark_b64_cache is not None:
+        return _watermark_b64_cache
     try:
-        # Locate the watermark image bundled with this app
         wm_path = frappe.get_app_path(
             "fps_erpnext", "public", "images", "fps_watermark.png"
         )
         if not os.path.exists(wm_path):
-            return None
-
+            return ""
         with open(wm_path, "rb") as fh:
-            wm_b64 = base64.b64encode(fh.read()).decode("ascii")
+            _watermark_b64_cache = base64.b64encode(fh.read()).decode("ascii")
+        return _watermark_b64_cache
+    except Exception:
+        return ""
 
-        # The HTML below is rendered by wkhtmltopdf as the page footer.
-        # The footer area is sized via the print format's margin_bottom.
-        # The watermark image is positioned absolute so it sits in the bottom-
-        # right of the footer strip, which is the bottom-right of each page.
+
+def _get_letter_head_footer_html():
+    """Return the raw HTML stored in Letter Head FPS Standard's footer field.
+
+    This is the address bar with the location/phone/email/web icons.
+    We need to render it ourselves so it appears on every page when wkhtmltopdf
+    uses our combined --footer-html file.
+    """
+    try:
+        lh = frappe.get_cached_doc("Letter Head", "FPS Standard")
+        return lh.footer or ""
+    except Exception:
+        return ""
+
+
+def _build_combined_footer_html_file():
+    """Create a temp HTML file containing watermark + address line.
+
+    This file is passed to wkhtmltopdf as --footer-html, so it renders on
+    every page. The file is regenerated per call so any letter-head edits
+    are picked up immediately.
+    """
+    try:
+        wm_b64 = _get_watermark_base64()
+        lh_footer = _get_letter_head_footer_html()
+
+        # Watermark image sits ABOVE the address line.
+        # Layout:
+        #   - footer strip is ~35mm tall (set via margin-bottom)
+        #   - watermark at top-right of strip (offset to overlap into body area)
+        #   - address bar at the bottom of the strip
+        watermark_block = ""
+        if wm_b64:
+            watermark_block = (
+                f'<img src="data:image/png;base64,{wm_b64}" '
+                'style="position:absolute;right:8mm;top:0mm;width:180px;'
+                'opacity:0.18;pointer-events:none;z-index:0;" alt=""/>'
+            )
+
         html = (
-            "<!DOCTYPE html>"
-            "<html><head><meta charset=\"utf-8\"></head>"
-            "<body style=\"margin:0;padding:0;\">"
-            "<div style=\"position:relative;width:100%;height:100%;\">"
-            f"<img src=\"data:image/png;base64,{wm_b64}\" "
-            "style=\"position:absolute;right:8mm;bottom:8mm;width:180px;"
-            "opacity:0.18;\" alt=\"\"/>"
-            "</div></body></html>"
+            '<!DOCTYPE html>'
+            '<html><head><meta charset="utf-8">'
+            '<style>'
+            'html,body{margin:0;padding:0;width:100%;}'
+            '.fps-footer-wrap{position:relative;width:100%;}'
+            '</style>'
+            '</head><body>'
+            '<div class="fps-footer-wrap">'
+            f'{watermark_block}'
+            f'<div style="position:relative;z-index:1;">{lh_footer}</div>'
+            '</div>'
+            '</body></html>'
         )
 
         tmp = tempfile.NamedTemporaryFile(
-            mode="w", suffix="_fps_watermark.html", delete=False, encoding="utf-8"
+            mode="w",
+            suffix="_fps_footer.html",
+            delete=False,
+            encoding="utf-8",
         )
         tmp.write(html)
         tmp.close()
-        _watermark_html_path = tmp.name
-        return _watermark_html_path
+        return tmp.name
     except Exception:
         frappe.log_error(
-            frappe.get_traceback(), "FPS Watermark: failed to build watermark HTML"
+            frappe.get_traceback(), "FPS Watermark: build_combined_footer_html failed"
         )
         return None
 
 
 def _is_fps_format(html):
-    """Heuristic to detect if the HTML being rendered is one of our FPS print formats.
-
-    We don't want to inject a watermark into emails, system reports, or other PDFs
-    that happen to flow through the same get_pdf function — only into Quotation /
-    Sales Invoice / POD / FPS Enquiry prints that use the FPS layout.
-    """
+    """Detect FPS print formats to avoid touching unrelated PDFs (emails etc)."""
     if not html:
         return False
     needles = (
@@ -88,6 +119,7 @@ def _is_fps_format(html):
         "fps_pod",
         "FPS Enquiry Format",
         "FPS Standard",
+        "fastplanet.ae",
     )
     return any(n in html for n in needles)
 
@@ -99,21 +131,25 @@ def _make_patched_get_pdf(original_get_pdf):
         options = dict(options or {})
 
         try:
-            if _is_fps_format(html) and "footer-html" not in options:
-                wm_path = _build_watermark_html_file()
+            if _is_fps_format(html):
+                wm_path = _build_combined_footer_html_file()
                 if wm_path:
+                    # ALWAYS overwrite footer-html — even if Frappe already set
+                    # one for the letter head footer. Our combined file
+                    # includes that content plus the watermark.
                     options["footer-html"] = wm_path
-                    # Reserve room at the bottom of every page for the footer-html
-                    # to render in. 35mm gives the 180px watermark room to breathe
-                    # plus the address line that's already in the body.
                     options["margin-bottom"] = "35"
                     options["footer-spacing"] = "0"
+
+                    # Marker so we can verify in logs / via API
+                    options["fps-watermark-injected"] = "1"
         except Exception:
-            # Never break PDF generation — fall through to the original call
             frappe.log_error(
                 frappe.get_traceback(), "FPS Watermark: patched get_pdf failed"
             )
 
+        # Strip our internal marker before passing to wkhtmltopdf (it isn't a real flag)
+        options.pop("fps-watermark-injected", None)
         return original_get_pdf(html, options=options, output=output)
 
     return patched
@@ -122,9 +158,8 @@ def _make_patched_get_pdf(original_get_pdf):
 def install_watermark_patch():
     """Monkey-patch frappe.utils.pdf.get_pdf once per worker process.
 
-    Wired up via `before_request` in hooks.py so it runs at the start of every
-    web request. The `_patch_installed` flag ensures the actual patching only
-    happens on the first request per worker.
+    Wired via `before_request` in hooks.py — fires on every web request,
+    but `_patch_installed` ensures the actual patching happens only once.
     """
     global _patch_installed
     if _patch_installed:
@@ -137,7 +172,7 @@ def install_watermark_patch():
         if original is None:
             return
 
-        # Guard against double-patching if the module is reloaded
+        # Guard against double-patching
         if getattr(original, "_fps_watermark_patched", False):
             _patch_installed = True
             return
@@ -148,5 +183,28 @@ def install_watermark_patch():
         _patch_installed = True
     except Exception:
         frappe.log_error(
-            frappe.get_traceback(), "FPS Watermark: install_watermark_patch failed"
+            frappe.get_traceback(),
+            "FPS Watermark: install_watermark_patch failed",
         )
+
+
+# ---------------------------------------------------------------------------
+# Diagnostic API — call this to verify the patch is installed on the live site
+# ---------------------------------------------------------------------------
+@frappe.whitelist()
+def check_watermark_status():
+    """Return whether the watermark patch is currently active on this worker."""
+    try:
+        import frappe.utils.pdf as _frappe_pdf
+        fn = getattr(_frappe_pdf, "get_pdf", None)
+        is_patched = bool(getattr(fn, "_fps_watermark_patched", False))
+        wm_b64_len = len(_get_watermark_base64())
+        lh_footer_len = len(_get_letter_head_footer_html())
+        return {
+            "patched": is_patched,
+            "watermark_b64_chars": wm_b64_len,
+            "letter_head_footer_chars": lh_footer_len,
+            "patch_installed_flag": _patch_installed,
+        }
+    except Exception as e:
+        return {"error": str(e)}
