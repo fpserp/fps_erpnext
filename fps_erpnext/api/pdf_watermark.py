@@ -70,18 +70,17 @@ def _build_combined_footer_html_file():
         #   - watermark at top-right of strip (offset to overlap into body area)
         #   - address bar at the bottom of the strip
         # Watermark sizing notes:
-        #   - The wkhtmltopdf footer area is sized via the print format's
-        #     margin_bottom (we set 35mm in the patched options below).
-        #   - We size the watermark to ~22mm (≈ 85px @ 96dpi) so it fits
-        #     comfortably inside the 35mm strip without overflowing the
-        #     page and without overlapping body content above.
-        #   - The address bar sits at the very bottom of the strip;
-        #     the watermark sits above it, right-aligned.
+        #   - Footer area is sized via margin_bottom = 40mm (set below).
+        #   - Watermark height 35mm fills most of the footer area vertically.
+        #   - Right-aligned at 10mm from the right edge so it sits comfortably
+        #     in the bottom-right of every page.
+        #   - top: 0mm anchors it to the top of the footer strip, so the
+        #     watermark visually appears just above the address bar.
         watermark_block = ""
         if wm_b64:
             watermark_block = (
                 f'<img src="data:image/png;base64,{wm_b64}" '
-                'style="position:absolute;right:8mm;top:1mm;height:22mm;'
+                'style="position:absolute;right:10mm;top:0mm;height:35mm;'
                 'width:auto;opacity:0.18;pointer-events:none;z-index:0;" alt=""/>'
             )
 
@@ -146,7 +145,7 @@ def _make_patched_get_pdf(original_get_pdf):
                     # one for the letter head footer. Our combined file
                     # includes that content plus the watermark.
                     options["footer-html"] = wm_path
-                    options["margin-bottom"] = "35"
+                    options["margin-bottom"] = "40"
                     options["footer-spacing"] = "0"
 
                     # Marker so we can verify in logs / via API
