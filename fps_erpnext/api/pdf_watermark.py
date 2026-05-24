@@ -69,19 +69,20 @@ def _build_combined_footer_html_file():
         #   - footer strip is ~35mm tall (set via margin-bottom)
         #   - watermark at top-right of strip (offset to overlap into body area)
         #   - address bar at the bottom of the strip
-        # Watermark sizing notes:
-        #   - Footer area is sized via margin_bottom = 40mm (set below).
-        #   - Watermark height 35mm fills most of the footer area vertically.
-        #   - Right-aligned at 10mm from the right edge so it sits comfortably
-        #     in the bottom-right of every page.
-        #   - top: 0mm anchors it to the top of the footer strip, so the
-        #     watermark visually appears just above the address bar.
+        # Watermark sizing/position:
+        #   - height: 55mm (per request — bigger, more prominent)
+        #   - top: -50mm means the watermark extends 50mm ABOVE the footer
+        #     strip top edge, so it sits in the body area (~5cm above the
+        #     address bar). wkhtmltopdf allows footer-html elements to
+        #     overflow into the body area for absolute-positioned children.
+        #   - opacity: 0.12 (slightly lighter than before so it doesn't
+        #     interfere with body text where it overlaps).
         watermark_block = ""
         if wm_b64:
             watermark_block = (
                 f'<img src="data:image/png;base64,{wm_b64}" '
-                'style="position:absolute;right:10mm;top:0mm;height:35mm;'
-                'width:auto;opacity:0.18;pointer-events:none;z-index:0;" alt=""/>'
+                'style="position:absolute;right:10mm;top:-50mm;height:55mm;'
+                'width:auto;opacity:0.12;pointer-events:none;z-index:0;" alt=""/>'
             )
 
         html = (
