@@ -70,19 +70,19 @@ def _build_combined_footer_html_file():
         #   - watermark at top-right of strip (offset to overlap into body area)
         #   - address bar at the bottom of the strip
         # Watermark sizing/position:
-        #   - height: 55mm (per request — bigger, more prominent)
-        #   - top: -50mm means the watermark extends 50mm ABOVE the footer
-        #     strip top edge, so it sits in the body area (~5cm above the
-        #     address bar). wkhtmltopdf allows footer-html elements to
-        #     overflow into the body area for absolute-positioned children.
-        #   - opacity: 0.12 (slightly lighter than before so it doesn't
-        #     interfere with body text where it overlaps).
+        #   - height: 55mm
+        #   - top: 0mm (anchored to top of footer strip — no overflow into body)
+        #   - footer strip height is 70mm (set via margin-bottom below), so the
+        #     55mm watermark fully fits with 15mm room at the bottom for the
+        #     address bar.
+        #   - Net effect: watermark occupies the bottom 7cm of every page,
+        #     visible on every page, never clipped.
         watermark_block = ""
         if wm_b64:
             watermark_block = (
                 f'<img src="data:image/png;base64,{wm_b64}" '
-                'style="position:absolute;right:10mm;top:-50mm;height:55mm;'
-                'width:auto;opacity:0.12;pointer-events:none;z-index:0;" alt=""/>'
+                'style="position:absolute;right:10mm;top:0mm;height:55mm;'
+                'width:auto;opacity:0.18;pointer-events:none;z-index:0;" alt=""/>'
             )
 
         html = (
@@ -146,7 +146,9 @@ def _make_patched_get_pdf(original_get_pdf):
                     # one for the letter head footer. Our combined file
                     # includes that content plus the watermark.
                     options["footer-html"] = wm_path
-                    options["margin-bottom"] = "40"
+                    # Footer strip = 70mm: 55mm watermark + 15mm address bar
+                    # Watermark fully contained, no clipping.
+                    options["margin-bottom"] = "70"
                     options["footer-spacing"] = "0"
 
                     # Marker so we can verify in logs / via API
