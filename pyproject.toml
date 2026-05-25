@@ -9,6 +9,9 @@ readme = "README.md"
 dynamic = ["version"]
 dependencies = [
     # "frappe~=15.0.0" # Installed and managed by bench.
+    # Used by fps_erpnext.api.pdf_watermark for per-page watermark stamping
+    # (Pillow's PDF save loses RGBA alpha in our env, so we use reportlab).
+    "reportlab>=4.0.0",
 ]
 
 [build-system]

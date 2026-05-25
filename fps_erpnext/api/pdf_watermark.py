@@ -1,17 +1,15 @@
 """
-Per-page watermark for FPS PDF generation (v0.0.10).
+Per-page watermark for FPS PDF generation (v0.0.11).
 
 Strategy: POST-PROCESS THE PDF after wkhtmltopdf generates it.
   1. wkhtmltopdf renders the body + small footer strip (address bar).
-  2. After the render returns, we build a 1-page A4 PDF using reportlab
-     containing JUST the watermark (with proper transparency).
+  2. After the render, we build a 1-page A4 PDF containing JUST the
+     watermark (positioned at body bottom-right with proper transparency).
   3. pypdf merges that watermark page onto every page of the main PDF.
-  4. Result: watermark on every page, properly transparent, no CSS quirks.
 
-Why reportlab instead of Pillow:
-  Pillow's RGBA→PDF save loses the alpha channel in many versions —
-  the watermark page ends up either invisible or covered by an opaque
-  white background. Reportlab produces clean PDFs with native alpha support.
+We try reportlab first (proper PDF transparency). If reportlab is
+unavailable we fall back to a Pillow-based small-image approach
+positioned via pypdf's Transformation.
 """
 
 import os
@@ -23,11 +21,12 @@ import frappe
 
 # Module-level state
 _patch_installed = False
-_watermark_pdf_cache = None  # cached watermark PDF bytes
+_watermark_pdf_cache = None
+_watermark_backend_used = "none"
 
 
 # ---------------------------------------------------------------------------
-# Letter head footer (address bar) → wkhtmltopdf --footer-html
+# Letter head footer → wkhtmltopdf --footer-html
 # ---------------------------------------------------------------------------
 def _get_letter_head_footer_html():
     try:
@@ -38,16 +37,12 @@ def _get_letter_head_footer_html():
 
 
 def _build_address_only_footer_file():
-    """Footer-html file with ONLY the address bar."""
     try:
         lh_footer = _get_letter_head_footer_html()
         html = (
-            '<!DOCTYPE html>'
-            '<html><head><meta charset="utf-8">'
+            '<!DOCTYPE html><html><head><meta charset="utf-8">'
             '<style>html,body{margin:0;padding:0;width:100%;}</style>'
-            '</head><body>'
-            f'{lh_footer}'
-            '</body></html>'
+            '</head><body>' + lh_footer + '</body></html>'
         )
         tmp = tempfile.NamedTemporaryFile(
             mode="w", suffix="_fps_addr.html", delete=False, encoding="utf-8"
@@ -56,109 +51,137 @@ def _build_address_only_footer_file():
         tmp.close()
         return tmp.name
     except Exception:
-        frappe.log_error(
-            frappe.get_traceback(),
-            "FPS Watermark: build address footer file failed",
-        )
+        frappe.log_error(frappe.get_traceback(), "FPS Watermark: addr footer failed")
         return None
 
 
 # ---------------------------------------------------------------------------
-# Watermark PDF page (built once per worker, cached)
+# Watermark page generation — reportlab primary, Pillow fallback
 # ---------------------------------------------------------------------------
-def _build_watermark_pdf_bytes():
-    """Build a 1-page A4 PDF with the watermark at body bottom-right.
+def _build_watermark_pdf_reportlab():
+    """Reportlab path — proper PDF transparency."""
+    from reportlab.pdfgen import canvas as rl_canvas
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.utils import ImageReader
 
-    Uses reportlab. The watermark image's PNG alpha is honored automatically
-    by reportlab when mask='auto'. Additional opacity is applied via the
-    canvas's setFillAlpha → setStrokeAlpha → drawImage with transparency group.
+    wm_path = frappe.get_app_path("fps_erpnext", "public", "images", "fps_watermark.png")
+    if not os.path.exists(wm_path):
+        return None
 
-    Returns PDF bytes, or None on failure.
+    PT_PER_MM = 2.834645669
+    A4_W, A4_H = A4  # 595.27, 841.89
+
+    buf = io.BytesIO()
+    c = rl_canvas.Canvas(buf, pagesize=A4)
+
+    img = ImageReader(wm_path)
+    img_w, img_h = img.getSize()
+    aspect = img_w / img_h
+    wm_h_pt = 55 * PT_PER_MM
+    wm_w_pt = wm_h_pt * aspect
+
+    x = A4_W - wm_w_pt - 10 * PT_PER_MM
+    y = 30 * PT_PER_MM
+
+    c.saveState()
+    try:
+        c.setFillAlpha(0.25)
+        c.setStrokeAlpha(0.25)
+    except Exception:
+        pass
+    c.drawImage(img, x, y, width=wm_w_pt, height=wm_h_pt, mask="auto",
+                preserveAspectRatio=True)
+    c.restoreState()
+    c.showPage()
+    c.save()
+    return buf.getvalue()
+
+
+def _build_watermark_pdf_pillow():
+    """Pillow fallback — save the small watermark image as a PDF.
+
+    Pillow's PDF save in our env may flatten RGBA to RGB by alpha-blending
+    with white. The resulting image is OPAQUE faded gray (no true alpha) —
+    when pypdf positions this small image PDF on each page, it covers only
+    the bottom-right corner where the image is, and looks watermark-like
+    even though technically opaque.
     """
-    global _watermark_pdf_cache
+    from PIL import Image
+
+    wm_path = frappe.get_app_path("fps_erpnext", "public", "images", "fps_watermark.png")
+    if not os.path.exists(wm_path):
+        return None
+
+    PT_PER_MM = 2.834645669
+
+    img = Image.open(wm_path).convert("RGBA")
+    target_h = int(55 * PT_PER_MM)
+    aspect = img.width / img.height
+    target_w = int(target_h * aspect)
+    img_resized = img.resize((target_w, target_h), Image.LANCZOS)
+
+    # Blend with white to simulate transparency (since RGBA → PDF often loses alpha)
+    white_bg = Image.new("RGB", img_resized.size, (255, 255, 255))
+    # Pull the alpha channel and use it for blending
+    if img_resized.mode == "RGBA":
+        alpha = img_resized.split()[3]
+        # Reduce alpha to ~25% so the blend produces a faded result
+        alpha = alpha.point(lambda p: int(p * 0.25))
+        rgb = img_resized.convert("RGB")
+        # Composite: rgb on white_bg using alpha as mask
+        white_bg.paste(rgb, (0, 0), alpha)
+    else:
+        white_bg = img_resized.convert("RGB")
+
+    # Save the SMALL faded image as PDF (not A4 — just the image)
+    buf = io.BytesIO()
+    white_bg.save(buf, "PDF", resolution=72.0)
+    return buf.getvalue()
+
+
+def _build_watermark_pdf_bytes():
+    """Return cached watermark PDF bytes; build once per worker."""
+    global _watermark_pdf_cache, _watermark_backend_used
     if _watermark_pdf_cache is not None:
         return _watermark_pdf_cache
 
+    # Try reportlab first
     try:
-        from reportlab.pdfgen import canvas as rl_canvas
-        from reportlab.lib.pagesizes import A4
-        from reportlab.lib.utils import ImageReader
-
-        wm_path = frappe.get_app_path(
-            "fps_erpnext", "public", "images", "fps_watermark.png"
-        )
-        if not os.path.exists(wm_path):
-            frappe.log_error(
-                f"Watermark PNG missing at {wm_path}", "FPS Watermark: setup"
-            )
-            return None
-
-        # Reportlab uses points (1/72 inch) by default. A4 = 595 × 842 pt.
-        PT_PER_MM = 2.834645669
-        A4_W, A4_H = A4  # (595.27, 841.89)
-
-        # Build PDF in memory
-        buf = io.BytesIO()
-        c = rl_canvas.Canvas(buf, pagesize=A4)
-
-        # Use a transparency group so the image's alpha is preserved
-        # and an extra global alpha (0.22) is applied to the whole image.
-        img = ImageReader(wm_path)
-        img_w, img_h = img.getSize()
-        aspect = img_w / img_h
-
-        wm_h_pt = 55 * PT_PER_MM   # 55 mm tall
-        wm_w_pt = wm_h_pt * aspect
-
-        # Position: 10mm from right edge, 30mm from bottom (PDF coords y=bottom)
-        x = A4_W - wm_w_pt - 10 * PT_PER_MM
-        y = 30 * PT_PER_MM
-
-        # Apply global alpha to the upcoming drawImage call
-        c.saveState()
-        try:
-            c.setFillAlpha(0.22)
-            c.setStrokeAlpha(0.22)
-            # Some reportlab versions also support transparency for images
-            # via "_setStrokeAlpha" — but drawImage relies on the PNG alpha.
-        except Exception:
-            pass
-        c.drawImage(
-            img,
-            x,
-            y,
-            width=wm_w_pt,
-            height=wm_h_pt,
-            mask="auto",
-            preserveAspectRatio=True,
-        )
-        c.restoreState()
-
-        c.showPage()
-        c.save()
-
-        _watermark_pdf_cache = buf.getvalue()
-        return _watermark_pdf_cache
-    except ImportError as e:
-        frappe.log_error(
-            f"reportlab not available: {e}", "FPS Watermark: reportlab missing"
-        )
-        return None
+        result = _build_watermark_pdf_reportlab()
+        if result:
+            _watermark_pdf_cache = result
+            _watermark_backend_used = "reportlab"
+            return result
+    except ImportError:
+        pass
     except Exception:
-        frappe.log_error(
-            frappe.get_traceback(),
-            "FPS Watermark: build_watermark_pdf failed",
-        )
-        return None
+        frappe.log_error(frappe.get_traceback(), "FPS Watermark: reportlab build failed")
+
+    # Fall back to Pillow
+    try:
+        result = _build_watermark_pdf_pillow()
+        if result:
+            _watermark_pdf_cache = result
+            _watermark_backend_used = "pillow"
+            return result
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), "FPS Watermark: pillow build failed")
+
+    return None
 
 
 # ---------------------------------------------------------------------------
-# Post-process the PDF → stamp watermark on every page
+# Post-process: merge watermark onto every page
 # ---------------------------------------------------------------------------
 def _stamp_watermark_on_pdf(pdf_bytes):
-    """Merge the watermark page onto every page of the input PDF."""
+    """Merge the watermark page onto every page of the main PDF.
+
+    For the reportlab path the watermark is A4 so merge_page() centers
+    correctly. For the Pillow fallback the watermark PDF is just the image
+    size — we use Transformation to translate it into the bottom-right corner.
+    """
     try:
-        from pypdf import PdfReader, PdfWriter
+        from pypdf import PdfReader, PdfWriter, Transformation
 
         wm_pdf_bytes = _build_watermark_pdf_bytes()
         if not wm_pdf_bytes:
@@ -170,17 +193,32 @@ def _stamp_watermark_on_pdf(pdf_bytes):
         main_reader = PdfReader(io.BytesIO(pdf_bytes))
         writer = PdfWriter()
 
+        # Detect whether the watermark page is A4 (reportlab) or small (Pillow).
+        # Reportlab A4 = 595x842; if smaller, use translation to position.
+        wm_w = float(wm_page.mediabox.width)
+        wm_h = float(wm_page.mediabox.height)
+        is_a4 = wm_w > 400 and wm_h > 700  # rough check
+
+        PT_PER_MM = 2.834645669
+
         for page in main_reader.pages:
-            page.merge_page(wm_page)
+            if is_a4:
+                # Reportlab path — same-size pages, direct merge
+                page.merge_page(wm_page)
+            else:
+                # Pillow small-image path — translate into bottom-right
+                page_w = float(page.mediabox.width)
+                tx = page_w - wm_w - 10 * PT_PER_MM
+                ty = 30 * PT_PER_MM
+                op = Transformation().translate(tx=tx, ty=ty)
+                page.merge_transformed_page(wm_page, op)
             writer.add_page(page)
 
         out = io.BytesIO()
         writer.write(out)
         return out.getvalue()
     except Exception:
-        frappe.log_error(
-            frappe.get_traceback(), "FPS Watermark: stamp on pdf failed"
-        )
+        frappe.log_error(frappe.get_traceback(), "FPS Watermark: stamp failed")
         return pdf_bytes
 
 
@@ -218,26 +256,16 @@ def _make_patched_get_pdf(original_get_pdf):
                     options["margin-bottom"] = "15"
                     options["footer-spacing"] = "0"
         except Exception:
-            frappe.log_error(
-                frappe.get_traceback(),
-                "FPS Watermark: option-build failed",
-            )
+            frappe.log_error(frappe.get_traceback(), "FPS Watermark: option-build failed")
 
         result = original_get_pdf(html, options=options, output=output)
 
         try:
-            if (
-                is_fps
-                and output is None
-                and isinstance(result, (bytes, bytearray))
-                and len(result) > 0
-            ):
+            if (is_fps and output is None
+                    and isinstance(result, (bytes, bytearray)) and len(result) > 0):
                 result = _stamp_watermark_on_pdf(result)
         except Exception:
-            frappe.log_error(
-                frappe.get_traceback(),
-                "FPS Watermark: post-process failed",
-            )
+            frappe.log_error(frappe.get_traceback(), "FPS Watermark: post-process failed")
 
         return result
 
@@ -245,7 +273,6 @@ def _make_patched_get_pdf(original_get_pdf):
 
 
 def install_watermark_patch():
-    """Monkey-patch frappe.utils.pdf.get_pdf once per worker process."""
     global _patch_installed
     if _patch_installed:
         return
@@ -263,10 +290,7 @@ def install_watermark_patch():
         _frappe_pdf.get_pdf = patched
         _patch_installed = True
     except Exception:
-        frappe.log_error(
-            frappe.get_traceback(),
-            "FPS Watermark: install_watermark_patch failed",
-        )
+        frappe.log_error(frappe.get_traceback(), "FPS Watermark: install failed")
 
 
 # ---------------------------------------------------------------------------
@@ -274,30 +298,25 @@ def install_watermark_patch():
 # ---------------------------------------------------------------------------
 @frappe.whitelist()
 def check_watermark_status():
-    """Return whether the watermark patch is currently active."""
     try:
         import frappe.utils.pdf as _frappe_pdf
         fn = getattr(_frappe_pdf, "get_pdf", None)
         is_patched = bool(getattr(fn, "_fps_watermark_patched", False))
         wm_bytes = _build_watermark_pdf_bytes()
-        # Detect which backend is in use
-        backend = "none"
+        reportlab_available = False
         try:
             import reportlab  # noqa: F401
-            backend = "reportlab"
+            reportlab_available = True
         except ImportError:
-            try:
-                from PIL import Image  # noqa: F401
-                backend = "pillow-fallback"
-            except ImportError:
-                pass
+            pass
         return {
             "patched": is_patched,
             "patch_installed_flag": _patch_installed,
             "watermark_pdf_bytes": len(wm_bytes) if wm_bytes else 0,
             "letter_head_footer_chars": len(_get_letter_head_footer_html()),
-            "pdf_backend": backend,
-            "app_version": "0.0.10",
+            "reportlab_available": reportlab_available,
+            "watermark_backend_used": _watermark_backend_used,
+            "app_version": "0.0.11",
         }
     except Exception as e:
         return {"error": str(e)}
@@ -305,7 +324,6 @@ def check_watermark_status():
 
 @frappe.whitelist()
 def get_watermark_pdf_b64():
-    """Return the watermark PDF as base64 (for visual debugging)."""
     wm = _build_watermark_pdf_bytes()
     if not wm:
         return ""
