@@ -85,8 +85,8 @@ def _build_watermark_pdf_reportlab():
 
     c.saveState()
     try:
-        c.setFillAlpha(0.25)
-        c.setStrokeAlpha(0.25)
+        c.setFillAlpha(0.15)
+        c.setStrokeAlpha(0.15)
     except Exception:
         pass
     c.drawImage(img, x, y, width=wm_w_pt, height=wm_h_pt, mask="auto",
@@ -316,7 +316,7 @@ def check_watermark_status():
             "letter_head_footer_chars": len(_get_letter_head_footer_html()),
             "reportlab_available": reportlab_available,
             "watermark_backend_used": _watermark_backend_used,
-            "app_version": "0.0.11",
+            "app_version": "0.0.12",
         }
     except Exception as e:
         return {"error": str(e)}
