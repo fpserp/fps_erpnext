@@ -244,26 +244,48 @@ def _is_fps_format(html):
 # Patched get_pdf
 # ---------------------------------------------------------------------------
 def _make_patched_get_pdf(original_get_pdf):
-    def patched(html, options=None, output=None):
-        options = dict(options or {})
+    # **kwargs keeps the wrapper signature-compatible across Frappe versions
+    # (e.g. if core get_pdf later gains new keyword args) so the patch can
+    # never raise a TypeError that would break every PDF on the site.
+    def patched(html, options=None, output=None, **kwargs):
+        base_options = dict(options or {})
         is_fps = _is_fps_format(html)
 
-        try:
-            if is_fps:
+        # Build FPS-specific render options on a COPY, so we can always fall
+        # back to the untouched options if the watermark footer breaks render.
+        fps_options = dict(base_options)
+        if is_fps:
+            try:
                 addr_path = _build_address_only_footer_file()
                 if addr_path:
-                    options["footer-html"] = addr_path
-                    options["margin-bottom"] = "15"
-                    options["footer-spacing"] = "0"
+                    fps_options["footer-html"] = addr_path
+                    fps_options["margin-bottom"] = "15"
+                    fps_options["footer-spacing"] = "0"
+            except Exception:
+                frappe.log_error(frappe.get_traceback(), "FPS Watermark: option-build failed")
+                fps_options = dict(base_options)
+
+        # Generate the PDF. The watermark must never cost us the attachment:
+        # if the injected footer-html makes wkhtmltopdf fail, retry once with
+        # the original, untouched options so a valid PDF is still produced.
+        try:
+            result = original_get_pdf(html, options=fps_options, output=output, **kwargs)
         except Exception:
-            frappe.log_error(frappe.get_traceback(), "FPS Watermark: option-build failed")
+            if is_fps and fps_options != base_options:
+                frappe.log_error(frappe.get_traceback(),
+                                 "FPS Watermark: footer render failed, retrying plain")
+                result = original_get_pdf(html, options=base_options, output=output, **kwargs)
+            else:
+                raise
 
-        result = original_get_pdf(html, options=options, output=output)
-
+        # Post-process (stamp watermark) only on real PDF bytes, and never
+        # replace a good PDF with a bad/empty one if stamping misbehaves.
         try:
             if (is_fps and output is None
                     and isinstance(result, (bytes, bytearray)) and len(result) > 0):
-                result = _stamp_watermark_on_pdf(result)
+                stamped = _stamp_watermark_on_pdf(result)
+                if isinstance(stamped, (bytes, bytearray)) and len(stamped) > 0:
+                    result = stamped
         except Exception:
             frappe.log_error(frappe.get_traceback(), "FPS Watermark: post-process failed")
 
@@ -316,7 +338,7 @@ def check_watermark_status():
             "letter_head_footer_chars": len(_get_letter_head_footer_html()),
             "reportlab_available": reportlab_available,
             "watermark_backend_used": _watermark_backend_used,
-            "app_version": "0.0.12",
+            "app_version": "0.0.13",
         }
     except Exception as e:
         return {"error": str(e)}
