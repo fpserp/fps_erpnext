@@ -172,7 +172,9 @@ before_request = ["fps_erpnext.api.pdf_watermark.install_watermark_patch"]
 
 # Job Events
 # ----------
-# before_job = ["fps_erpnext.utils.before_job"]
+# Install the watermark patch in background workers too (email queue flush,
+# scheduled/enqueued PDF generation) — before_request only covers web workers.
+before_job = ["fps_erpnext.api.pdf_watermark.install_watermark_patch"]
 # after_job = ["fps_erpnext.utils.after_job"]
 
 # User Data Protection
