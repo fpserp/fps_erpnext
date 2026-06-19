@@ -1,7 +1,7 @@
 {
  "app": "fps_erpnext",
  "charts": [],
- "content": "[{\"id\":\"fpshdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS — Fast Planet Shipping</b></span>\",\"col\":12}},{\"id\":\"scjo\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Job Order\",\"col\":3}},{\"id\":\"scjt\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Job Tracker\",\"col\":3}},{\"id\":\"scct\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customs Tracker\",\"col\":3}},{\"id\":\"scq\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Quotation\",\"col\":3}},{\"id\":\"scsi\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"scpe\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Payment Entry\",\"col\":3}},{\"id\":\"cdops\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations\",\"col\":4}},{\"id\":\"cdsell\",\"type\":\"card\",\"data\":{\"card_name\":\"Selling\",\"col\":4}},{\"id\":\"cdbuy\",\"type\":\"card\",\"data\":{\"card_name\":\"Buying\",\"col\":4}},{\"id\":\"cdacc\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting\",\"col\":4}},{\"id\":\"cdcrm\",\"type\":\"card\",\"data\":{\"card_name\":\"CRM\",\"col\":4}},{\"id\":\"cdstk\",\"type\":\"card\",\"data\":{\"card_name\":\"Stock\",\"col\":4}},{\"id\":\"cdrep\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
+ "content": "[{\"id\":\"fpshdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS — Fast Planet Shipping</b></span>\",\"col\":12}},{\"id\":\"scjo\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Job Order\",\"col\":3}},{\"id\":\"scjt\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Job Tracker\",\"col\":3}},{\"id\":\"scct\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customs Tracker\",\"col\":3}},{\"id\":\"sce\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"FPS Enquiry\",\"col\":3}},{\"id\":\"scpod\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Proof of Delivery\",\"col\":3}},{\"id\":\"scq\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Quotation\",\"col\":3}},{\"id\":\"scsi\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"scpe\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Payment Entry\",\"col\":3}},{\"id\":\"cdops\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations\",\"col\":4}},{\"id\":\"cdqsh\",\"type\":\"card\",\"data\":{\"card_name\":\"Qashio\",\"col\":4}},{\"id\":\"cdsell\",\"type\":\"card\",\"data\":{\"card_name\":\"Selling\",\"col\":4}},{\"id\":\"cdbuy\",\"type\":\"card\",\"data\":{\"card_name\":\"Buying\",\"col\":4}},{\"id\":\"cdacc\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting\",\"col\":4}},{\"id\":\"cdcrm\",\"type\":\"card\",\"data\":{\"card_name\":\"CRM\",\"col\":4}},{\"id\":\"cdstk\",\"type\":\"card\",\"data\":{\"card_name\":\"Stock\",\"col\":4}},{\"id\":\"cdrep\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
  "creation": "2026-06-19 14:17:02.234460",
  "custom_blocks": [],
  "docstatus": 0,
@@ -14,10 +14,15 @@
  "is_hidden": 0,
  "label": "FPS",
  "links": [
-  {"type": "Card Break", "label": "Operations", "link_count": 3, "hidden": 0, "onboard": 0, "is_query_report": 0},
+  {"type": "Card Break", "label": "Operations", "link_count": 5, "hidden": 0, "onboard": 0, "is_query_report": 0},
   {"type": "Link", "link_type": "DocType", "link_to": "Job Order", "label": "Job Order", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0},
   {"type": "Link", "link_type": "DocType", "link_to": "Job Tracker", "label": "Job Tracker", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0},
   {"type": "Link", "link_type": "DocType", "link_to": "Customs Tracker", "label": "Customs Tracker", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0},
+  {"type": "Link", "link_type": "DocType", "link_to": "FPS Enquiry", "label": "FPS Enquiry", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0},
+  {"type": "Link", "link_type": "DocType", "link_to": "Proof of Delivery", "label": "Proof of Delivery", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0},
+  {"type": "Card Break", "label": "Qashio", "link_count": 2, "hidden": 0, "onboard": 0, "is_query_report": 0},
+  {"type": "Link", "link_type": "DocType", "link_to": "Qashio Settings", "label": "Qashio Settings", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0},
+  {"type": "Link", "link_type": "DocType", "link_to": "Qashio Sync Log", "label": "Qashio Sync Log", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0},
   {"type": "Card Break", "label": "Selling", "link_count": 5, "hidden": 0, "onboard": 0, "is_query_report": 0},
   {"type": "Link", "link_type": "DocType", "link_to": "Quotation", "label": "Quotation", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0},
   {"type": "Link", "link_type": "DocType", "link_to": "Sales Order", "label": "Sales Order", "hidden": 0, "onboard": 0, "is_query_report": 0, "link_count": 0},
@@ -48,7 +53,7 @@
   {"type": "Link", "link_type": "Report", "link_to": "Sales Register", "label": "Sales Register", "is_query_report": 1, "hidden": 0, "onboard": 0, "link_count": 0},
   {"type": "Link", "link_type": "Report", "link_to": "Trial Balance", "label": "Trial Balance", "is_query_report": 1, "hidden": 0, "onboard": 0, "link_count": 0}
  ],
- "modified": "2026-06-19 17:06:04.835959",
+ "modified": "2026-06-19 17:10:52.011397",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS",
@@ -63,6 +68,8 @@
   {"color": "Blue", "doc_view": "", "doctype": "Workspace Shortcut", "label": "Job Order", "link_to": "Job Order", "type": "DocType"},
   {"color": "Blue", "doc_view": "", "doctype": "Workspace Shortcut", "label": "Job Tracker", "link_to": "Job Tracker", "type": "DocType"},
   {"color": "Blue", "doc_view": "", "doctype": "Workspace Shortcut", "label": "Customs Tracker", "link_to": "Customs Tracker", "type": "DocType"},
+  {"color": "Blue", "doc_view": "", "doctype": "Workspace Shortcut", "label": "FPS Enquiry", "link_to": "FPS Enquiry", "type": "DocType"},
+  {"color": "Blue", "doc_view": "", "doctype": "Workspace Shortcut", "label": "Proof of Delivery", "link_to": "Proof of Delivery", "type": "DocType"},
   {"color": "Grey", "doc_view": "", "doctype": "Workspace Shortcut", "label": "Quotation", "link_to": "Quotation", "type": "DocType"},
   {"color": "Grey", "doc_view": "", "doctype": "Workspace Shortcut", "label": "Sales Invoice", "link_to": "Sales Invoice", "type": "DocType"},
   {"color": "Grey", "doc_view": "", "doctype": "Workspace Shortcut", "label": "Payment Entry", "link_to": "Payment Entry", "type": "DocType"}
