@@ -1,0 +1,152 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2026-06-19 18:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "recipients",
+  "cc",
+  "bcc",
+  "subject",
+  "message",
+  "attachment_section",
+  "attachment_file_name",
+  "attachment_content",
+  "attach_column_break",
+  "attach_print_doctype",
+  "attach_print_name",
+  "print_format",
+  "status_section",
+  "status",
+  "sent_at",
+  "error_message"
+ ],
+ "fields": [
+  {
+   "fieldname": "recipients",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "To (comma separated)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cc",
+   "fieldtype": "Data",
+   "label": "Cc (comma separated)"
+  },
+  {
+   "fieldname": "bcc",
+   "fieldtype": "Data",
+   "label": "Bcc (comma separated)"
+  },
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Subject",
+   "reqd": 1
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Text Editor",
+   "label": "Message (HTML)"
+  },
+  {
+   "fieldname": "attachment_section",
+   "fieldtype": "Section Break",
+   "label": "Attachment"
+  },
+  {
+   "description": "File name for an inline attachment, e.g. proof.pdf",
+   "fieldname": "attachment_file_name",
+   "fieldtype": "Data",
+   "label": "Attachment File Name"
+  },
+  {
+   "description": "Base64-encoded file content for the inline attachment.",
+   "fieldname": "attachment_content",
+   "fieldtype": "Long Text",
+   "label": "Attachment Content (base64)"
+  },
+  {
+   "fieldname": "attach_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Alternatively, attach the PDF print of an ERPNext document.",
+   "fieldname": "attach_print_doctype",
+   "fieldtype": "Data",
+   "label": "Attach Print: DocType"
+  },
+  {
+   "fieldname": "attach_print_name",
+   "fieldtype": "Data",
+   "label": "Attach Print: Document Name"
+  },
+  {
+   "fieldname": "print_format",
+   "fieldtype": "Data",
+   "label": "Print Format (optional)"
+  },
+  {
+   "fieldname": "status_section",
+   "fieldtype": "Section Break",
+   "label": "Result"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Pending\nSent\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sent_at",
+   "fieldtype": "Datetime",
+   "label": "Sent At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error_message",
+   "fieldtype": "Small Text",
+   "label": "Error Message",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-19 18:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "FPS Outgoing Email",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "role": "FPS Operations",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
