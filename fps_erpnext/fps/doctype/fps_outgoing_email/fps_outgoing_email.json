@@ -18,6 +18,10 @@
   "attach_print_doctype",
   "attach_print_name",
   "print_format",
+  "sharepoint_section",
+  "sharepoint_drive_id",
+  "sharepoint_item_id",
+  "sharepoint_file_url",
   "status_section",
   "status",
   "sent_at",
@@ -89,6 +93,30 @@
    "fieldname": "print_format",
    "fieldtype": "Data",
    "label": "Print Format (optional)"
+  },
+  {
+   "description": "Attach a file from SharePoint/OneDrive (downloaded server-side via Microsoft Graph). Provide either Drive ID + Item ID, or a share/web URL.",
+   "fieldname": "sharepoint_section",
+   "fieldtype": "Section Break",
+   "label": "SharePoint Attachment"
+  },
+  {
+   "description": "From the M365 sharepoint_search 'driveId' field.",
+   "fieldname": "sharepoint_drive_id",
+   "fieldtype": "Data",
+   "label": "SharePoint Drive ID"
+  },
+  {
+   "description": "From the M365 sharepoint_search 'id' field (the part after the last slash in the file:/// URI).",
+   "fieldname": "sharepoint_item_id",
+   "fieldtype": "Data",
+   "label": "SharePoint Item ID"
+  },
+  {
+   "description": "Alternatively, a SharePoint/OneDrive share or web URL (the 'webUrl' field).",
+   "fieldname": "sharepoint_file_url",
+   "fieldtype": "Data",
+   "label": "SharePoint File URL"
   },
   {
    "fieldname": "status_section",
