@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "creation": "2026-06-19 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "intro",
+  "tenant_id",
+  "client_id",
+  "client_secret"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "intro",
+   "fieldtype": "HTML",
+   "label": "Intro",
+   "options": "<p>Microsoft Graph (app-only) credentials used to download SharePoint / OneDrive files for email attachments. Register an Azure AD app with <b>Files.Read.All</b> and <b>Sites.Read.All</b> <i>application</i> permissions and grant admin consent.</p>"
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID"
+  },
+  {
+   "fieldname": "client_id",
+   "fieldtype": "Data",
+   "label": "Client ID (Application ID)"
+  },
+  {
+   "fieldname": "client_secret",
+   "fieldtype": "Password",
+   "label": "Client Secret"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-06-19 19:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "FPS Microsoft Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

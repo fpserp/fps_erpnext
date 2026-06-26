@@ -45,23 +45,7 @@ class FPSOutgoingEmail(Document):
         if not recipients:
             frappe.throw(_("At least one recipient is required."))
 
-        attachments = []
-        if self.attachment_content and self.attachment_file_name:
-            try:
-                content = base64.b64decode(self.attachment_content)
-            except Exception:
-                frappe.throw(_("Attachment content is not valid base64."))
-            if content:
-                attachments.append({"fname": self.attachment_file_name, "fcontent": content})
-        elif self.attach_print_doctype and self.attach_print_name:
-            attachments.append(
-                frappe.attach_print(
-                    self.attach_print_doctype,
-                    self.attach_print_name,
-                    print_format=self.print_format or None,
-                )
-            )
-
+        attachments = self._build_attachments()
         if not attachments:
             frappe.throw(_("No attachment could be prepared; email not sent."))
 
@@ -76,3 +60,42 @@ class FPSOutgoingEmail(Document):
             reference_name=self.name,
             now=True,
         )
+
+    def _build_attachments(self):
+        """Collect attachments from any of the supported sources: inline
+        base64, an ERPNext document's PDF print, or a SharePoint/OneDrive
+        file fetched via Microsoft Graph."""
+        out = []
+
+        # 1) Inline base64 content supplied by the caller.
+        if self.attachment_content and self.attachment_file_name:
+            try:
+                content = base64.b64decode(self.attachment_content)
+            except Exception:
+                frappe.throw(_("Attachment content is not valid base64."))
+            if content:
+                out.append({"fname": self.attachment_file_name, "fcontent": content})
+
+        # 2) PDF print of an ERPNext document.
+        if self.attach_print_doctype and self.attach_print_name:
+            out.append(
+                frappe.attach_print(
+                    self.attach_print_doctype,
+                    self.attach_print_name,
+                    print_format=self.print_format or None,
+                )
+            )
+
+        # 3) SharePoint / OneDrive file via Microsoft Graph.
+        if self.sharepoint_drive_id and self.sharepoint_item_id:
+            from fps_erpnext.fps.microsoft_graph import download_drive_item
+
+            name, content = download_drive_item(self.sharepoint_drive_id, self.sharepoint_item_id)
+            out.append({"fname": self.attachment_file_name or name, "fcontent": content})
+        elif self.sharepoint_file_url:
+            from fps_erpnext.fps.microsoft_graph import download_share_url
+
+            name, content = download_share_url(self.sharepoint_file_url)
+            out.append({"fname": self.attachment_file_name or name, "fcontent": content})
+
+        return out
