@@ -1,12 +1,16 @@
 {
  "app": "fps_erpnext",
  "charts": [],
- "content": "[{\"id\":\"fpshdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Fast Planet Shipping</b></span>\",\"col\":12}},{\"id\":\"fpsstrip\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"FPS Pipeline Strip\",\"col\":12}},{\"id\":\"fpsnc1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"FPS Jobs past ETA\",\"col\":3}},{\"id\":\"fpsnc2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"FPS Clearance in progress\",\"col\":3}},{\"id\":\"fpsnc3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"FPS Delivered not invoiced\",\"col\":3}},{\"id\":\"fpsnc4\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"FPS Cleared ready to deliver\",\"col\":3}},{\"id\":\"fpssc1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Enquiries\",\"col\":4}},{\"id\":\"fpssc2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Job Orders\",\"col\":4}},{\"id\":\"fpssc3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customs Tracker\",\"col\":4}},{\"id\":\"fpssc4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Proof of Delivery\",\"col\":4}},{\"id\":\"fpssc5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":4}},{\"id\":\"fpssc6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Purchase Invoice\",\"col\":4}},{\"id\":\"fpsql1\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Jobs needing action\",\"col\":12}},{\"id\":\"fpscard1\",\"type\":\"card\",\"data\":{\"card_name\":\"Sales\",\"col\":4}},{\"id\":\"fpscard2\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations\",\"col\":4}},{\"id\":\"fpscard3\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounts & reports\",\"col\":4}}]",
+ "content": "[{\"id\":\"fpshdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Fast Planet Shipping</b></span>\",\"col\":12}},{\"id\":\"fpsoverview\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"FPS Overview\",\"col\":12}},{\"id\":\"fpsjobtracker\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"FPS Job Tracker\",\"col\":12}},{\"id\":\"fpsql1\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Jobs needing action\",\"col\":12}}]",
  "creation": "2026-09-09 13:30:00.000000",
  "custom_blocks": [
   {
-   "custom_block_name": "FPS Pipeline Strip",
-   "label": "FPS Pipeline Strip"
+   "custom_block_name": "FPS Overview",
+   "label": "FPS Overview"
+  },
+  {
+   "custom_block_name": "FPS Job Tracker",
+   "label": "FPS Job Tracker"
   }
  ],
  "docstatus": 0,
@@ -18,175 +22,12 @@
  "indicator_color": "cyan",
  "is_hidden": 0,
  "label": "FPS",
- "links": [
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Sales",
-   "link_count": 3,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "FPS Enquiry",
-   "link_count": 0,
-   "link_to": "FPS Enquiry",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Quotation",
-   "link_count": 0,
-   "link_to": "Quotation",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Customer",
-   "link_count": 0,
-   "link_to": "Customer",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Operations",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Job Order",
-   "link_count": 0,
-   "link_to": "Job Order",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Customs Tracker · Mirsal",
-   "link_count": 0,
-   "link_to": "Customs Tracker",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Proof of Delivery",
-   "link_count": 0,
-   "link_to": "Proof of Delivery",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Job update log",
-   "link_count": 0,
-   "link_to": "Job Update Log",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Accounts & reports",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Payment Entry",
-   "link_count": 0,
-   "link_to": "Payment Entry",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "VAT 5% return",
-   "link_count": 0,
-   "link_to": "UAE VAT 201",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Profitability per Job Order",
-   "link_count": 0,
-   "link_to": "FPS Profitability per Job Order",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Open jobs by SOW",
-   "link_count": 0,
-   "link_to": "FPS Open Jobs by SOW",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  }
- ],
- "modified": "2026-09-09 20:15:00.000000",
+ "links": [],
+ "modified": "2026-09-09 22:40:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS",
- "number_cards": [
-  {
-   "label": "FPS Jobs past ETA",
-   "number_card_name": "FPS Jobs past ETA"
-  },
-  {
-   "label": "FPS Clearance in progress",
-   "number_card_name": "FPS Clearance in progress"
-  },
-  {
-   "label": "FPS Delivered not invoiced",
-   "number_card_name": "FPS Delivered not invoiced"
-  },
-  {
-   "label": "FPS Cleared ready to deliver",
-   "number_card_name": "FPS Cleared ready to deliver"
-  }
- ],
+ "number_cards": [],
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,
@@ -200,86 +41,7 @@
  "restrict_to_domain": "",
  "roles": [],
  "sequence_id": 0.0,
- "shortcuts": [
-  {
-   "color": "Cyan",
-   "doc_view": "List",
-   "format": "{} open",
-   "icon": null,
-   "kanban_board": null,
-   "label": "Enquiries",
-   "link_to": "FPS Enquiry",
-   "restrict_to_domain": null,
-   "stats_filter": "[[\"FPS Enquiry\",\"status\",\"=\",\"Open\"]]",
-   "type": "DocType",
-   "url": null
-  },
-  {
-   "color": "Blue",
-   "doc_view": "List",
-   "format": "{} open",
-   "icon": null,
-   "kanban_board": null,
-   "label": "Job Orders",
-   "link_to": "Job Order",
-   "restrict_to_domain": null,
-   "stats_filter": "[[\"Job Order\",\"fps_stage\",\"not in\",[\"Closed\",\"Invoiced\"]],[\"Job Order\",\"docstatus\",\"!=\",2]]",
-   "type": "DocType",
-   "url": null
-  },
-  {
-   "color": "Orange",
-   "doc_view": "List",
-   "format": "{} pending",
-   "icon": null,
-   "kanban_board": null,
-   "label": "Customs Tracker",
-   "link_to": "Customs Tracker",
-   "restrict_to_domain": null,
-   "stats_filter": "[[\"Customs Tracker\",\"status\",\"not in\",[\"Cleared\"]]]",
-   "type": "DocType",
-   "url": null
-  },
-  {
-   "color": "Green",
-   "doc_view": "List",
-   "format": "{} filed",
-   "icon": null,
-   "kanban_board": null,
-   "label": "Proof of Delivery",
-   "link_to": "Proof of Delivery",
-   "restrict_to_domain": null,
-   "stats_filter": "[[\"Proof of Delivery\",\"docstatus\",\"!=\",2]]",
-   "type": "DocType",
-   "url": null
-  },
-  {
-   "color": "Purple",
-   "doc_view": "List",
-   "format": "{} open",
-   "icon": null,
-   "kanban_board": null,
-   "label": "Sales Invoice",
-   "link_to": "Sales Invoice",
-   "restrict_to_domain": null,
-   "stats_filter": "[[\"Sales Invoice\",\"status\",\"in\",[\"Unpaid\",\"Overdue\",\"Partly Paid\"]],[\"Sales Invoice\",\"docstatus\",\"=\",1]]",
-   "type": "DocType",
-   "url": null
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "format": "{} on file",
-   "icon": null,
-   "kanban_board": null,
-   "label": "Purchase Invoice",
-   "link_to": "Purchase Invoice",
-   "restrict_to_domain": null,
-   "stats_filter": null,
-   "type": "DocType",
-   "url": null
-  }
- ],
+ "shortcuts": [],
  "title": "FPS",
  "type": "Workspace"
 }

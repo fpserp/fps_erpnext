@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-09 20:15:00.000000"
+STAMP = "2026-09-09 22:40:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -215,45 +215,19 @@ SETUP_ROLES = ["System Manager"]
 # ==========================================================================
 
 FPS_HOME_LINKS = (
-    card("Sales", [
-        doc("FPS Enquiry"),
-        doc("Quotation"),
-        doc("Customer"),
-    ])
-    + card("Operations", [
-        doc("Job Order"),
-        doc("Customs Tracker", label="Customs Tracker · Mirsal"),
-        doc("Proof of Delivery"),
-        doc("Job Update Log", label="Job update log"),
-    ])
-    + card("Accounts & reports", [
-        doc("Payment Entry"),
-        doc("UAE VAT 201", "Report", "VAT 5% return"),
-        doc("FPS Profitability per Job Order", "Report", "Profitability per Job Order"),
-        doc("FPS Open Jobs by SOW", "Report", "Open jobs by SOW"),
-    ])
+    # The Sales / Operations / Accounts link cards that used to sit at the bottom
+    # of this page are gone: the left sidebar now carries that navigation, so
+    # repeating it here was two places to maintain and one to forget.
+    []
 )
 
 FPS_HOME_CONTENT = [
     header("Fast Planet Shipping", "fpshdr"),
-    custom_block_block("FPS Pipeline Strip", "fpsstrip"),
-    number_card_block("FPS Jobs past ETA", "fpsnc1"),
-    number_card_block("FPS Clearance in progress", "fpsnc2"),
-    number_card_block("FPS Delivered not invoiced", "fpsnc3"),
-    number_card_block("FPS Cleared ready to deliver", "fpsnc4"),
-    # col 2 truncated every label on the deployed page once a badge sat beside
-    # it ("C", "P...", "S.", "Purc..."). col 4 gives two rows of three with room
-    # for label and badge together.
-    shortcut_block("Enquiries", "fpssc1", col=4),
-    shortcut_block("Job Orders", "fpssc2", col=4),
-    shortcut_block("Customs Tracker", "fpssc3", col=4),
-    shortcut_block("Proof of Delivery", "fpssc4", col=4),
-    shortcut_block("Sales Invoice", "fpssc5", col=4),
-    shortcut_block("Purchase Invoice", "fpssc6", col=4),
+    custom_block_block("FPS Overview", "fpsoverview"),
+    custom_block_block("FPS Job Tracker", "fpsjobtracker"),
+    # Deliberately last on the page: it is the "what do I pick up now" list, read
+    # after the overview and the tracker rather than before them.
     quick_list_block("Jobs needing action", "fpsql1"),
-    card_block("Sales", "fpscard1"),
-    card_block("Operations", "fpscard2"),
-    card_block("Accounts & reports", "fpscard3"),
 ]
 
 # --------------------------------------------------------------------------
@@ -272,47 +246,8 @@ FPS_HOME_CONTENT = [
 # --------------------------------------------------------------------------
 
 FPS_HOME_SHORTCUTS = [
-    # 34 of 39. Terminal statuses (Converted/Lost/Cancelled) have zero records on
-    # this site, so this only ever grows until enquiries start being closed out.
-    shortcut("Enquiries", "FPS Enquiry", "Cyan",
-             stats_filter=[["FPS Enquiry", "status", "=", "Open"]],
-             fmt="{} open"),
-
-    # 40 of 84. Drafts MUST count: 54 of 84 job orders are docstatus 0, and
-    # restricting to submitted collapses the badge to 5 while hiding 35 live jobs.
-    shortcut("Job Orders", "Job Order", "Blue",
-             stats_filter=[["Job Order", "fps_stage", "not in", ["Closed", "Invoiced"]],
-                           ["Job Order", "docstatus", "!=", 2]],
-             fmt="{} open"),
-
-    # 1 of 46. The tracker is almost entirely historical -- 45 are already
-    # Cleared. The literal status "Pending" has zero records (ops move straight to
-    # In Process), so the naive status = "Pending" filter would read 0 forever.
-    shortcut("Customs Tracker", "Customs Tracker", "Orange",
-             stats_filter=[["Customs Tracker", "status", "not in", ["Cleared"]]],
-             fmt="{} pending"),
-
-    # 35 of 38. Drafts count: the workflow is create-as-draft, capture signature,
-    # then submit, and 20 of 38 are still drafts. Only cancelled ones are excluded.
-    shortcut("Proof of Delivery", "Proof of Delivery", "Green",
-             stats_filter=[["Proof of Delivery", "docstatus", "!=", 2]],
-             fmt="{} filed"),
-
-    # 130 of 628. The design's "63 · 210k open" cannot be one shortcut: a badge
-    # renders a COUNT only. The AED figure is a Number Card in step 3 (Sum over
-    # outstanding_amount with these same filters).
-    shortcut("Sales Invoice", "Sales Invoice", "Purple",
-             stats_filter=[["Sales Invoice", "status", "in",
-                            ["Unpaid", "Overdue", "Partly Paid"]],
-                           ["Sales Invoice", "docstatus", "=", 1]],
-             fmt="{} open"),
-
-    # No meaningful status filter exists: nobody has ever submitted a Purchase
-    # Invoice here and all 53 drafts are Qashio corporate-card overhead, not
-    # freight cost. Leaving stats_filter empty does NOT suppress the badge --
-    # Frappe falls back to a plain document count, which is how the deployed tile
-    # came to read a bare "53". So label that count for what it honestly is.
-    shortcut("Purchase Invoice", "Purchase Invoice", "Grey", fmt="{} on file"),
+    # The six shortcut tiles are gone. Every one duplicated a tile in the FPS
+    # Overview strip, which links to the same lists and also carries a count.
 ]
 
 # Two README IA members that had no primitive in step 1 and are expressible as
@@ -335,14 +270,7 @@ OPERATIONS_SHORTCUTS = [
              fmt="{} jobs"),
 ]
 
-FPS_HOME_NUMBER_CARDS = [
-    {"label": lbl, "number_card_name": lbl} for lbl in (
-        "FPS Jobs past ETA",
-        "FPS Clearance in progress",
-        "FPS Delivered not invoiced",
-        "FPS Cleared ready to deliver",
-    )
-]
+FPS_HOME_NUMBER_CARDS = []
 
 # The SOW breakdown built in the desk on 2026-09-09 is preserved, but moved off
 # the home page to Operations where a per-service split belongs. "Next action
@@ -351,12 +279,17 @@ FPS_HOME_NUMBER_CARDS = [
 # unpopulated row, so it renders 40 when the true answer is 0.
 OPERATIONS_NUMBER_CARDS = [
     {"label": lbl, "number_card_name": lbl} for lbl in (
+        # The four from step 3, moved off the home page at the owner's request.
+        "FPS Jobs past ETA",
+        "FPS Clearance in progress",
+        "FPS Delivered not invoiced",
+        "FPS Cleared ready to deliver",
+        # The SOW split built in the desk on 2026-09-09, preserved.
         "Open - Customs clearance",
         "Open - Freight forwarding",
         "Open - Land transport",
         "Open - General jobs",
         "On hold",
-        "Cleared - delivery pending",
     )
 ]
 
@@ -571,6 +504,10 @@ def s_section(label, icon, keep_closed=0):
     }
 
 
+# Exactly five categories, at the owner's request. Every item lives under one of
+# them -- there is no sixth section and no ungrouped item. The FPS Masters &
+# Setup workspace still exists and is reachable from the workspace switcher; it
+# simply no longer claims a sidebar heading.
 SIDEBAR_ITEMS = [
     s_link("FPS Home", "Workspace", "FPS", icon="home"),
 
@@ -579,6 +516,7 @@ SIDEBAR_ITEMS = [
     s_link("FPS Enquiry", "DocType", "FPS Enquiry"),
     s_link("Quotation", "DocType", "Quotation"),
     s_link("Customer", "DocType", "Customer"),
+    s_link("Contact", "DocType", "Contact"),
 
     s_section("Operations", "organization"),
     s_link("Operations overview", "Workspace", "FPS Operations"),
@@ -590,6 +528,7 @@ SIDEBAR_ITEMS = [
     s_link("Customs Tracker · Mirsal", "DocType", "Customs Tracker"),
     s_link("Proof of Delivery", "DocType", "Proof of Delivery"),
     s_link("Job update log", "DocType", "Job Update Log"),
+    s_link("Delivery Note", "DocType", "Delivery Note"),
 
     s_section("Accounts", "accounting"),
     s_link("Accounts overview", "Workspace", "FPS Accounts"),
@@ -599,12 +538,15 @@ SIDEBAR_ITEMS = [
     s_link("Customer Receipts", "DocType", "Payment Entry"),
     s_link("Payment Reconciliation", "DocType", "Payment Reconciliation"),
     s_link("Bank Reconciliation", "DocType", "FPS Bank Statement"),
+    s_link("Supplier", "DocType", "Supplier"),
 
     s_section("HR", "hr", keep_closed=1),
     s_link("HR overview", "Workspace", "FPS HR"),
     s_link("Employee", "DocType", "Employee"),
     s_link("Attendance", "DocType", "Attendance"),
     s_link("Leave Application", "DocType", "Leave Application"),
+    s_link("Shift Assignment", "DocType", "Shift Assignment"),
+    s_link("Expense Claim", "DocType", "Expense Claim"),
 
     s_section("Reports", "table", keep_closed=1),
     s_link("Reports overview", "Workspace", "FPS Reports"),
@@ -615,15 +557,7 @@ SIDEBAR_ITEMS = [
     s_link("Accounts Receivable Summary", "Report", "Accounts Receivable Summary"),
     s_link("Customer Ledger Summary", "Report", "Customer Ledger Summary"),
     s_link("Payment Ledger", "Report", "Payment Ledger"),
-    s_link("Payment Period Based On Invoice Date", "Report",
-           "Payment Period Based On Invoice Date"),
     s_link("Bank Clearance Summary", "Report", "Bank Clearance Summary"),
-
-    s_section("Masters & Setup", "setting", keep_closed=1),
-    s_link("Masters overview", "Workspace", "FPS Masters & Setup"),
-    s_link("FPS Outgoing Email", "DocType", "FPS Outgoing Email"),
-    s_link("FPS Microsoft Settings", "DocType", "FPS Microsoft Settings"),
-    s_link("Qashio Settings", "DocType", "Qashio Settings"),
 ]
 
 
@@ -859,29 +793,34 @@ DASHBOARD_CHARTS = [{
 
 
 def custom_html_blocks():
-    def read(ext):
-        with open(os.path.join(BLOCKS_DIR, "fps_pipeline_strip." + ext),
-                  encoding="utf-8") as fh:
+    def read(stem, ext):
+        with open(os.path.join(BLOCKS_DIR, stem + "." + ext), encoding="utf-8") as fh:
             return fh.read()
 
-    return [{
-        "creation": CREATED,
-        "docstatus": 0,
-        "doctype": "Custom HTML Block",
-        "html": read("html"),
-        "idx": 0,
-        "modified": STAMP,
-        "modified_by": OWNER,
-        "name": "FPS Pipeline Strip",
-        "owner": OWNER,
-        # Left ungated on purpose: the gate is inside the API method, which omits
-        # any stage whose doctype the caller cannot read. That degrades per
-        # viewer instead of hiding the whole strip.
-        "private": 0,
-        "roles": [],
-        "script": read("js"),
-        "style": read("css"),
-    }]
+    def block(name, stem):
+        return {
+            "creation": CREATED,
+            "docstatus": 0,
+            "doctype": "Custom HTML Block",
+            "html": read(stem, "html"),
+            "idx": 0,
+            "modified": STAMP,
+            "modified_by": OWNER,
+            "name": name,
+            "owner": OWNER,
+            # Left ungated on purpose: the gate is inside the API methods, which
+            # omit any tile or row whose doctype the caller cannot read. That
+            # degrades per viewer instead of hiding the whole block.
+            "private": 0,
+            "roles": [],
+            "script": read(stem, "js"),
+            "style": read(stem, "css"),
+        }
+
+    return [
+        block("FPS Overview", "fps_overview"),
+        block("FPS Job Tracker", "fps_job_tracker"),
+    ]
 
 
 def write_fixtures():
@@ -923,8 +862,10 @@ def main():
             "Jobs needing action", "Job Order",
             [["Job Order", "fps_stage", "not in", ["Closed", "Invoiced"]],
              ["Job Order", "docstatus", "<", 2]])],
-        custom_blocks=[{"custom_block_name": "FPS Pipeline Strip",
-                        "label": "FPS Pipeline Strip"}],
+        custom_blocks=[
+            {"custom_block_name": "FPS Overview", "label": "FPS Overview"},
+            {"custom_block_name": "FPS Job Tracker", "label": "FPS Job Tracker"},
+        ],
     )))
 
     for spec in CHILDREN:

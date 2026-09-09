@@ -1,15 +1,16 @@
-/* Shipment pipeline strip -- design 1a, step 6.
-   Only the strip's own chrome is styled here; the desk owns fonts and page frame.
-   Monospace is kept for counts alone, per the handoff. */
+/* FPS Overview strip -- eight tiles that WRAP.
+   The earlier version used grid-auto-flow: column, which forced one row and made
+   the last tile scroll off the right. auto-fit + minmax reflows to 4x2 at desk
+   width and 2x4 on a tablet, so nothing is ever hidden off-screen. */
 
-.fps-pipeline {
+.fps-ov {
 	border: 1px solid var(--border-color, #e2e8f0);
 	border-radius: 10px;
 	background: var(--card-bg, #fff);
 	overflow: hidden;
 }
 
-.fps-pipeline-head {
+.fps-ov-head {
 	display: flex;
 	align-items: baseline;
 	gap: 10px;
@@ -17,63 +18,58 @@
 	flex-wrap: wrap;
 }
 
-.fps-pipeline-title {
+.fps-ov-title {
 	font-size: 14px;
 	font-weight: 600;
 	color: var(--text-color, #1f272e);
 }
 
-.fps-pipeline-help {
+.fps-ov-help {
 	font-size: 12px;
 	color: var(--text-muted, #7c7c7c);
 }
 
-.fps-pipeline-meta {
+.fps-ov-meta {
 	margin-left: auto;
 	font-size: 11.5px;
 	color: var(--text-muted, #7c7c7c);
 	font-variant-numeric: tabular-nums;
 }
 
-/* Eight equal cells that scroll rather than wrap -- the one thing in this
-   design that cannot reflow, per the handoff's responsive note. */
-.fps-pipeline-grid {
+.fps-ov-grid {
 	display: grid;
-	grid-auto-flow: column;
-	grid-auto-columns: minmax(118px, 1fr);
-	overflow-x: auto;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 	border-top: 1px solid var(--border-color, #e2e8f0);
 }
 
-.fps-pipeline-cell {
+.fps-ov-cell {
 	position: relative;
 	padding: 12px 14px 13px;
 	border-left: 1px solid var(--border-color, #e2e8f0);
+	border-top: 1px solid var(--border-color, #e2e8f0);
+	margin-top: -1px;
 	text-decoration: none;
 	display: block;
 	color: inherit;
 	min-width: 0;
 }
 
-.fps-pipeline-cell:first-child {
-	border-left: 0;
-}
-
-.fps-pipeline-cell:hover {
+.fps-ov-cell:hover {
 	background: var(--bg-light-gray, #f7f9fa);
 	text-decoration: none;
 }
 
-/* The 3px coloured top border is the stage's identity. */
-.fps-pipeline-cell::before {
+/* 3px coloured top edge is the tile's identity. Sits above the wrap border. */
+.fps-ov-cell::before {
 	content: "";
 	position: absolute;
 	inset: 0 0 auto 0;
 	height: 3px;
-	background: var(--fps-stage-color, #94a3b8);
+	background: var(--fps-tile-color, #94a3b8);
+	z-index: 1;
 }
 
-.fps-pipeline-label {
+.fps-ov-label {
 	display: block;
 	font-size: 11.5px;
 	font-weight: 500;
@@ -83,7 +79,7 @@
 	text-overflow: ellipsis;
 }
 
-.fps-pipeline-count {
+.fps-ov-count {
 	display: block;
 	margin-top: 4px;
 	font-size: 24px;
@@ -94,7 +90,17 @@
 	color: var(--text-color, #1f272e);
 }
 
-.fps-pipeline-foot {
+.fps-ov-note {
+	display: block;
+	margin-top: 2px;
+	font-size: 11px;
+	color: var(--text-muted, #7c7c7c);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.fps-ov-foot {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 4px 14px;
@@ -104,17 +110,12 @@
 	color: var(--text-muted, #7c7c7c);
 }
 
-.fps-pipeline-foot span {
+.fps-ov-foot span {
 	font-variant-numeric: tabular-nums;
 }
 
-.fps-pipeline-loading,
-.fps-pipeline-error {
+.fps-ov-msg {
 	padding: 18px 16px;
 	font-size: 12.5px;
 	color: var(--text-muted, #7c7c7c);
-}
-
-.fps-pipeline-error {
-	color: var(--red-600, #b91c1c);
 }

@@ -33,7 +33,7 @@ add_to_apps_screen = [
 fixtures = [
     {"dt": "Number Card", "filters": [["module", "=", "FPS"]]},
     {"dt": "Dashboard Chart", "filters": [["module", "=", "FPS"]]},
-    {"dt": "Custom HTML Block", "filters": [["name", "in", ["FPS Pipeline Strip"]]]},
+    {"dt": "Custom HTML Block", "filters": [["name", "in", ["FPS Overview", "FPS Job Tracker"]]]},
 ]
 
 # Includes in <head>
