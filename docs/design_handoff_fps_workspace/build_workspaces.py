@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-10 11:05:00.000000"
+STAMP = "2026-09-10 14:30:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -488,12 +488,19 @@ CHILDREN = [
 # auto-generates one over the top of it.
 # ==========================================================================
 
-def s_link(label, link_type, link_to, icon=None, url=None, child=1):
-    """A sidebar row. child=1 nests it under the Section Break above it."""
+def s_link(label, link_type, link_to, icon=None, url=None, child=1,
+           route_options=None):
+    """A sidebar row. child=1 nests it under the Section Break above it.
+
+    route_options carries list-view filters. Its values must be JSON *strings* --
+    the list view JSON.parses any value that starts with "[" -- which is how a
+    non-equality filter is expressed without falling back to link_type URL.
+    """
     return {
         "child": child, "collapsible": 1, "icon": icon, "indent": 0,
         "keep_closed": 0, "label": label, "link_to": link_to,
-        "link_type": link_type, "show_arrow": 0, "type": "Link", "url": url,
+        "link_type": link_type, "route_options": route_options,
+        "show_arrow": 0, "type": "Link", "url": url,
     }
 
 
@@ -518,50 +525,51 @@ def s_group(label, icon, keep_closed=0):
     }
 
 
-# Six categories, every item nested under one of them. Nothing sits loose except
-# the FPS Home row itself.
+# Six categories, every item nested under one of them. Only FPS Home sits loose.
+#
+# NOTHING here uses link_type "URL". In v16 a URL item always renders
+# target="_blank", so it opens a new tab, does a full page reload, and lands the
+# user under whichever sidebar that doctype belongs to -- which is exactly the
+# "the left panel disappears" behaviour. DocType items navigate in place and keep
+# this sidebar, and route_options carries any filtering the old URL encoded.
+#
+# The per-category "overview" rows are gone too. Each opened a child workspace
+# that duplicated what the category already lists, so they were a row of pure
+# indirection. The child workspaces still exist and open from the workspace
+# switcher.
 SIDEBAR_ITEMS = [
     s_link("FPS Home", "Workspace", "FPS", icon="home", child=0),
 
     s_group("Sales", "sell"),
-    s_link("Sales overview", "Workspace", "FPS Sales"),
-    s_link("FPS Enquiry", "DocType", "FPS Enquiry"),
+    s_link("Enquiry", "DocType", "FPS Enquiry"),
     s_link("Quotation", "DocType", "Quotation"),
     s_link("Customer", "DocType", "Customer"),
-    s_link("Contact", "DocType", "Contact"),
 
     s_group("Operations", "organization"),
-    s_link("Operations overview", "Workspace", "FPS Operations"),
     s_link("Job Order", "DocType", "Job Order"),
-    # link_type URL always opens a new tab in v16; kept because a Kanban view
-    # cannot be addressed by a DocType sidebar item.
-    s_link("FPS Job Tracker (board)", "URL", None,
-           url="/app/job-order/view/kanban/FPS%20Job%20Tracker"),
-    s_link("Customs Tracker · Mirsal", "DocType", "Customs Tracker"),
+    # Was the Kanban board behind a URL item. Now a plain Job Order list filtered
+    # to the open stages, so it stays inside this sidebar. Distinct from the row
+    # above, which is every job order regardless of stage.
+    s_link("Job Tracker", "DocType", "Job Order",
+           route_options={"fps_stage": '[\"not in\",[\"Closed\",\"Invoiced\"]]'}),
+    s_link("Customs Tracker", "DocType", "Customs Tracker"),
     s_link("Proof of Delivery", "DocType", "Proof of Delivery"),
-    s_link("Job update log", "DocType", "Job Update Log"),
-    s_link("Delivery Note", "DocType", "Delivery Note"),
 
     s_group("Accounts", "accounting"),
-    s_link("Accounts overview", "Workspace", "FPS Accounts"),
-    s_link("Payment Receipts", "Workspace", "Payment Receipts"),
     s_link("Sales Invoice", "DocType", "Sales Invoice"),
     s_link("Purchase Invoice", "DocType", "Purchase Invoice"),
-    s_link("Customer Receipts", "DocType", "Payment Entry"),
-    s_link("Payment Reconciliation", "DocType", "Payment Reconciliation"),
+    # The receipts themselves, not the dashboard workspace of the same name.
+    s_link("Payment Receipts", "DocType", "Payment Entry",
+           route_options={"payment_type": "Receive"}),
     s_link("Bank Reconciliation", "DocType", "FPS Bank Statement"),
 
     s_group("HR", "hr", keep_closed=1),
-    s_link("HR overview", "Workspace", "FPS HR"),
     s_link("Employee", "DocType", "Employee"),
     s_link("Attendance", "DocType", "Attendance"),
     s_link("Leave Application", "DocType", "Leave Application"),
-    s_link("Shift Assignment", "DocType", "Shift Assignment"),
     s_link("Expense Claim", "DocType", "Expense Claim"),
 
     s_group("Reports", "table", keep_closed=1),
-    s_link("Reports overview", "Workspace", "FPS Reports"),
-    s_link("Open jobs by SOW", "Report", "FPS Open Jobs by SOW"),
     s_link("Profitability per Job Order", "Report", "FPS Profitability per Job Order"),
     s_link("Monthly GP trend", "Report", "FPS Monthly GP Trend"),
     s_link("Accounts Receivable", "Report", "Accounts Receivable"),
@@ -571,16 +579,10 @@ SIDEBAR_ITEMS = [
     s_link("Bank Clearance Summary", "Report", "Bank Clearance Summary"),
 
     s_group("Masters", "setting", keep_closed=1),
-    s_link("Masters overview", "Workspace", "FPS Masters & Setup"),
     s_link("Supplier", "DocType", "Supplier"),
     s_link("Charge items", "DocType", "Item"),
     s_link("Item Group", "DocType", "Item Group"),
     s_link("Cost Center", "DocType", "Cost Center"),
-    s_link("User", "DocType", "User"),
-    s_link("Role", "DocType", "Role"),
-    s_link("FPS Outgoing Email", "DocType", "FPS Outgoing Email"),
-    s_link("FPS Microsoft Settings", "DocType", "FPS Microsoft Settings"),
-    s_link("Qashio Settings", "DocType", "Qashio Settings"),
 ]
 
 
@@ -592,8 +594,8 @@ SIDEBAR = {
     "for_user": None,
     "header_icon": "grid",
     "idx": 0,
-    "items": [dict(it, filters=None, route_options=None, navigate_to_tab=None)
-              for it in SIDEBAR_ITEMS],
+    "items": [dict({"filters": None, "route_options": None,
+                    "navigate_to_tab": None}, **it) for it in SIDEBAR_ITEMS],
     "modified": STAMP,
     "modified_by": OWNER,
     "module": MODULE,
