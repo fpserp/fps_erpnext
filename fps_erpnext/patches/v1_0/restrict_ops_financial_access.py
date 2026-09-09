@@ -46,9 +46,30 @@ CLEAR_BITS = [
     # open, create and edit an invoice stays.
     ("Sales Invoice", "FPS Operations", 0, ["report"]),
 
-    # Sales Invoice has a permlevel-1 read row granted to "All", which defeats
-    # any future attempt to protect a field by raising its permlevel.
+    # Sales Invoice carries a deliberate permlevel-1 block of eleven Custom
+    # Fields -- "AP Costs & Profitability (Admin Only)", including
+    # fps_gross_profit and fps_total_cost. Custom DocPerm row `csm72v3srk`
+    # (role All, permlevel 1, read=1) silently defeats it: every logged-in user
+    # can read the whole panel today. Clearing read restores the protection that
+    # was already intended. The permlevel-1 grant that should remain is
+    # `csm1k27e0t` (Accounts Manager), which this does not touch.
     ("Sales Invoice", "All", 1, ["read"]),
+]
+
+# (doctype, name, roles) -> add a roles gate when the record has none at all.
+# An empty roles table means "everyone", which is how these two slipped through.
+GATE_BY_ROLE = [
+    # Zero Has Role rows, so its only gate was report permission on its
+    # ref_doctype Bank Account -- which REVOKE above removes. Belt and braces:
+    # gate the report itself so it stays closed if Bank Account is ever regranted.
+    ("Report", "Account Balance", ["Accounts User", "Accounts Manager", "System Manager"]),
+
+    # is_public=1 with an empty roles table. It renders bank/cash balances over
+    # time from GL Entry through the "Account Balance Timeline" chart source --
+    # a path that never consults GL Entry permissions, which ops do not hold.
+    # Unlike Number Card, Dashboard Chart HAS a roles child table, so this is a
+    # clean per-role fix rather than the blunt is_public=0.
+    ("Dashboard Chart", "Bank Balance", ["Accounts User", "Accounts Manager", "System Manager"]),
 ]
 
 
@@ -71,5 +92,23 @@ def execute():
             ):
                 for bit in bits:
                     frappe.db.set_value(table, name, bit, 0)
+
+    for doctype, name, roles in GATE_BY_ROLE:
+        if not frappe.db.exists(doctype, name):
+            continue
+        if not frappe.get_meta(doctype).has_field("roles"):
+            continue
+
+        doc = frappe.get_doc(doctype, name)
+        if doc.get("roles"):
+            # Already gated by someone; do not narrow or widen their choice.
+            continue
+
+        for role in roles:
+            if frappe.db.exists("Role", role):
+                doc.append("roles", {"role": role})
+
+        if doc.get("roles"):
+            doc.save(ignore_permissions=True)
 
     frappe.clear_cache()

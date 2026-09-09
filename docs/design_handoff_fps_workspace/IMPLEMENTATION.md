@@ -251,3 +251,50 @@ filters" **are** plain filter cards on this site.
   serve the auto-generated sidebar until its cache clears. Re-saving Module Def
   `FPS` clears it on the worker that handles the request; a bench restart clears
   all of them.
+
+
+## Correction — effective permlevel has three sources, not one
+
+An earlier pass here reported that *"zero Job Order fields are at permlevel > 0,
+so the permlevel-1 rule protects nothing."* **That was wrong.** It came from
+querying only `DocField`.
+
+On this site the effective permlevel of a field is the **maximum of three**:
+
+| Source | Example found here |
+|---|---|
+| `DocField` | the standard field definition |
+| `Custom Field` | 11 Sales Invoice fields at permlevel 1 |
+| `Property Setter` | `Job Order-ar_charges-permlevel = 1`, `Job Order-ar_sec-permlevel = 1` |
+
+A `Property Setter` move never shows up in a `DocField` query, so any check
+written that way reports failure on a change that actually succeeded.
+
+Two consequences:
+
+**Job Order `ar_charges` is already protected.** The AR (sell) charge grid and its
+section are at permlevel 1 by Property Setter, and the only permlevel-1 row on
+Job Order is `a9h1bcjh1n` (System Manager). Ops therefore already cannot see the
+AR line detail — they see the Summary totals and the AP (cost) lines. That
+permlevel-1 row is a live control, not dead weight.
+
+**Sales Invoice has a deliberate profitability block that is being defeated.**
+Eleven Custom Fields sit at permlevel 1 under a section labelled *"AP Costs &
+Profitability (Admin Only)"* — `fps_gross_profit`, `fps_gp_percent`,
+`fps_total_sales`, `fps_total_purchases`, `fps_ap_charges`, `fps_linked_pi_html`
+and the layout fields around them. Custom DocPerm `csm72v3srk` (role **All**,
+permlevel 1, `read = 1`) makes every logged-in user able to read the whole panel.
+The patch clears that read bit, restoring protection that was already intended.
+
+### Two residual bypasses of the ar_charges protection
+
+Recorded, not fixed — both need a decision:
+
+1. **The child doctype can be queried directly.** `FPS AR Charge` rows are
+   reachable with a `parent = <job>` filter through the generic client API; the
+   permlevel sits on the parent's Table field, not on the child's own money
+   fields. Closing it means Property Setters on `FPS AR Charge` / `FPS AP Charge`
+   fields themselves.
+2. **Version history leaks it.** The form timeline replays field changes,
+   including permlevel-1 fields and all eight Summary totals. Needs a
+   `track_changes` decision on Job Order.
