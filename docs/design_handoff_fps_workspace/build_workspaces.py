@@ -233,13 +233,15 @@ FPS_HOME_CONTENT = [
     number_card_block("Next action overdue", "fpstrkc9"),
     number_card_block("Cleared - delivery pending", "fpstrkc10"),
     number_card_block("Delivered - not invoiced", "fpstrkc11"),
-    # The design's six shortcuts, one row: 6 x col 2 == 12.
-    shortcut_block("New Enquiry", "fpssc1", col=2),
-    shortcut_block("New Job Order", "fpssc2", col=2),
-    shortcut_block("Customs Tracker", "fpssc3", col=2),
-    shortcut_block("Proof of Delivery", "fpssc4", col=2),
-    shortcut_block("Sales Invoice", "fpssc5", col=2),
-    shortcut_block("Purchase Invoice", "fpssc6", col=2),
+    # col 2 truncated every label on the deployed page once a badge sat beside
+    # it ("C", "P...", "S.", "Purc..."). col 4 gives two rows of three with room
+    # for label and badge together.
+    shortcut_block("Enquiries", "fpssc1", col=4),
+    shortcut_block("Job Orders", "fpssc2", col=4),
+    shortcut_block("Customs Tracker", "fpssc3", col=4),
+    shortcut_block("Proof of Delivery", "fpssc4", col=4),
+    shortcut_block("Sales Invoice", "fpssc5", col=4),
+    shortcut_block("Purchase Invoice", "fpssc6", col=4),
     # Step 4 inserts the Quick List + Dashboard Chart pair here.
     card_block("Sales", "fpscard1"),
     card_block("Operations", "fpscard2"),
@@ -264,13 +266,13 @@ FPS_HOME_CONTENT = [
 FPS_HOME_SHORTCUTS = [
     # 34 of 39. Terminal statuses (Converted/Lost/Cancelled) have zero records on
     # this site, so this only ever grows until enquiries start being closed out.
-    shortcut("New Enquiry", "FPS Enquiry", "Cyan", doc_view="New",
+    shortcut("Enquiries", "FPS Enquiry", "Cyan",
              stats_filter=[["FPS Enquiry", "status", "=", "Open"]],
              fmt="{} open"),
 
     # 40 of 84. Drafts MUST count: 54 of 84 job orders are docstatus 0, and
     # restricting to submitted collapses the badge to 5 while hiding 35 live jobs.
-    shortcut("New Job Order", "Job Order", "Blue", doc_view="New",
+    shortcut("Job Orders", "Job Order", "Blue",
              stats_filter=[["Job Order", "fps_stage", "not in", ["Closed", "Invoiced"]],
                            ["Job Order", "docstatus", "!=", 2]],
              fmt="{} open"),
@@ -297,11 +299,12 @@ FPS_HOME_SHORTCUTS = [
                            ["Sales Invoice", "docstatus", "=", 1]],
              fmt="{} open"),
 
-    # Deliberately no badge. "Booked = submitted" is well-formed but returns 0:
-    # nobody has ever submitted a Purchase Invoice here, and all 53 drafts are
-    # Qashio corporate-card overhead, not freight costs. A "0 booked" or
-    # "53 draft" badge would both mislead, so this ships as a plain nav tile.
-    shortcut("Purchase Invoice", "Purchase Invoice", "Grey"),
+    # No meaningful status filter exists: nobody has ever submitted a Purchase
+    # Invoice here and all 53 drafts are Qashio corporate-card overhead, not
+    # freight cost. Leaving stats_filter empty does NOT suppress the badge --
+    # Frappe falls back to a plain document count, which is how the deployed tile
+    # came to read a bare "53". So label that count for what it honestly is.
+    shortcut("Purchase Invoice", "Purchase Invoice", "Grey", fmt="{} on file"),
 ]
 
 # Two README IA members that had no primitive in step 1 and are expressible as
