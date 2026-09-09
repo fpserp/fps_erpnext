@@ -130,9 +130,7 @@
    "link_to": "Job Order",
    "link_type": "DocType",
    "navigate_to_tab": null,
-   "route_options": {
-    "fps_stage": "[\"not in\",[\"Closed\",\"Invoiced\"]]"
-   },
+   "route_options": "{\"fps_stage\":\"[\\\"not in\\\",[\\\"Closed\\\",\\\"Invoiced\\\"]]\"}",
    "show_arrow": 0,
    "type": "Link",
    "url": null
@@ -228,9 +226,7 @@
    "link_to": "Payment Entry",
    "link_type": "DocType",
    "navigate_to_tab": null,
-   "route_options": {
-    "payment_type": "Receive"
-   },
+   "route_options": "{\"payment_type\":\"Receive\"}",
    "show_arrow": 0,
    "type": "Link",
    "url": null
@@ -540,7 +536,7 @@
    "url": null
   }
  ],
- "modified": "2026-09-10 14:30:00.000000",
+ "modified": "2026-09-10 17:20:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "module_onboarding": null,

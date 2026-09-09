@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-10 14:30:00.000000"
+STAMP = "2026-09-10 17:20:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -499,7 +499,13 @@ def s_link(label, link_type, link_to, icon=None, url=None, child=1,
     return {
         "child": child, "collapsible": 1, "icon": icon, "indent": 0,
         "keep_closed": 0, "label": label, "link_to": link_to,
-        "link_type": link_type, "route_options": route_options,
+        "link_type": link_type,
+        # MUST be serialised. route_options is a Code/JSON field, i.e. a longtext
+        # column: handing Frappe a dict makes the child-row INSERT fail because
+        # MySQLdb cannot bind one, which aborts sync_fixtures and rolls the whole
+        # migrate back. That is what turned three deploys into "Recovered".
+        "route_options": (json.dumps(route_options, separators=(",", ":"))
+                          if isinstance(route_options, dict) else route_options),
         "show_arrow": 0, "type": "Link", "url": url,
     }
 
