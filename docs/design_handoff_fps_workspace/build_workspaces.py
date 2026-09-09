@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-10 09:15:00.000000"
+STAMP = "2026-09-10 11:05:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -489,7 +489,7 @@ CHILDREN = [
 # ==========================================================================
 
 def s_link(label, link_type, link_to, icon=None, url=None, child=1):
-    """A sidebar row. child=1 nests it under the group above it."""
+    """A sidebar row. child=1 nests it under the Section Break above it."""
     return {
         "child": child, "collapsible": 1, "icon": icon, "indent": 0,
         "keep_closed": 0, "label": label, "link_to": link_to,
@@ -500,15 +500,20 @@ def s_link(label, link_type, link_to, icon=None, url=None, child=1):
 def s_group(label, icon, keep_closed=0):
     """A collapsible category header.
 
-    Type "Section Break" renders as a plain divider in v16 -- it does NOT group
-    or indent the rows beneath it, which is why the first build came out as one
-    flat list. "Sidebar Item Group" is the primitive that actually nests, paired
-    with child=1 on each member and show_arrow=1 so it reads as expandable.
+    Copied field-for-field from ERPNext's own shipped "Stock" sidebar, which is
+    the only reliable source for this: a group is type "Section Break" with
+    child=0 and **indent=1**, and its members are type "Link" with **child=1**.
+
+    Two earlier attempts got this wrong. Section Break with indent=0 and child=0
+    members renders as one flat list -- the section is just a divider and nothing
+    nests under it. Type "Sidebar Item Group" is not used anywhere in ERPNext and
+    renders nothing at all, blanking the sidebar. indent + child is the pair that
+    actually does the work.
     """
     return {
-        "child": 0, "collapsible": 1, "icon": icon, "indent": 0,
+        "child": 0, "collapsible": 1, "icon": icon, "indent": 1,
         "keep_closed": keep_closed, "label": label, "link_to": None,
-        "link_type": "DocType", "show_arrow": 1, "type": "Sidebar Item Group",
+        "link_type": "DocType", "show_arrow": 0, "type": "Section Break",
         "url": None,
     }
 

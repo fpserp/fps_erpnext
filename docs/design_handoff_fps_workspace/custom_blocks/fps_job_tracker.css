@@ -78,6 +78,9 @@
    remaining columns off to the right. */
 .fps-jt-table {
 	width: 100%;
+	/* Below this the percentage columns would crush the three fixed-length ones
+	   back into ellipsis. The container scrolls instead. */
+	min-width: 1120px;
 	table-layout: fixed;
 	border-collapse: collapse;
 	font-size: 12.5px;

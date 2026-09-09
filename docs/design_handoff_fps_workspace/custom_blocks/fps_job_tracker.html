@@ -8,13 +8,16 @@
 	<div class="fps-jt-scroll">
 		<table class="fps-jt-table">
 			<colgroup>
-				<col style="width: 11%" />
-				<col style="width: 17%" />
+				<!-- Status, FPS JO and Customer ref hold fixed-length strings that
+				     must never truncate: "Cleared - Ready", "FPS/JO/2605/001",
+				     "FPF/AI/26/05/0066". The flexible columns give up the room. -->
 				<col style="width: 13%" />
-				<col style="width: 13%" />
-				<col style="width: 17%" />
 				<col style="width: 15%" />
-				<col style="width: 8%" />
+				<col style="width: 13%" />
+				<col style="width: 13%" />
+				<col style="width: 16%" />
+				<col style="width: 15%" />
+				<col style="width: 9%" />
 				<col style="width: 6%" />
 			</colgroup>
 			<thead>
