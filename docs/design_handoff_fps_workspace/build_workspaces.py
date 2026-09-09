@@ -19,8 +19,14 @@ MODULE_PATH = os.path.join(APP_ROOT, "fps_erpnext", "fps")
 MODULE = "FPS"
 APP = "fps_erpnext"
 OWNER = "Administrator"
-# Must be newer than the row already in the site DB or the importer skips the file.
-STAMP = "2026-09-09 14:45:00.000000"
+# Must be newer than the row already in the site DB or the importer SILENTLY skips
+# the file -- frappe/modules/import_file.py compares this against the DB `modified`
+# and `continue`s with no error and no warning. The content-hash rescue there is
+# guarded by `if doc['doctype'] == 'DocType'`, so workspaces and client scripts get
+# no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
+# workspaces in the desk UI between generating and deploying -- a desk save sets
+# `modified` to now(), which would out-race the stamp and drop the whole import.
+STAMP = "2026-09-09 16:30:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
