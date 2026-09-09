@@ -131,17 +131,26 @@ Verified against the live site on 2026-09-09:
 | FPS (home) | *(none — visible to everyone, unchanged from today)* |
 | FPS Sales | FPS Operations, Sales User, Sales Manager, System Manager |
 | FPS Operations | FPS Operations, System Manager |
-| FPS Accounts | Accounts User, Accounts Manager, System Manager |
+| FPS Accounts | **FPS Operations**, Accounts User, Accounts Manager, System Manager |
 | FPS HR | HR User, HR Manager, System Manager |
 | FPS Reports | FPS Operations, System Manager |
 | FPS Masters & Setup | System Manager |
-| Payment Receipts | Accounts User, Accounts Manager, System Manager *(was none)* |
+| Payment Receipts | Accounts User, Accounts Manager, System Manager *(was none)* — deliberately **not** its parent's roles |
 
-**This hides Accounts, HR, Masters & Setup and Payment Receipts from `ops@`.** That is the README's
-intent ("an accounts user should not see the Operations tree") applied
-symmetrically, and it only hides navigation — document permissions are unchanged,
-and `ops@` could not read those doctypes anyway. Say the word if ops should keep
-Accounts in the sidebar.
+**Workspace roles hide navigation only.** They are not an access control: any
+user can still reach a hidden page's records by URL, global search or the REST
+API. Confidentiality has to come from document and report permissions.
+
+Frappe does the rest by itself — it hides each workspace link, sidebar item and
+report the viewer cannot open, and hides a card once all of its links are hidden.
+So layout follows permissions, never the reverse, and a page can safely list
+things only some viewers will see.
+
+Applied here: **ops@ keeps Accounts**, because they raise invoices and book
+supplier costs. They lose HR, Masters & Setup and the Payment Receipts sub-tab.
+The owner's actual requirement — ops must not see bank reconciliation, client
+receipts, or total outstanding — is a **permissions** change tracked separately;
+nothing in these fixtures enforces it.
 
 ## Step 2 — the shortcuts
 

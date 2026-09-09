@@ -220,7 +220,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-09 14:20:00.000000",
+ "modified": "2026-09-09 14:45:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS Accounts",
@@ -231,6 +231,9 @@
  "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [
+  {
+   "role": "FPS Operations"
+  },
   {
    "role": "Accounts User"
   },

@@ -20,7 +20,7 @@ MODULE = "FPS"
 APP = "fps_erpnext"
 OWNER = "Administrator"
 # Must be newer than the row already in the site DB or the importer skips the file.
-STAMP = "2026-09-09 14:20:00.000000"
+STAMP = "2026-09-09 14:45:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -170,7 +170,15 @@ def workspace(name, title, sequence_id, icon, content, links,
 
 OPS_ROLES = ["FPS Operations", "System Manager"]
 SALES_ROLES = ["FPS Operations", "Sales User", "Sales Manager", "System Manager"]
-ACCOUNTS_ROLES = ["Accounts User", "Accounts Manager", "System Manager"]
+# Ops raise invoices and book supplier costs, so they need the Accounts page.
+# What they must NOT see -- receipts, bank reconciliation, outstanding totals --
+# is withheld by DOCUMENT permissions, not by hiding this page: Frappe hides each
+# workspace link, sidebar item and report the viewer cannot open, and hides a card
+# once all its links are hidden. Layout follows permissions, never the reverse.
+ACCOUNTS_ROLES = ["FPS Operations", "Accounts User", "Accounts Manager",
+                  "System Manager"]
+# The receipts sub-tab stays finance-only.
+RECEIPTS_ROLES = ["Accounts User", "Accounts Manager", "System Manager"]
 HR_ROLES = ["HR User", "HR Manager", "System Manager"]
 SETUP_ROLES = ["System Manager"]
 
@@ -641,9 +649,9 @@ def payment_receipts():
         custom_blocks=src.get("custom_blocks") or [],
         # Re-parented: a sub-tab of Accounts rather than a sibling of it.
         parent_page="FPS Accounts",
-        # Matches its parent so the nav does not offer a page whose contents
-        # the viewer cannot read anyway.
-        roles=ACCOUNTS_ROLES,
+        # Deliberately NOT its parent's roles: Accounts is open to ops so they
+        # can invoice, but receipts are not.
+        roles=RECEIPTS_ROLES,
     )
 
 
