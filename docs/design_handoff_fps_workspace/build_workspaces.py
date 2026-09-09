@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-09 22:40:00.000000"
+STAMP = "2026-09-10 09:15:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -488,37 +488,44 @@ CHILDREN = [
 # auto-generates one over the top of it.
 # ==========================================================================
 
-def s_link(label, link_type, link_to, icon=None, url=None):
+def s_link(label, link_type, link_to, icon=None, url=None, child=1):
+    """A sidebar row. child=1 nests it under the group above it."""
     return {
-        "child": 0, "collapsible": 1, "icon": icon, "indent": 0,
+        "child": child, "collapsible": 1, "icon": icon, "indent": 0,
         "keep_closed": 0, "label": label, "link_to": link_to,
         "link_type": link_type, "show_arrow": 0, "type": "Link", "url": url,
     }
 
 
-def s_section(label, icon, keep_closed=0):
+def s_group(label, icon, keep_closed=0):
+    """A collapsible category header.
+
+    Type "Section Break" renders as a plain divider in v16 -- it does NOT group
+    or indent the rows beneath it, which is why the first build came out as one
+    flat list. "Sidebar Item Group" is the primitive that actually nests, paired
+    with child=1 on each member and show_arrow=1 so it reads as expandable.
+    """
     return {
         "child": 0, "collapsible": 1, "icon": icon, "indent": 0,
         "keep_closed": keep_closed, "label": label, "link_to": None,
-        "link_type": "DocType", "show_arrow": 0, "type": "Section Break", "url": None,
+        "link_type": "DocType", "show_arrow": 1, "type": "Sidebar Item Group",
+        "url": None,
     }
 
 
-# Exactly five categories, at the owner's request. Every item lives under one of
-# them -- there is no sixth section and no ungrouped item. The FPS Masters &
-# Setup workspace still exists and is reachable from the workspace switcher; it
-# simply no longer claims a sidebar heading.
+# Six categories, every item nested under one of them. Nothing sits loose except
+# the FPS Home row itself.
 SIDEBAR_ITEMS = [
-    s_link("FPS Home", "Workspace", "FPS", icon="home"),
+    s_link("FPS Home", "Workspace", "FPS", icon="home", child=0),
 
-    s_section("Sales", "sell"),
+    s_group("Sales", "sell"),
     s_link("Sales overview", "Workspace", "FPS Sales"),
     s_link("FPS Enquiry", "DocType", "FPS Enquiry"),
     s_link("Quotation", "DocType", "Quotation"),
     s_link("Customer", "DocType", "Customer"),
     s_link("Contact", "DocType", "Contact"),
 
-    s_section("Operations", "organization"),
+    s_group("Operations", "organization"),
     s_link("Operations overview", "Workspace", "FPS Operations"),
     s_link("Job Order", "DocType", "Job Order"),
     # link_type URL always opens a new tab in v16; kept because a Kanban view
@@ -530,7 +537,7 @@ SIDEBAR_ITEMS = [
     s_link("Job update log", "DocType", "Job Update Log"),
     s_link("Delivery Note", "DocType", "Delivery Note"),
 
-    s_section("Accounts", "accounting"),
+    s_group("Accounts", "accounting"),
     s_link("Accounts overview", "Workspace", "FPS Accounts"),
     s_link("Payment Receipts", "Workspace", "Payment Receipts"),
     s_link("Sales Invoice", "DocType", "Sales Invoice"),
@@ -538,9 +545,8 @@ SIDEBAR_ITEMS = [
     s_link("Customer Receipts", "DocType", "Payment Entry"),
     s_link("Payment Reconciliation", "DocType", "Payment Reconciliation"),
     s_link("Bank Reconciliation", "DocType", "FPS Bank Statement"),
-    s_link("Supplier", "DocType", "Supplier"),
 
-    s_section("HR", "hr", keep_closed=1),
+    s_group("HR", "hr", keep_closed=1),
     s_link("HR overview", "Workspace", "FPS HR"),
     s_link("Employee", "DocType", "Employee"),
     s_link("Attendance", "DocType", "Attendance"),
@@ -548,7 +554,7 @@ SIDEBAR_ITEMS = [
     s_link("Shift Assignment", "DocType", "Shift Assignment"),
     s_link("Expense Claim", "DocType", "Expense Claim"),
 
-    s_section("Reports", "table", keep_closed=1),
+    s_group("Reports", "table", keep_closed=1),
     s_link("Reports overview", "Workspace", "FPS Reports"),
     s_link("Open jobs by SOW", "Report", "FPS Open Jobs by SOW"),
     s_link("Profitability per Job Order", "Report", "FPS Profitability per Job Order"),
@@ -558,6 +564,18 @@ SIDEBAR_ITEMS = [
     s_link("Customer Ledger Summary", "Report", "Customer Ledger Summary"),
     s_link("Payment Ledger", "Report", "Payment Ledger"),
     s_link("Bank Clearance Summary", "Report", "Bank Clearance Summary"),
+
+    s_group("Masters", "setting", keep_closed=1),
+    s_link("Masters overview", "Workspace", "FPS Masters & Setup"),
+    s_link("Supplier", "DocType", "Supplier"),
+    s_link("Charge items", "DocType", "Item"),
+    s_link("Item Group", "DocType", "Item Group"),
+    s_link("Cost Center", "DocType", "Cost Center"),
+    s_link("User", "DocType", "User"),
+    s_link("Role", "DocType", "Role"),
+    s_link("FPS Outgoing Email", "DocType", "FPS Outgoing Email"),
+    s_link("FPS Microsoft Settings", "DocType", "FPS Microsoft Settings"),
+    s_link("Qashio Settings", "DocType", "Qashio Settings"),
 ]
 
 

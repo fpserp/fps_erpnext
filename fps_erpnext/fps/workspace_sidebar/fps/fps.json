@@ -35,12 +35,12 @@
    "link_type": "DocType",
    "navigate_to_tab": null,
    "route_options": null,
-   "show_arrow": 0,
-   "type": "Section Break",
+   "show_arrow": 1,
+   "type": "Sidebar Item Group",
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -56,7 +56,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -72,7 +72,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -88,7 +88,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -104,7 +104,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -131,12 +131,12 @@
    "link_type": "DocType",
    "navigate_to_tab": null,
    "route_options": null,
-   "show_arrow": 0,
-   "type": "Section Break",
+   "show_arrow": 1,
+   "type": "Sidebar Item Group",
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -152,7 +152,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -168,7 +168,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -184,7 +184,7 @@
    "url": "/app/job-order/view/kanban/FPS%20Job%20Tracker"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -200,7 +200,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -216,7 +216,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -232,7 +232,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -259,12 +259,12 @@
    "link_type": "DocType",
    "navigate_to_tab": null,
    "route_options": null,
-   "show_arrow": 0,
-   "type": "Section Break",
+   "show_arrow": 1,
+   "type": "Sidebar Item Group",
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -280,7 +280,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -296,7 +296,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -312,7 +312,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -328,7 +328,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -344,7 +344,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -360,7 +360,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -368,22 +368,6 @@
    "keep_closed": 0,
    "label": "Bank Reconciliation",
    "link_to": "FPS Bank Statement",
-   "link_type": "DocType",
-   "navigate_to_tab": null,
-   "route_options": null,
-   "show_arrow": 0,
-   "type": "Link",
-   "url": null
-  },
-  {
-   "child": 0,
-   "collapsible": 1,
-   "filters": null,
-   "icon": null,
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Supplier",
-   "link_to": "Supplier",
    "link_type": "DocType",
    "navigate_to_tab": null,
    "route_options": null,
@@ -403,12 +387,12 @@
    "link_type": "DocType",
    "navigate_to_tab": null,
    "route_options": null,
-   "show_arrow": 0,
-   "type": "Section Break",
+   "show_arrow": 1,
+   "type": "Sidebar Item Group",
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -424,7 +408,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -440,7 +424,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -456,7 +440,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -472,7 +456,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -488,7 +472,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -515,12 +499,12 @@
    "link_type": "DocType",
    "navigate_to_tab": null,
    "route_options": null,
-   "show_arrow": 0,
-   "type": "Section Break",
+   "show_arrow": 1,
+   "type": "Sidebar Item Group",
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -536,7 +520,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -552,7 +536,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -568,7 +552,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -584,7 +568,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -600,7 +584,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -616,7 +600,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -632,7 +616,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -648,7 +632,7 @@
    "url": null
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "filters": null,
    "icon": null,
@@ -662,9 +646,185 @@
    "show_arrow": 0,
    "type": "Link",
    "url": null
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "filters": null,
+   "icon": "setting",
+   "indent": 0,
+   "keep_closed": 1,
+   "label": "Masters",
+   "link_to": null,
+   "link_type": "DocType",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 1,
+   "type": "Sidebar Item Group",
+   "url": null
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "filters": null,
+   "icon": null,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Masters overview",
+   "link_to": "FPS Masters & Setup",
+   "link_type": "Workspace",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 0,
+   "type": "Link",
+   "url": null
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "filters": null,
+   "icon": null,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Supplier",
+   "link_to": "Supplier",
+   "link_type": "DocType",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 0,
+   "type": "Link",
+   "url": null
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "filters": null,
+   "icon": null,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Charge items",
+   "link_to": "Item",
+   "link_type": "DocType",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 0,
+   "type": "Link",
+   "url": null
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "filters": null,
+   "icon": null,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Item Group",
+   "link_to": "Item Group",
+   "link_type": "DocType",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 0,
+   "type": "Link",
+   "url": null
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "filters": null,
+   "icon": null,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Cost Center",
+   "link_to": "Cost Center",
+   "link_type": "DocType",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 0,
+   "type": "Link",
+   "url": null
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "filters": null,
+   "icon": null,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "User",
+   "link_to": "User",
+   "link_type": "DocType",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 0,
+   "type": "Link",
+   "url": null
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "filters": null,
+   "icon": null,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Role",
+   "link_to": "Role",
+   "link_type": "DocType",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 0,
+   "type": "Link",
+   "url": null
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "filters": null,
+   "icon": null,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "FPS Outgoing Email",
+   "link_to": "FPS Outgoing Email",
+   "link_type": "DocType",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 0,
+   "type": "Link",
+   "url": null
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "filters": null,
+   "icon": null,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "FPS Microsoft Settings",
+   "link_to": "FPS Microsoft Settings",
+   "link_type": "DocType",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 0,
+   "type": "Link",
+   "url": null
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "filters": null,
+   "icon": null,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Qashio Settings",
+   "link_to": "Qashio Settings",
+   "link_type": "DocType",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 0,
+   "type": "Link",
+   "url": null
   }
  ],
- "modified": "2026-09-09 22:40:00.000000",
+ "modified": "2026-09-10 09:15:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "module_onboarding": null,

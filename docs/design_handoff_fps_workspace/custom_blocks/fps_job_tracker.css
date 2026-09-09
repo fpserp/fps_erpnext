@@ -1,8 +1,8 @@
 /* Job Tracker board -- one row per open job, colour-coded by customer.
    The five status colours keep their fixed meanings from the handoff and are
    NOT reused for customers; customer identity is carried by the left rail and
-   the legend chip, status by the pill on the right. Two separate encodings, so
-   neither can be mistaken for the other. */
+   the legend chip, status by the pill. Two separate encodings, so neither can
+   be mistaken for the other. */
 
 .fps-jt {
 	border: 1px solid var(--border-color, #e2e8f0);
@@ -67,14 +67,18 @@
 	white-space: nowrap;
 }
 
-/* The table scrolls inside its own container so the page body never does. */
 .fps-jt-scroll {
 	overflow-x: auto;
 	border-top: 1px solid var(--border-color, #e2e8f0);
 }
 
+/* table-layout: fixed makes the <colgroup> widths authoritative. Without it the
+   browser sizes columns from content, which is what left a gulf between
+   "Customer ref" and "Scope of work" -- one long SOW string was pushing the
+   remaining columns off to the right. */
 .fps-jt-table {
 	width: 100%;
+	table-layout: fixed;
 	border-collapse: collapse;
 	font-size: 12.5px;
 }
@@ -86,44 +90,48 @@
 	letter-spacing: 0.06em;
 	text-transform: uppercase;
 	color: var(--text-muted, #7c7c7c);
-	padding: 9px 12px;
+	padding: 9px 10px;
 	border-bottom: 1px solid var(--border-color, #e2e8f0);
 	white-space: nowrap;
 }
 
 .fps-jt-table td {
-	padding: 9px 12px;
+	padding: 8px 10px;
 	border-bottom: 1px solid var(--border-color, #f1f5f9);
-	vertical-align: top;
+	vertical-align: middle;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .fps-jt-table tr:last-child td {
 	border-bottom: 0;
 }
 
+/* Whole row is the click target, so it must look like one. */
+.fps-jt-table tbody tr {
+	cursor: pointer;
+}
+
 .fps-jt-table tbody tr:hover {
 	background: var(--bg-light-gray, #f7f9fa);
 }
 
-/* Customer identity: a coloured left rail plus the name. */
-.fps-jt-cust,
+.fps-jt-status {
+	white-space: nowrap;
+}
+
+/* Customer identity: coloured left rail plus the name. */
 td.fps-jt-cust {
 	border-left: 3px solid var(--fps-cust-color, transparent);
 	font-weight: 500;
 	color: var(--text-color, #1f272e);
-	max-width: 190px;
 }
 
-td.fps-jt-cust div {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.fps-jt-jo a {
+.fps-jt-jo {
 	font-family: var(--font-stack-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
 	font-size: 11.5px;
-	white-space: nowrap;
+	color: var(--text-color, #1f272e);
 }
 
 .fps-jt-ref,
@@ -131,14 +139,12 @@ td.fps-jt-cust div {
 	font-family: var(--font-stack-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
 	font-size: 11.5px;
 	color: var(--text-muted, #7c7c7c);
-	white-space: nowrap;
 }
 
 .fps-jt-sow,
 .fps-jt-cons,
 .fps-jt-route {
 	color: var(--text-muted, #55606b);
-	max-width: 230px;
 }
 
 .fps-jt-pill {
@@ -157,4 +163,5 @@ td.fps-jt-cust div {
 	font-size: 12.5px;
 	color: var(--text-muted, #7c7c7c);
 	text-align: left;
+	white-space: normal;
 }

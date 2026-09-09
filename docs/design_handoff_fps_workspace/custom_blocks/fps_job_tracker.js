@@ -22,7 +22,6 @@
 		"#A16207", "#BE185D",
 	];
 
-	// The five status colours, fixed meanings, from the handoff.
 	var STAGE = {
 		New: ["#eff6ff", "#1d4ed8"],
 		Docs: ["#fff7ed", "#b45309"],
@@ -70,20 +69,22 @@
 			.map(function (j) {
 				var pill = STAGE[j.stage] || ["#f1f5f9", "#475569"];
 				return (
-					"<tr>" +
-					'<td class="fps-jt-cust" style="--fps-cust-color: ' +
-					(colourOf[j.customer] || "transparent") + '"><div>' +
-					esc(j.customer || "—") + "</div></td>" +
-					'<td class="fps-jt-jo"><a href="' + esc(j.doc_route) + '">' +
-					esc(j.name) + "</a></td>" +
-					'<td class="fps-jt-ref">' + esc(j.reference || "—") + "</td>" +
-					'<td class="fps-jt-sow">' + esc(j.sow || "—") + "</td>" +
-					'<td class="fps-jt-cons">' + esc(j.consignment || "—") + "</td>" +
-					'<td class="fps-jt-route">' + esc(j.route || "—") + "</td>" +
-					'<td class="fps-jt-eta">' + esc(j.eta || "—") + "</td>" +
-					'<td><span class="fps-jt-pill" style="--fps-stage-bg: ' +
+					'<tr data-job="' + esc(j.name) + '" title="' + esc(j.name) + '">' +
+					'<td class="fps-jt-status"><span class="fps-jt-pill" style="--fps-stage-bg: ' +
 					pill[0] + "; --fps-stage-fg: " + pill[1] + '">' +
 					esc(j.stage || "—") + "</span></td>" +
+					'<td class="fps-jt-cust" style="--fps-cust-color: ' +
+					(colourOf[j.customer] || "transparent") + '">' +
+					esc(j.customer || "—") + "</td>" +
+					'<td class="fps-jt-jo">' + esc(j.name) + "</td>" +
+					'<td class="fps-jt-ref">' + esc(j.reference || "—") + "</td>" +
+					'<td class="fps-jt-sow" title="' + esc(j.sow) + '">' +
+					esc(j.sow || "—") + "</td>" +
+					'<td class="fps-jt-cons" title="' + esc(j.consignment) + '">' +
+					esc(j.consignment || "—") + "</td>" +
+					'<td class="fps-jt-route" title="' + esc(j.route) + '">' +
+					esc(j.route || "—") + "</td>" +
+					'<td class="fps-jt-eta">' + esc(j.eta || "—") + "</td>" +
 					"</tr>"
 				);
 			})
@@ -94,6 +95,15 @@
 				jobs.length + " open jobs · " + customers.length + " customers";
 		}
 	}
+
+	// Row click opens the Job Order. Delegated so it survives every re-render,
+	// and routed through frappe.set_route rather than an <a href> so the desk
+	// navigates in place instead of doing a full page reload.
+	body.addEventListener("click", function (e) {
+		var row = e.target.closest("tr[data-job]");
+		if (!row) return;
+		frappe.set_route("Form", "Job Order", row.getAttribute("data-job"));
+	});
 
 	frappe
 		.call({ method: "fps_erpnext.api.pipeline.get_job_tracker" })

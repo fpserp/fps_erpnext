@@ -1,22 +1,32 @@
 <div class="fps-jt">
 	<div class="fps-jt-head">
 		<span class="fps-jt-title">Job Tracker</span>
-		<span class="fps-jt-help">open jobs by customer &mdash; what FPS is doing, on what consignment, and where it has reached</span>
+		<span class="fps-jt-help">open jobs by customer &mdash; click a row to open the job</span>
 		<span class="fps-jt-meta" data-fps="meta"></span>
 	</div>
 	<div class="fps-jt-legend" data-fps="legend"></div>
 	<div class="fps-jt-scroll">
 		<table class="fps-jt-table">
+			<colgroup>
+				<col style="width: 11%" />
+				<col style="width: 17%" />
+				<col style="width: 13%" />
+				<col style="width: 13%" />
+				<col style="width: 17%" />
+				<col style="width: 15%" />
+				<col style="width: 8%" />
+				<col style="width: 6%" />
+			</colgroup>
 			<thead>
 				<tr>
-					<th class="fps-jt-cust">Customer</th>
+					<th>Status</th>
+					<th>Customer</th>
 					<th>FPS JO</th>
 					<th>Customer ref</th>
 					<th>Scope of work</th>
 					<th>Consignment</th>
 					<th>Route</th>
 					<th>ETA</th>
-					<th>Status</th>
 				</tr>
 			</thead>
 			<tbody data-fps="rows">

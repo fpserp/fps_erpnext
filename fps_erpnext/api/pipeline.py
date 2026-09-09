@@ -26,6 +26,10 @@ OPEN_JOB = [
 ]
 
 # key, label, note, doctype, filters, route
+# THE RULE FOR EVERY TILE: it counts what is still OPEN and needs someone to act.
+# A record that has been submitted, completed, invoiced, cleared, closed or
+# cancelled drops out of its tile. No tile is ever a lifetime total -- that is
+# what the list views behind them are for.
 TILES = [
     ("enquiry", "Enquiry", "open", "FPS Enquiry",
      [["FPS Enquiry", "status", "=", "Open"]],
@@ -35,12 +39,16 @@ TILES = [
      [["Quotation", "status", "=", "Open"], ["Quotation", "docstatus", "<", 2]],
      "/app/quotation?status=Open"),
 
-    ("job_order", "Job Order", "on file", "Job Order",
-     [["Job Order", "docstatus", "<", 2]],
-     "/app/job-order"),
-
-    ("job_tracker", "Job Tracker", "active", "Job Order",
+    ("job_order", "Job Order", "open", "Job Order",
      OPEN_JOB,
+     "/app/job-order?fps_stage=%5B%22not%20in%22%2C%5B%22Closed%22%2C%22Invoiced%22%5D%5D"),
+
+    # Distinct from Job Order on purpose: this is what is still MOVING. A job
+    # sitting at Delivered is open but no longer in motion -- it is waiting on
+    # invoicing, and it has its own tile.
+    ("job_tracker", "Job Tracker", "in motion", "Job Order",
+     [["Job Order", "fps_stage", "in", ["New", "Docs", "In Progress", "Cleared - Ready"]],
+      ["Job Order", "docstatus", "<", 2]],
      "/app/job-order/view/kanban/FPS%20Job%20Tracker"),
 
     ("customs", "Customs Tracker", "not cleared", "Customs Tracker",
@@ -51,6 +59,8 @@ TILES = [
      [["Job Order", "fps_stage", "=", "In Progress"], ["Job Order", "docstatus", "<", 2]],
      "/app/job-order?fps_stage=In%20Progress"),
 
+    # Delivered but not yet invoiced. Once it moves to Invoiced it leaves here
+    # and appears under Invoices instead.
     ("delivered", "Delivered", "awaiting invoice", "Job Order",
      [["Job Order", "fps_stage", "=", "Delivered"], ["Job Order", "docstatus", "<", 2]],
      "/app/job-order?fps_stage=Delivered"),
