@@ -298,3 +298,35 @@ Recorded, not fixed — both need a decision:
 2. **Version history leaks it.** The form timeline replays field changes,
    including permlevel-1 fields and all eight Summary totals. Needs a
    `track_changes` decision on Job Order.
+
+
+## Accepted risks (owner's decision, 2026-09-09)
+
+**Ops keep `Account` read and `erpnext.accounts.utils.get_balance_on`.** That
+whitelisted method is gated only on Account read, so bank and ledger balances stay
+reachable by a deliberate API call. Revoking Account read would close it, but
+Sales Invoice lines require `income_account`, so it would likely break invoice
+creation for ops — which they must keep. Explicitly accepted rather than
+overlooked.
+
+**`hello@fastplanet.ae` (FPS_AZEEM) loses receipt visibility.** He holds Desk
+User + FPS Customs Access + FPS Viewer + Employee, no Accounts role and no FPS
+Operations, so his only route to Payment Entry was the role `All` row the patch
+zeroes.
+
+**Ops can still read `outstanding_amount` per invoice via the REST API.** No
+report, dashboard or card totals it, which is what was asked for. Closing it
+entirely would mean permlevel 1 on that field.
+
+## Rollback
+
+`fps_erpnext/patches/v1_0/rollback_restrict_ops_financial_access.py` restores
+every bit to its pre-change value, captured live rather than reconstructed, and
+clears the Patch Log entry so the forward patch can run again. It is deliberately
+**not** listed in `patches.txt` — run it by hand:
+
+    bench --site <site> execute         fps_erpnext.patches.v1_0.rollback_restrict_ops_financial_access.execute
+
+This is only possible because the forward patch zeroes rows instead of deleting
+them. The workspaces roll back separately, from
+`backup/FPS-workspace-before-redesign.json` or by reverting the commit.
