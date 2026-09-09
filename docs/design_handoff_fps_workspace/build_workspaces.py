@@ -20,7 +20,7 @@ MODULE = "FPS"
 APP = "fps_erpnext"
 OWNER = "Administrator"
 # Must be newer than the row already in the site DB or the importer skips the file.
-STAMP = "2026-09-09 13:30:00.000000"
+STAMP = "2026-09-09 14:20:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -210,10 +210,7 @@ FPS_HOME_LINKS = (
 
 FPS_HOME_CONTENT = [
     header("Fast Planet Shipping", "fpshdr"),
-    header("Job Tracker", "fpstrkh", size="h5"),
-    shortcut_block("FPS Job Tracker", "fpstrk1"),
-    shortcut_block("Open jobs by SOW", "fpstrk2"),
-    shortcut_block("Job Order", "fpstrk3"),
+    # Step 6 inserts the Custom HTML Block pipeline strip here.
     number_card_block("Open - Customs clearance", "fpstrkc4"),
     number_card_block("Open - Freight forwarding", "fpstrkc5"),
     number_card_block("Open - Land transport", "fpstrkc6"),
@@ -222,42 +219,95 @@ FPS_HOME_CONTENT = [
     number_card_block("Next action overdue", "fpstrkc9"),
     number_card_block("Cleared - delivery pending", "fpstrkc10"),
     number_card_block("Delivered - not invoiced", "fpstrkc11"),
-    header("Operations documents", "fpsopsh", size="h5"),
-    shortcut_block("Customs Tracker", "fpsops1"),
-    shortcut_block("FPS Enquiry", "fpsops2"),
-    shortcut_block("Proof of Delivery", "fpsops3"),
-    shortcut_block("Quotation", "fpsops4"),
-    shortcut_block("Sales Invoice", "fpsops5"),
-    shortcut_block("Payment Entry", "fpsops6"),
-    shortcut_block("Bank Reconciliation", "fpsops7"),
+    # The design's six shortcuts, one row: 6 x col 2 == 12.
+    shortcut_block("New Enquiry", "fpssc1", col=2),
+    shortcut_block("New Job Order", "fpssc2", col=2),
+    shortcut_block("Customs Tracker", "fpssc3", col=2),
+    shortcut_block("Proof of Delivery", "fpssc4", col=2),
+    shortcut_block("Sales Invoice", "fpssc5", col=2),
+    shortcut_block("Purchase Invoice", "fpssc6", col=2),
+    # Step 4 inserts the Quick List + Dashboard Chart pair here.
     card_block("Sales", "fpscard1"),
     card_block("Operations", "fpscard2"),
     card_block("Accounts & reports", "fpscard3"),
 ]
 
-# Shortcuts and number cards already on the live record; carried through
-# unchanged so migrate does not blank the page mid-redesign.
+# --------------------------------------------------------------------------
+# Step 2 -- the six design shortcuts.
+#
+# Every filter below was probed and then adversarially re-verified against live
+# data on 2026-09-09: each one is accepted by the site, every row is 4 elements,
+# and the returned count matched. Counts shown are what the badge reads TODAY --
+# the design's numbers (4 / 22 / 14 / 29 / 63 / 53) are illustrative placeholders
+# and no filter was bent to reach them.
+#
+# These ten legacy shortcuts are replaced: FPS Job Tracker, Open jobs by SOW,
+# Job Order, Customs Tracker, FPS Enquiry, Proof of Delivery, Quotation, Sales
+# Invoice, Payment Entry, Bank Reconciliation. Every target survives on a child
+# workspace's link cards, in the sidebar, or on Payment Receipts.
+# --------------------------------------------------------------------------
+
 FPS_HOME_SHORTCUTS = [
-    {"color": "Blue", "doc_view": "Kanban", "kanban_board": "FPS Job Tracker",
-     "label": "FPS Job Tracker", "link_to": "Job Order", "type": "DocType"},
-    {"color": "Blue", "doc_view": "", "label": "Open jobs by SOW",
-     "link_to": "FPS Open Jobs by SOW", "type": "Report"},
-    {"color": "Grey", "doc_view": "List", "label": "Job Order",
-     "link_to": "Job Order", "type": "DocType"},
-    {"color": "Blue", "doc_view": "", "label": "Customs Tracker",
-     "link_to": "Customs Tracker", "type": "DocType"},
-    {"color": "Blue", "doc_view": "", "label": "FPS Enquiry",
-     "link_to": "FPS Enquiry", "type": "DocType"},
-    {"color": "Blue", "doc_view": "", "label": "Proof of Delivery",
-     "link_to": "Proof of Delivery", "type": "DocType"},
-    {"color": "Grey", "doc_view": "", "label": "Quotation",
-     "link_to": "Quotation", "type": "DocType"},
-    {"color": "Grey", "doc_view": "", "label": "Sales Invoice",
-     "link_to": "Sales Invoice", "type": "DocType"},
-    {"color": "Grey", "doc_view": "", "label": "Payment Entry",
-     "link_to": "Payment Entry", "type": "DocType"},
-    {"color": "Green", "doc_view": "", "label": "Bank Reconciliation",
-     "link_to": "FPS Bank Statement", "type": "DocType"},
+    # 34 of 39. Terminal statuses (Converted/Lost/Cancelled) have zero records on
+    # this site, so this only ever grows until enquiries start being closed out.
+    shortcut("New Enquiry", "FPS Enquiry", "Cyan", doc_view="New",
+             stats_filter=[["FPS Enquiry", "status", "=", "Open"]],
+             fmt="{} open"),
+
+    # 40 of 84. Drafts MUST count: 54 of 84 job orders are docstatus 0, and
+    # restricting to submitted collapses the badge to 5 while hiding 35 live jobs.
+    shortcut("New Job Order", "Job Order", "Blue", doc_view="New",
+             stats_filter=[["Job Order", "fps_stage", "not in", ["Closed", "Invoiced"]],
+                           ["Job Order", "docstatus", "!=", 2]],
+             fmt="{} open"),
+
+    # 1 of 46. The tracker is almost entirely historical -- 45 are already
+    # Cleared. The literal status "Pending" has zero records (ops move straight to
+    # In Process), so the naive status = "Pending" filter would read 0 forever.
+    shortcut("Customs Tracker", "Customs Tracker", "Orange",
+             stats_filter=[["Customs Tracker", "status", "not in", ["Cleared"]]],
+             fmt="{} pending"),
+
+    # 35 of 38. Drafts count: the workflow is create-as-draft, capture signature,
+    # then submit, and 20 of 38 are still drafts. Only cancelled ones are excluded.
+    shortcut("Proof of Delivery", "Proof of Delivery", "Green",
+             stats_filter=[["Proof of Delivery", "docstatus", "!=", 2]],
+             fmt="{} filed"),
+
+    # 130 of 628. The design's "63 · 210k open" cannot be one shortcut: a badge
+    # renders a COUNT only. The AED figure is a Number Card in step 3 (Sum over
+    # outstanding_amount with these same filters).
+    shortcut("Sales Invoice", "Sales Invoice", "Purple",
+             stats_filter=[["Sales Invoice", "status", "in",
+                            ["Unpaid", "Overdue", "Partly Paid"]],
+                           ["Sales Invoice", "docstatus", "=", 1]],
+             fmt="{} open"),
+
+    # Deliberately no badge. "Booked = submitted" is well-formed but returns 0:
+    # nobody has ever submitted a Purchase Invoice here, and all 53 drafts are
+    # Qashio corporate-card overhead, not freight costs. A "0 booked" or
+    # "53 draft" badge would both mislead, so this ships as a plain nav tile.
+    shortcut("Purchase Invoice", "Purchase Invoice", "Grey"),
+]
+
+# Two README IA members that had no primitive in step 1 and are expressible as
+# filtered shortcuts. They live on FPS Operations rather than the home page, so
+# the design's six-tile single row stays intact.
+OPERATIONS_SHORTCUTS = [
+    # Mirrors the Kanban board's own filter (docstatus < 2), so board and badge
+    # can never disagree.
+    shortcut("Daily Job Tracker", "Job Order", "Blue", doc_view="Kanban",
+             kanban_board="FPS Job Tracker",
+             stats_filter=[["Job Order", "fps_stage", "not in", ["Closed", "Invoiced"]],
+                           ["Job Order", "docstatus", "<", 2]],
+             fmt="{} open"),
+
+    # 26 of 84, and named "Local" on purpose. A stats_filter ANDs every row and
+    # cannot express OR, so this cannot be "transport OR cross-border" (31 jobs) --
+    # adding the second row would give the intersection, which is 1.
+    shortcut("Local trucking & delivery", "Job Order", "Orange",
+             stats_filter=[["Job Order", "fps_svc_transport", "=", 1]],
+             fmt="{} jobs"),
 ]
 
 FPS_HOME_NUMBER_CARDS = [
@@ -391,11 +441,14 @@ MASTERS_LINKS = (
 )
 
 
-def child_content(title, blurb, cards, extra=None):
+def child_content(title, blurb, cards, extra=None, shortcuts=()):
     blocks = [header(title, "hdr_" + title.lower().replace(" ", "_").replace("&", "n"))]
     if blurb:
         blocks.append(paragraph(blurb, "txt_" + title.lower().replace(" ", "_").replace("&", "n")))
     blocks.extend(extra or [])
+    for i, sc in enumerate(shortcuts):
+        blocks.append(shortcut_block(sc["label"], "s%d_%s" % (
+            i, title.lower().replace(" ", "_").replace("&", "n")), col=3))
     for i, name in enumerate(cards):
         blocks.append(card_block(name, "c%d_%s" % (i, title.lower().replace(" ", "_").replace("&", "n"))))
     return blocks
@@ -412,6 +465,7 @@ CHILDREN = [
         name="FPS Operations", title="FPS Operations", sequence_id=2, icon="organization",
         roles=OPS_ROLES, links=OPERATIONS_LINKS,
         blurb="Jobs from booking to delivery — job orders, customs and proof of delivery.",
+        shortcuts=OPERATIONS_SHORTCUTS,
         cards=["Jobs", "Customs", "Trucking & delivery"],
     ),
     dict(
@@ -622,7 +676,8 @@ def main():
             sequence_id=spec["sequence_id"], icon=spec["icon"],
             parent_page="FPS", roles=spec["roles"], links=spec["links"],
             content=child_content(spec["title"], spec["blurb"], spec["cards"],
-                                  spec.get("extra")),
+                                  spec.get("extra"), spec.get("shortcuts") or ()),
+            shortcuts=spec.get("shortcuts") or [],
         )))
 
     written.append(write("workspace", "payment_receipts", payment_receipts()))

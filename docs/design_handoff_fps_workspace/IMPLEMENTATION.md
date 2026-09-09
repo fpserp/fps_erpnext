@@ -9,8 +9,8 @@ Site: `fastplanet.u.frappe.cloud` — Frappe 16.24.1 / ERPNext 16.25.0.
 
 | README step | State |
 |---|---|
-| 1. Six child workspaces, retitle, `sequence_id`, `roles` | **Done** — this commit |
-| 2. Shortcuts with `color` + `stats_filter` + `doc_view` | Not started |
+| 1. Six child workspaces, retitle, `sequence_id`, `roles` | **Done** |
+| 2. Shortcuts with `color` + `stats_filter` + `doc_view` | **Done** |
 | 3. Four Number Cards | Not started |
 | 4. Two Dashboard Charts + Quick List | Not started |
 | 5. `job_order_list.js` | Not started |
@@ -143,6 +143,55 @@ symmetrically, and it only hides navigation — document permissions are unchang
 and `ops@` could not read those doctypes anyway. Say the word if ops should keep
 Accounts in the sidebar.
 
+## Step 2 — the shortcuts
+
+Every filter was probed against live data and then adversarially re-verified by a
+second pass: each is accepted by the site, every row is 4 elements, and each
+returned count matched. **The design's numbers are placeholders** (it says so) and
+no filter was bent to reach them — these are what the badges read today.
+
+| Shortcut | Colour | View | Badge | Filter | Live |
+|---|---|---|---|---|---|
+| New Enquiry | Cyan | New | `{} open` | `status = Open` | 34 / 39 |
+| New Job Order | Blue | New | `{} open` | `fps_stage not in (Closed, Invoiced)` + `docstatus != 2` | 40 / 84 |
+| Customs Tracker | Orange | List | `{} pending` | `status not in (Cleared)` | 1 / 46 |
+| Proof of Delivery | Green | List | `{} filed` | `docstatus != 2` | 35 / 38 |
+| Sales Invoice | Purple | List | `{} open` | `status in (Unpaid, Overdue, Partly Paid)` + `docstatus = 1` | 130 / 628 |
+| Purchase Invoice | Grey | List | *(none)* | *(none)* | — |
+
+Two on **FPS Operations** rather than the home page, so the design's six-tile
+single row stays intact:
+
+| Shortcut | Colour | View | Badge | Filter | Live |
+|---|---|---|---|---|---|
+| Daily Job Tracker | Blue | Kanban `FPS Job Tracker` | `{} open` | `fps_stage not in (Closed, Invoiced)` + `docstatus < 2` | 40 / 84 |
+| Local trucking & delivery | Orange | List | `{} jobs` | `fps_svc_transport = 1` | 26 / 84 |
+
+### Judgement calls worth knowing about
+
+- **Drafts are counted, everywhere.** 54 of 84 Job Orders and 20 of 38 PODs are
+  `docstatus 0`. Adding `docstatus = 1` would collapse the job badge from 40 to 5
+  and hide 35 live jobs. This site works in draft.
+- **Purchase Invoice ships with no badge at all.** "Booked = submitted" is
+  well-formed but returns 0 — nobody has ever submitted a Purchase Invoice here,
+  and all 53 drafts are Qashio corporate-card overhead, not freight cost. Both
+  "0 booked" and "53 draft" would mislead, so it is a plain nav tile.
+- **Customs Tracker reads 1, not 14.** 45 of 46 records are already Cleared. Also
+  the literal status `Pending` has zero records — ops go straight to In Process —
+  so the naive `status = Pending` filter would read 0 forever.
+- **Enquiry terminal statuses are dead.** Converted / Lost / Cancelled are all 0
+  across 39 records, so "34 open" only ever grows until enquiries get closed out.
+  Worth a process fix rather than a filter fix.
+- **`stats_filter` cannot express OR.** Rows are ANDed. "Land transport" is
+  really `fps_svc_transport = 1 OR fps_svc_crossborder = 1` (31 jobs); a second
+  row would give the intersection (1). Hence the honest name *Local* trucking,
+  covering 26 of those 31.
+- **A badge is a count, never a sum.** The design's "63 · 210k open" cannot be one
+  shortcut. The count half ships now; the AED half is a step-3 Number Card
+  (Sum over `outstanding_amount`, same filters).
+- The ten legacy home shortcuts are replaced. Every target survives on a child
+  workspace's link cards, in the sidebar, or on Payment Receipts.
+
 ## Design members with no primitive behind them
 
 These are named in the README's IA but have nothing to point at on this site.
@@ -150,9 +199,9 @@ None of them are faked with a wrong link.
 
 | README member | Why not built | Where it belongs |
 |---|---|---|
-| Rate enquiry log | No doctype. It is a *filtered* view of FPS Enquiry, and a Workspace Link cannot carry a filter | Step 2, as a Shortcut with `stats_filter` |
-| Daily Job Tracker | The real object is the Kanban board `FPS Job Tracker` on `Job Order.fps_stage`. A Workspace Link has no view field | Step 2 (Shortcut has `doc_view` + `kanban_board`). Present in the sidebar as a URL item |
-| Trucking & delivery | No doctype — it is `Job Order` filtered on `fps_svc_transport = 1` | Step 2, as a Shortcut |
+| Rate enquiry log | **Still not built.** FPS Enquiry has no enquiry-type, category or service field — its only Selects are `status`, `movement_type` and `enquiry_source`, none of which carries a rate/non-rate meaning. Nothing in the data distinguishes a rate enquiry, so no filter was invented | Needs a field on FPS Enquiry first |
+| Daily Job Tracker | **Built in step 2** as an FPS Operations shortcut: `doc_view = Kanban`, `kanban_board = FPS Job Tracker` | Done |
+| Trucking & delivery | **Built in step 2** as *Local trucking & delivery*, an FPS Operations shortcut. Renamed because a `stats_filter` cannot express OR, so it covers local transport (26) not local-or-cross-border (31) | Done |
 | AR / AP Charges | `FPS AR Charge` / `FPS AP Charge` are child tables of Job Order, not lists | Mapped to the *Accounts Receivable* / *Accounts Payable* reports |
 | Port / Location | No doctype. ERPNext's `Location` is an Assets land record, not a seaport | Needs a decision — a new doctype, or drop it |
 | Charge Type | Charges are `Item` records in the Services group | Mapped to `Item`, labelled *Charge items* |

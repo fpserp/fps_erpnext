@@ -1,7 +1,7 @@
 {
  "app": "fps_erpnext",
  "charts": [],
- "content": "[{\"id\":\"fpshdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Fast Planet Shipping</b></span>\",\"col\":12}},{\"id\":\"fpstrkh\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\"><b>Job Tracker</b></span>\",\"col\":12}},{\"id\":\"fpstrk1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"FPS Job Tracker\",\"col\":3}},{\"id\":\"fpstrk2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Open jobs by SOW\",\"col\":3}},{\"id\":\"fpstrk3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Job Order\",\"col\":3}},{\"id\":\"fpstrkc4\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - Customs clearance\",\"col\":3}},{\"id\":\"fpstrkc5\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - Freight forwarding\",\"col\":3}},{\"id\":\"fpstrkc6\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - Land transport\",\"col\":3}},{\"id\":\"fpstrkc7\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - General jobs\",\"col\":3}},{\"id\":\"fpstrkc8\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"On hold\",\"col\":3}},{\"id\":\"fpstrkc9\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Next action overdue\",\"col\":3}},{\"id\":\"fpstrkc10\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Cleared - delivery pending\",\"col\":3}},{\"id\":\"fpstrkc11\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Delivered - not invoiced\",\"col\":3}},{\"id\":\"fpsopsh\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\"><b>Operations documents</b></span>\",\"col\":12}},{\"id\":\"fpsops1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customs Tracker\",\"col\":3}},{\"id\":\"fpsops2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"FPS Enquiry\",\"col\":3}},{\"id\":\"fpsops3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Proof of Delivery\",\"col\":3}},{\"id\":\"fpsops4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Quotation\",\"col\":3}},{\"id\":\"fpsops5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"fpsops6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Payment Entry\",\"col\":3}},{\"id\":\"fpsops7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Bank Reconciliation\",\"col\":3}},{\"id\":\"fpscard1\",\"type\":\"card\",\"data\":{\"card_name\":\"Sales\",\"col\":4}},{\"id\":\"fpscard2\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations\",\"col\":4}},{\"id\":\"fpscard3\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounts & reports\",\"col\":4}}]",
+ "content": "[{\"id\":\"fpshdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Fast Planet Shipping</b></span>\",\"col\":12}},{\"id\":\"fpstrkc4\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - Customs clearance\",\"col\":3}},{\"id\":\"fpstrkc5\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - Freight forwarding\",\"col\":3}},{\"id\":\"fpstrkc6\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - Land transport\",\"col\":3}},{\"id\":\"fpstrkc7\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - General jobs\",\"col\":3}},{\"id\":\"fpstrkc8\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"On hold\",\"col\":3}},{\"id\":\"fpstrkc9\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Next action overdue\",\"col\":3}},{\"id\":\"fpstrkc10\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Cleared - delivery pending\",\"col\":3}},{\"id\":\"fpstrkc11\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Delivered - not invoiced\",\"col\":3}},{\"id\":\"fpssc1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Enquiry\",\"col\":2}},{\"id\":\"fpssc2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Job Order\",\"col\":2}},{\"id\":\"fpssc3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customs Tracker\",\"col\":2}},{\"id\":\"fpssc4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Proof of Delivery\",\"col\":2}},{\"id\":\"fpssc5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":2}},{\"id\":\"fpssc6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Purchase Invoice\",\"col\":2}},{\"id\":\"fpscard1\",\"type\":\"card\",\"data\":{\"card_name\":\"Sales\",\"col\":4}},{\"id\":\"fpscard2\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations\",\"col\":4}},{\"id\":\"fpscard3\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounts & reports\",\"col\":4}}]",
  "creation": "2026-09-09 13:30:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -160,7 +160,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-09 13:30:00.000000",
+ "modified": "2026-09-09 14:20:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS",
@@ -207,75 +207,82 @@
  "sequence_id": 0.0,
  "shortcuts": [
   {
-   "color": "Blue",
-   "doc_view": "Kanban",
-   "kanban_board": "FPS Job Tracker",
-   "label": "FPS Job Tracker",
-   "link_to": "Job Order",
-   "type": "DocType"
+   "color": "Cyan",
+   "doc_view": "New",
+   "format": "{} open",
+   "icon": null,
+   "kanban_board": null,
+   "label": "New Enquiry",
+   "link_to": "FPS Enquiry",
+   "restrict_to_domain": null,
+   "stats_filter": "[[\"FPS Enquiry\",\"status\",\"=\",\"Open\"]]",
+   "type": "DocType",
+   "url": null
   },
   {
    "color": "Blue",
-   "doc_view": "",
-   "label": "Open jobs by SOW",
-   "link_to": "FPS Open Jobs by SOW",
-   "type": "Report"
+   "doc_view": "New",
+   "format": "{} open",
+   "icon": null,
+   "kanban_board": null,
+   "label": "New Job Order",
+   "link_to": "Job Order",
+   "restrict_to_domain": null,
+   "stats_filter": "[[\"Job Order\",\"fps_stage\",\"not in\",[\"Closed\",\"Invoiced\"]],[\"Job Order\",\"docstatus\",\"!=\",2]]",
+   "type": "DocType",
+   "url": null
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "format": "{} pending",
+   "icon": null,
+   "kanban_board": null,
+   "label": "Customs Tracker",
+   "link_to": "Customs Tracker",
+   "restrict_to_domain": null,
+   "stats_filter": "[[\"Customs Tracker\",\"status\",\"not in\",[\"Cleared\"]]]",
+   "type": "DocType",
+   "url": null
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "format": "{} filed",
+   "icon": null,
+   "kanban_board": null,
+   "label": "Proof of Delivery",
+   "link_to": "Proof of Delivery",
+   "restrict_to_domain": null,
+   "stats_filter": "[[\"Proof of Delivery\",\"docstatus\",\"!=\",2]]",
+   "type": "DocType",
+   "url": null
+  },
+  {
+   "color": "Purple",
+   "doc_view": "List",
+   "format": "{} open",
+   "icon": null,
+   "kanban_board": null,
+   "label": "Sales Invoice",
+   "link_to": "Sales Invoice",
+   "restrict_to_domain": null,
+   "stats_filter": "[[\"Sales Invoice\",\"status\",\"in\",[\"Unpaid\",\"Overdue\",\"Partly Paid\"]],[\"Sales Invoice\",\"docstatus\",\"=\",1]]",
+   "type": "DocType",
+   "url": null
   },
   {
    "color": "Grey",
    "doc_view": "List",
-   "label": "Job Order",
-   "link_to": "Job Order",
-   "type": "DocType"
-  },
-  {
-   "color": "Blue",
-   "doc_view": "",
-   "label": "Customs Tracker",
-   "link_to": "Customs Tracker",
-   "type": "DocType"
-  },
-  {
-   "color": "Blue",
-   "doc_view": "",
-   "label": "FPS Enquiry",
-   "link_to": "FPS Enquiry",
-   "type": "DocType"
-  },
-  {
-   "color": "Blue",
-   "doc_view": "",
-   "label": "Proof of Delivery",
-   "link_to": "Proof of Delivery",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "",
-   "label": "Quotation",
-   "link_to": "Quotation",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "",
-   "label": "Sales Invoice",
-   "link_to": "Sales Invoice",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "",
-   "label": "Payment Entry",
-   "link_to": "Payment Entry",
-   "type": "DocType"
-  },
-  {
-   "color": "Green",
-   "doc_view": "",
-   "label": "Bank Reconciliation",
-   "link_to": "FPS Bank Statement",
-   "type": "DocType"
+   "format": null,
+   "icon": null,
+   "kanban_board": null,
+   "label": "Purchase Invoice",
+   "link_to": "Purchase Invoice",
+   "restrict_to_domain": null,
+   "stats_filter": null,
+   "type": "DocType",
+   "url": null
   }
  ],
  "title": "FPS",

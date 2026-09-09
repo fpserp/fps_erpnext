@@ -1,7 +1,7 @@
 {
  "app": "fps_erpnext",
  "charts": [],
- "content": "[{\"id\":\"hdr_fps_operations\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS Operations</b></span>\",\"col\":12}},{\"id\":\"txt_fps_operations\",\"type\":\"paragraph\",\"data\":{\"text\":\"Jobs from booking to delivery \\u2014 job orders, customs and proof of delivery.\",\"col\":12}},{\"id\":\"c0_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Jobs\",\"col\":4}},{\"id\":\"c1_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Customs\",\"col\":4}},{\"id\":\"c2_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Trucking & delivery\",\"col\":4}}]",
+ "content": "[{\"id\":\"hdr_fps_operations\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS Operations</b></span>\",\"col\":12}},{\"id\":\"txt_fps_operations\",\"type\":\"paragraph\",\"data\":{\"text\":\"Jobs from booking to delivery \\u2014 job orders, customs and proof of delivery.\",\"col\":12}},{\"id\":\"s0_fps_operations\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Daily Job Tracker\",\"col\":3}},{\"id\":\"s1_fps_operations\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Local trucking & delivery\",\"col\":3}},{\"id\":\"c0_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Jobs\",\"col\":4}},{\"id\":\"c1_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Customs\",\"col\":4}},{\"id\":\"c2_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Trucking & delivery\",\"col\":4}}]",
  "creation": "2026-09-09 13:30:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -105,7 +105,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-09 13:30:00.000000",
+ "modified": "2026-09-09 14:20:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS Operations",
@@ -124,7 +124,34 @@
   }
  ],
  "sequence_id": 2.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "Kanban",
+   "format": "{} open",
+   "icon": null,
+   "kanban_board": "FPS Job Tracker",
+   "label": "Daily Job Tracker",
+   "link_to": "Job Order",
+   "restrict_to_domain": null,
+   "stats_filter": "[[\"Job Order\",\"fps_stage\",\"not in\",[\"Closed\",\"Invoiced\"]],[\"Job Order\",\"docstatus\",\"<\",2]]",
+   "type": "DocType",
+   "url": null
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "format": "{} jobs",
+   "icon": null,
+   "kanban_board": null,
+   "label": "Local trucking & delivery",
+   "link_to": "Job Order",
+   "restrict_to_domain": null,
+   "stats_filter": "[[\"Job Order\",\"fps_svc_transport\",\"=\",1]]",
+   "type": "DocType",
+   "url": null
+  }
+ ],
  "title": "FPS Operations",
  "type": "Workspace"
 }
