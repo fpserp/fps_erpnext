@@ -1,0 +1,130 @@
+{
+ "app": "fps_erpnext",
+ "charts": [],
+ "content": "[{\"id\":\"hdr_fps_operations\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS Operations</b></span>\",\"col\":12}},{\"id\":\"txt_fps_operations\",\"type\":\"paragraph\",\"data\":{\"text\":\"Jobs from booking to delivery \\u2014 job orders, customs and proof of delivery.\",\"col\":12}},{\"id\":\"c0_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Jobs\",\"col\":4}},{\"id\":\"c1_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Customs\",\"col\":4}},{\"id\":\"c2_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Trucking & delivery\",\"col\":4}}]",
+ "creation": "2026-09-09 13:30:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "organization",
+ "idx": 0,
+ "indicator_color": "",
+ "is_hidden": 0,
+ "label": "FPS Operations",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Jobs",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Job Order",
+   "link_count": 0,
+   "link_to": "Job Order",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Job update log (history)",
+   "link_count": 0,
+   "link_to": "Job Update Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "FPS Enquiry",
+   "link_count": 0,
+   "link_to": "FPS Enquiry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Customs",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Customs Tracker · Mirsal",
+   "link_count": 0,
+   "link_to": "Customs Tracker",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trucking & delivery",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Delivery Note",
+   "link_count": 0,
+   "link_to": "Delivery Note",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Proof of Delivery",
+   "link_count": 0,
+   "link_to": "Proof of Delivery",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-09-09 13:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "FPS Operations",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "FPS",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "FPS Operations"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 2.0,
+ "shortcuts": [],
+ "title": "FPS Operations",
+ "type": "Workspace"
+}

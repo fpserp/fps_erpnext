@@ -1,0 +1,555 @@
+#!/usr/bin/env python3
+"""
+Generate the FPS workspace fixtures for design 1a (step 1 of the handoff README).
+
+Emits app-shipped JSON under fps_erpnext/fps/workspace/<slug>/<slug>.json and
+fps_erpnext/fps/workspace_sidebar/fps/fps.json. Both `workspace` and
+`workspace_sidebar` are in Frappe v16's IMPORTABLE_DOCTYPES, so `bench migrate`
+imports these on deploy -- the layout lives in the app, not the site DB.
+
+Run:  python docs/design_handoff_fps_workspace/build_workspaces.py
+"""
+
+import json
+import os
+
+APP_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+MODULE_PATH = os.path.join(APP_ROOT, "fps_erpnext", "fps")
+
+MODULE = "FPS"
+APP = "fps_erpnext"
+OWNER = "Administrator"
+# Must be newer than the row already in the site DB or the importer skips the file.
+STAMP = "2026-09-09 13:30:00.000000"
+CREATED = "2026-09-09 13:30:00.000000"
+
+
+# --------------------------------------------------------------------------
+# link / content helpers
+# --------------------------------------------------------------------------
+
+def card(label, links):
+    """A Card Break plus its Link rows, as Frappe's exporter writes them."""
+    rows = [{
+        "hidden": 0,
+        "is_query_report": 0,
+        "label": label,
+        "link_count": len(links),
+        "onboard": 0,
+        "type": "Card Break",
+    }]
+    for link in links:
+        target, link_type, text = link
+        rows.append({
+            "dependencies": "",
+            "hidden": 0,
+            "is_query_report": 1 if link_type == "Report" else 0,
+            "label": text,
+            "link_count": 0,
+            "link_to": target,
+            "link_type": link_type,
+            "onboard": 0,
+            "type": "Link",
+        })
+    return rows
+
+
+def doc(name, link_type="DocType", label=None):
+    return (name, link_type, label or name)
+
+
+def block(btype, data):
+    return {"id": data.pop("id"), "type": btype, "data": data}
+
+
+def header(text, bid, size="h4"):
+    return block("header", {
+        "id": bid,
+        "text": '<span class="%s"><b>%s</b></span>' % (size, text),
+        "col": 12,
+    })
+
+
+def paragraph(text, bid):
+    return block("paragraph", {"id": bid, "text": text, "col": 12})
+
+
+def card_block(card_name, bid, col=4):
+    return block("card", {"id": bid, "card_name": card_name, "col": col})
+
+
+def shortcut_block(shortcut_name, bid, col=3):
+    return block("shortcut", {"id": bid, "shortcut_name": shortcut_name, "col": col})
+
+
+def number_card_block(number_card_name, bid, col=3):
+    return block("number_card", {"id": bid, "number_card_name": number_card_name, "col": col})
+
+
+def workspace(name, title, sequence_id, icon, content, links,
+              parent_page="", roles=None, indicator_color="",
+              shortcuts=None, number_cards=None, charts=None,
+              quick_lists=None, custom_blocks=None, idx=0):
+    return {
+        "app": APP,
+        "charts": charts or [],
+        "content": json.dumps(content, separators=(",", ":")),
+        "creation": CREATED,
+        "custom_blocks": custom_blocks or [],
+        "docstatus": 0,
+        "doctype": "Workspace",
+        "for_user": "",
+        "hide_custom": 0,
+        "icon": icon,
+        "idx": idx,
+        "indicator_color": indicator_color,
+        "is_hidden": 0,
+        "label": name,
+        "links": links,
+        "modified": STAMP,
+        "modified_by": OWNER,
+        "module": MODULE,
+        "name": name,
+        "number_cards": number_cards or [],
+        "owner": OWNER,
+        "parent_page": parent_page,
+        "public": 1,
+        "quick_lists": quick_lists or [],
+        "restrict_to_domain": "",
+        "roles": [{"role": r} for r in (roles or [])],
+        "sequence_id": float(sequence_id),
+        "shortcuts": shortcuts or [],
+        "title": title,
+        "type": "Workspace",
+    }
+
+
+# --------------------------------------------------------------------------
+# Roles
+#
+# Verified against the live site 2026-09-09: agam@ and abhishek@ hold System
+# Manager + Accounts Manager + HR Manager + FPS Operations; ops@ holds only
+# Employee / Desk User / FPS Operations; hello@ holds FPS Viewer.
+# Empty roles == visible to everyone, which is today's behaviour for "FPS".
+# --------------------------------------------------------------------------
+
+OPS_ROLES = ["FPS Operations", "System Manager"]
+SALES_ROLES = ["FPS Operations", "Sales User", "Sales Manager", "System Manager"]
+ACCOUNTS_ROLES = ["Accounts User", "Accounts Manager", "System Manager"]
+HR_ROLES = ["HR User", "HR Manager", "System Manager"]
+SETUP_ROLES = ["System Manager"]
+
+
+# ==========================================================================
+# 1. FPS  (the home page -- design 1a)
+#
+# The record keeps the name "FPS" so /app/fps, hooks.py add_to_apps_screen,
+# the sidebar's Home item and Payment Receipts' parent_page all stay valid.
+# The sidebar shows it as "FPS Home".
+#
+# Step 1 owns the information architecture only: the ten link cards that used
+# to crowd this page move out to the six children, and the three design link
+# cards take their place. The existing shortcuts and number cards stay put so
+# the page keeps working until steps 2-4 restyle them.
+# ==========================================================================
+
+FPS_HOME_LINKS = (
+    card("Sales", [
+        doc("FPS Enquiry"),
+        doc("Quotation"),
+        doc("Customer"),
+    ])
+    + card("Operations", [
+        doc("Job Order"),
+        doc("Customs Tracker", label="Customs Tracker · Mirsal"),
+        doc("Proof of Delivery"),
+        doc("Job Update Log", label="Job update log"),
+    ])
+    + card("Accounts & reports", [
+        doc("Payment Entry"),
+        doc("UAE VAT 201", "Report", "VAT 5% return"),
+        doc("FPS Profitability per Job Order", "Report", "Profitability per Job Order"),
+        doc("FPS Open Jobs by SOW", "Report", "Open jobs by SOW"),
+    ])
+)
+
+FPS_HOME_CONTENT = [
+    header("Fast Planet Shipping", "fpshdr"),
+    header("Job Tracker", "fpstrkh", size="h5"),
+    shortcut_block("FPS Job Tracker", "fpstrk1"),
+    shortcut_block("Open jobs by SOW", "fpstrk2"),
+    shortcut_block("Job Order", "fpstrk3"),
+    number_card_block("Open - Customs clearance", "fpstrkc4"),
+    number_card_block("Open - Freight forwarding", "fpstrkc5"),
+    number_card_block("Open - Land transport", "fpstrkc6"),
+    number_card_block("Open - General jobs", "fpstrkc7"),
+    number_card_block("On hold", "fpstrkc8"),
+    number_card_block("Next action overdue", "fpstrkc9"),
+    number_card_block("Cleared - delivery pending", "fpstrkc10"),
+    number_card_block("Delivered - not invoiced", "fpstrkc11"),
+    header("Operations documents", "fpsopsh", size="h5"),
+    paragraph(
+        '<a href="/desk/payment-receipts"><b>Payment Receipts</b> &rarr; '
+        'receipts dashboard, customer receipts, unpaid invoices</a>',
+        "fpspayrcpt",
+    ),
+    shortcut_block("Customs Tracker", "fpsops1"),
+    shortcut_block("FPS Enquiry", "fpsops2"),
+    shortcut_block("Proof of Delivery", "fpsops3"),
+    shortcut_block("Quotation", "fpsops4"),
+    shortcut_block("Sales Invoice", "fpsops5"),
+    shortcut_block("Payment Entry", "fpsops6"),
+    shortcut_block("Bank Reconciliation", "fpsops7"),
+    card_block("Sales", "fpscard1"),
+    card_block("Operations", "fpscard2"),
+    card_block("Accounts & reports", "fpscard3"),
+]
+
+# Shortcuts and number cards already on the live record; carried through
+# unchanged so migrate does not blank the page mid-redesign.
+FPS_HOME_SHORTCUTS = [
+    {"color": "Blue", "doc_view": "Kanban", "kanban_board": "FPS Job Tracker",
+     "label": "FPS Job Tracker", "link_to": "Job Order", "type": "DocType"},
+    {"color": "Blue", "doc_view": "", "label": "Open jobs by SOW",
+     "link_to": "FPS Open Jobs by SOW", "type": "Report"},
+    {"color": "Grey", "doc_view": "List", "label": "Job Order",
+     "link_to": "Job Order", "type": "DocType"},
+    {"color": "Blue", "doc_view": "", "label": "Customs Tracker",
+     "link_to": "Customs Tracker", "type": "DocType"},
+    {"color": "Blue", "doc_view": "", "label": "FPS Enquiry",
+     "link_to": "FPS Enquiry", "type": "DocType"},
+    {"color": "Blue", "doc_view": "", "label": "Proof of Delivery",
+     "link_to": "Proof of Delivery", "type": "DocType"},
+    {"color": "Grey", "doc_view": "", "label": "Quotation",
+     "link_to": "Quotation", "type": "DocType"},
+    {"color": "Grey", "doc_view": "", "label": "Sales Invoice",
+     "link_to": "Sales Invoice", "type": "DocType"},
+    {"color": "Grey", "doc_view": "", "label": "Payment Entry",
+     "link_to": "Payment Entry", "type": "DocType"},
+    {"color": "Green", "doc_view": "", "label": "Bank Reconciliation",
+     "link_to": "FPS Bank Statement", "type": "DocType"},
+]
+
+FPS_HOME_NUMBER_CARDS = [
+    {"label": lbl, "number_card_name": lbl} for lbl in (
+        "Open - Customs clearance",
+        "Open - Freight forwarding",
+        "Open - Land transport",
+        "Open - General jobs",
+        "On hold",
+        "Next action overdue",
+        "Cleared - delivery pending",
+        "Delivered - not invoiced",
+    )
+]
+
+
+# ==========================================================================
+# 2-7. the six child workspaces
+# ==========================================================================
+
+SALES_LINKS = (
+    card("Sales", [
+        doc("FPS Enquiry"),
+        doc("Quotation"),
+        doc("Sales Order"),
+        doc("Customer"),
+    ])
+    + card("CRM", [
+        doc("Lead"),
+        doc("Opportunity"),
+        doc("Contact"),
+    ])
+)
+
+OPERATIONS_LINKS = (
+    card("Jobs", [
+        doc("Job Order"),
+        doc("Job Update Log", label="Job update log (history)"),
+        doc("FPS Enquiry"),
+    ])
+    + card("Customs", [
+        doc("Customs Tracker", label="Customs Tracker · Mirsal"),
+    ])
+    + card("Trucking & delivery", [
+        doc("Delivery Note"),
+        doc("Proof of Delivery"),
+    ])
+)
+
+ACCOUNTS_LINKS = (
+    card("Billing", [
+        doc("Sales Invoice"),
+        doc("Purchase Invoice"),
+        doc("Payment Entry"),
+        doc("Journal Entry"),
+    ])
+    + card("Buying", [
+        doc("Material Request"),
+        doc("Purchase Order"),
+        doc("Supplier"),
+    ])
+    + card("Bank & reconciliation", [
+        doc("FPS Bank Statement", label="Bank statements"),
+        doc("Payment Reconciliation"),
+        doc("Account", label="Chart of Accounts"),
+    ])
+    + card("Receivables & payables", [
+        doc("Accounts Receivable", "Report"),
+        doc("Accounts Payable", "Report"),
+        doc("Customer Ledger Summary", "Report"),
+    ])
+    + card("Tax", [
+        doc("UAE VAT 201", "Report", "VAT 5% return"),
+        doc("VAT Audit Report", "Report"),
+    ])
+)
+
+HR_LINKS = (
+    card("People", [
+        doc("Employee"),
+        doc("Attendance"),
+        doc("Shift Assignment"),
+    ])
+    + card("Leave & claims", [
+        doc("Leave Application"),
+        doc("Expense Claim"),
+    ])
+    + card("Payroll", [
+        doc("Payroll Entry"),
+        doc("Salary Slip"),
+    ])
+)
+
+REPORTS_LINKS = (
+    card("FPS reports", [
+        doc("FPS Open Jobs by SOW", "Report"),
+        doc("FPS Profitability per Job Order", "Report"),
+        doc("FPS Monthly GP Trend", "Report"),
+    ])
+    + card("Accounting reports", [
+        doc("General Ledger", "Report"),
+        doc("Accounts Receivable", "Report"),
+        doc("Accounts Payable", "Report"),
+        doc("Sales Register", "Report"),
+        doc("Trial Balance", "Report"),
+    ])
+)
+
+MASTERS_LINKS = (
+    card("Masters", [
+        doc("Customer"),
+        doc("Supplier"),
+        doc("Item", label="Charge items"),
+        doc("Item Group"),
+        doc("Cost Center"),
+    ])
+    + card("Stock", [
+        doc("Stock Entry"),
+        doc("Warehouse"),
+    ])
+    + card("Users & roles", [
+        doc("User"),
+        doc("Role"),
+    ])
+    + card("Integrations", [
+        doc("FPS Outgoing Email"),
+        doc("FPS Microsoft Settings"),
+        doc("Qashio Settings"),
+        doc("Qashio Sync Log"),
+    ])
+)
+
+
+def child_content(title, blurb, cards):
+    blocks = [header(title, "hdr_" + title.lower().replace(" ", "_").replace("&", "n"))]
+    if blurb:
+        blocks.append(paragraph(blurb, "txt_" + title.lower().replace(" ", "_").replace("&", "n")))
+    for i, name in enumerate(cards):
+        blocks.append(card_block(name, "c%d_%s" % (i, title.lower().replace(" ", "_").replace("&", "n"))))
+    return blocks
+
+
+CHILDREN = [
+    dict(
+        name="FPS Sales", title="FPS Sales", sequence_id=1, icon="sell",
+        roles=SALES_ROLES, links=SALES_LINKS,
+        blurb="Enquiries, quotations and the customer book.",
+        cards=["Sales", "CRM"],
+    ),
+    dict(
+        name="FPS Operations", title="FPS Operations", sequence_id=2, icon="organization",
+        roles=OPS_ROLES, links=OPERATIONS_LINKS,
+        blurb="Jobs from booking to delivery — job orders, customs and proof of delivery.",
+        cards=["Jobs", "Customs", "Trucking & delivery"],
+    ),
+    dict(
+        name="FPS Accounts", title="FPS Accounts", sequence_id=3, icon="accounting",
+        roles=ACCOUNTS_ROLES, links=ACCOUNTS_LINKS,
+        blurb="Invoicing, payments, bank reconciliation and VAT.",
+        cards=["Billing", "Buying", "Bank & reconciliation", "Receivables & payables", "Tax"],
+    ),
+    dict(
+        name="FPS HR", title="FPS HR", sequence_id=4, icon="hr",
+        roles=HR_ROLES, links=HR_LINKS,
+        blurb="Stock ERPNext HR doctypes — permissions, workflows and reports are ERPNext's own.",
+        cards=["People", "Leave & claims", "Payroll"],
+    ),
+    dict(
+        name="FPS Reports", title="FPS Reports", sequence_id=5, icon="table",
+        roles=OPS_ROLES, links=REPORTS_LINKS,
+        blurb="Job tracking and profitability reporting.",
+        cards=["FPS reports", "Accounting reports"],
+    ),
+    dict(
+        name="FPS Masters & Setup", title="FPS Masters & Setup", sequence_id=6, icon="setting",
+        roles=SETUP_ROLES, links=MASTERS_LINKS,
+        blurb="Reference data, users and integrations. Changes here affect every job.",
+        cards=["Masters", "Stock", "Users & roles", "Integrations"],
+    ),
+]
+
+
+# ==========================================================================
+# The v16 sidebar
+#
+# In Frappe v16 the left sidebar under the FPS tile is a Workspace Sidebar
+# doc, NOT the parent_page tree the README assumes (that is v15 behaviour).
+# The doc must stay named "FPS" to match Module Def "FPS", otherwise Frappe
+# auto-generates one over the top of it.
+# ==========================================================================
+
+def s_link(label, link_type, link_to, icon=None, url=None):
+    return {
+        "child": 0, "collapsible": 1, "icon": icon, "indent": 0,
+        "keep_closed": 0, "label": label, "link_to": link_to,
+        "link_type": link_type, "show_arrow": 0, "type": "Link", "url": url,
+    }
+
+
+def s_section(label, icon, keep_closed=0):
+    return {
+        "child": 0, "collapsible": 1, "icon": icon, "indent": 0,
+        "keep_closed": keep_closed, "label": label, "link_to": None,
+        "link_type": "DocType", "show_arrow": 0, "type": "Section Break", "url": None,
+    }
+
+
+SIDEBAR_ITEMS = [
+    s_link("FPS Home", "Workspace", "FPS", icon="home"),
+
+    s_section("Sales", "sell"),
+    s_link("Sales overview", "Workspace", "FPS Sales"),
+    s_link("FPS Enquiry", "DocType", "FPS Enquiry"),
+    s_link("Quotation", "DocType", "Quotation"),
+    s_link("Customer", "DocType", "Customer"),
+
+    s_section("Operations", "organization"),
+    s_link("Operations overview", "Workspace", "FPS Operations"),
+    s_link("Job Order", "DocType", "Job Order"),
+    # link_type URL always opens a new tab in v16; kept because a Kanban view
+    # cannot be addressed by a DocType sidebar item.
+    s_link("FPS Job Tracker (board)", "URL", None,
+           url="/app/job-order/view/kanban/FPS%20Job%20Tracker"),
+    s_link("Customs Tracker · Mirsal", "DocType", "Customs Tracker"),
+    s_link("Proof of Delivery", "DocType", "Proof of Delivery"),
+    s_link("Job update log", "DocType", "Job Update Log"),
+
+    s_section("Accounts", "accounting"),
+    s_link("Accounts overview", "Workspace", "FPS Accounts"),
+    s_link("Payment Receipts", "Workspace", "Payment Receipts"),
+    s_link("Sales Invoice", "DocType", "Sales Invoice"),
+    s_link("Purchase Invoice", "DocType", "Purchase Invoice"),
+    s_link("Customer Receipts", "DocType", "Payment Entry"),
+    s_link("Payment Reconciliation", "DocType", "Payment Reconciliation"),
+    s_link("Bank Reconciliation", "DocType", "FPS Bank Statement"),
+
+    s_section("HR", "hr", keep_closed=1),
+    s_link("HR overview", "Workspace", "FPS HR"),
+    s_link("Employee", "DocType", "Employee"),
+    s_link("Attendance", "DocType", "Attendance"),
+    s_link("Leave Application", "DocType", "Leave Application"),
+
+    s_section("Reports", "table", keep_closed=1),
+    s_link("Reports overview", "Workspace", "FPS Reports"),
+    s_link("Open jobs by SOW", "Report", "FPS Open Jobs by SOW"),
+    s_link("Profitability per Job Order", "Report", "FPS Profitability per Job Order"),
+    s_link("Monthly GP trend", "Report", "FPS Monthly GP Trend"),
+    s_link("Accounts Receivable", "Report", "Accounts Receivable"),
+    s_link("Accounts Receivable Summary", "Report", "Accounts Receivable Summary"),
+    s_link("Customer Ledger Summary", "Report", "Customer Ledger Summary"),
+    s_link("Payment Ledger", "Report", "Payment Ledger"),
+    s_link("Payment Period Based On Invoice Date", "Report",
+           "Payment Period Based On Invoice Date"),
+    s_link("Bank Clearance Summary", "Report", "Bank Clearance Summary"),
+
+    s_section("Masters & Setup", "setting", keep_closed=1),
+    s_link("Masters overview", "Workspace", "FPS Masters & Setup"),
+    s_link("FPS Outgoing Email", "DocType", "FPS Outgoing Email"),
+    s_link("FPS Microsoft Settings", "DocType", "FPS Microsoft Settings"),
+    s_link("Qashio Settings", "DocType", "Qashio Settings"),
+]
+
+
+SIDEBAR = {
+    "app": APP,
+    "creation": CREATED,
+    "docstatus": 0,
+    "doctype": "Workspace Sidebar",
+    "for_user": None,
+    "header_icon": "grid",
+    "idx": 0,
+    "items": [dict(it, filters=None, route_options=None, navigate_to_tab=None)
+              for it in SIDEBAR_ITEMS],
+    "modified": STAMP,
+    "modified_by": OWNER,
+    "module": MODULE,
+    "module_onboarding": None,
+    "name": "FPS",
+    "owner": OWNER,
+    "standard": 0,
+    "title": "FPS",
+}
+
+
+# --------------------------------------------------------------------------
+
+def write(rel_dir, slug, payload):
+    path = os.path.join(MODULE_PATH, rel_dir, slug)
+    os.makedirs(path, exist_ok=True)
+    target = os.path.join(path, slug + ".json")
+    with open(target, "w", encoding="utf-8", newline="\n") as fh:
+        json.dump(payload, fh, indent=1, sort_keys=True, ensure_ascii=False)
+        fh.write("\n")
+    return os.path.relpath(target, APP_ROOT)
+
+
+def main():
+    written = []
+
+    written.append(write("workspace", "fps", workspace(
+        name="FPS", title="FPS", sequence_id=0, icon="grid",
+        indicator_color="cyan",
+        content=FPS_HOME_CONTENT, links=FPS_HOME_LINKS,
+        shortcuts=FPS_HOME_SHORTCUTS, number_cards=FPS_HOME_NUMBER_CARDS,
+    )))
+
+    for spec in CHILDREN:
+        slug = (spec["name"].lower()
+                .replace(" & ", " and ")
+                .replace(" ", "_"))
+        written.append(write("workspace", slug, workspace(
+            name=spec["name"], title=spec["title"],
+            sequence_id=spec["sequence_id"], icon=spec["icon"],
+            parent_page="FPS", roles=spec["roles"], links=spec["links"],
+            content=child_content(spec["title"], spec["blurb"], spec["cards"]),
+        )))
+
+    written.append(write("workspace_sidebar", "fps", SIDEBAR))
+
+    for p in written:
+        print(p.replace(os.sep, "/"))
+
+
+if __name__ == "__main__":
+    main()

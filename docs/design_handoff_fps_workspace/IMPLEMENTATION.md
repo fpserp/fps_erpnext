@@ -1,0 +1,164 @@
+# Implementation notes — design 1a
+
+Tracks what has been built against `README.md`, the decisions taken where the
+design and the live site disagreed, and what is still open.
+
+Site: `fastplanet.u.frappe.cloud` — Frappe 16.24.1 / ERPNext 16.25.0.
+
+## Status
+
+| README step | State |
+|---|---|
+| 1. Six child workspaces, retitle, `sequence_id`, `roles` | **Done** — this commit |
+| 2. Shortcuts with `color` + `stats_filter` + `doc_view` | Not started |
+| 3. Four Number Cards | Not started |
+| 4. Two Dashboard Charts + Quick List | Not started |
+| 5. `job_order_list.js` | Not started |
+| 6. Custom HTML Block + whitelisted method | Not started |
+| 7. Ship in the app, not the site | **Done for workspaces** (see below) |
+
+## How this ships (step 7)
+
+`workspace` and `workspace_sidebar` are both in Frappe v16's
+`IMPORTABLE_DOCTYPES`, so files under `<app>/<module>/<doctype>/<slug>/<slug>.json`
+are imported by `bench migrate`. No `fixtures` hook and no `export-fixtures` run
+is needed for these — this is the same mechanism ERPNext uses for its own
+workspaces (`erpnext/accounts/workspace/invoicing/invoicing.json`).
+
+    fps_erpnext/fps/workspace/fps/fps.json                             ← home
+    fps_erpnext/fps/workspace/fps_sales/fps_sales.json
+    fps_erpnext/fps/workspace/fps_operations/fps_operations.json
+    fps_erpnext/fps/workspace/fps_accounts/fps_accounts.json
+    fps_erpnext/fps/workspace/fps_hr/fps_hr.json
+    fps_erpnext/fps/workspace/fps_reports/fps_reports.json
+    fps_erpnext/fps/workspace/fps_masters_and_setup/fps_masters_and_setup.json
+    fps_erpnext/fps/workspace_sidebar/fps/fps.json                     ← v16 sidebar
+
+Regenerate with `python docs/design_handoff_fps_workspace/build_workspaces.py`;
+edit the generator, not the JSON, so the seven files stay consistent.
+
+Number Card, Dashboard Chart and Custom HTML Block are **not** importable this
+way — steps 3, 4 and 6 will need the `fixtures` hook in `hooks.py` plus
+`bench export-fixtures`, as the README describes.
+
+**These files take effect on the next deploy** (Frappe Cloud runs `bench migrate`).
+Nothing on the live site has been changed by this commit.
+
+The importer skips a file whose `modified` is not newer than the DB row, so
+bump `STAMP` in the generator whenever the fixtures change.
+
+## Decisions
+
+### The parent workspace keeps the record name `FPS`
+
+The README says to retitle FPS → *FPS Home*. A public Workspace's `name`,
+`label` and `title` are the same string, and `frappe/desk/doctype/workspace/workspace.py`
+renames the record when the title changes. Renaming would break three things at
+once: `add_to_apps_screen`'s `/app/fps` route in `hooks.py`, `parent_page` on the
+existing *Payment Receipts* workspace, and the sidebar's Home item — and the
+`hooks.py` half only takes effect on deploy, leaving the FPS tile pointing at a
+dead route in between.
+
+So the record stays `FPS` and the **sidebar shows it as "FPS Home"** (a Workspace
+Sidebar Item carries its own label). The breadcrumb reads `FPS / Home`, which is
+what the 1a mock draws.
+
+### The sidebar is a Workspace Sidebar doc, not a `parent_page` tree
+
+The README maps "sidebar categories" to `Workspace` records with `parent_page`
+set. That is v15 behaviour. In v16 the left sidebar under a tile is a separate
+**Workspace Sidebar** doc, and it must be named exactly like the Module Def
+(`FPS`) or Frappe auto-generates one over the top of it.
+
+Both are built: the six children exist as real workspaces with `parent_page = FPS`
+(they carry the link cards and are the pages the "… overview" items open), and
+`workspace_sidebar/fps/fps.json` reproduces the mock's sidebar — a Home row, then
+six collapsible sections whose members are indented under them. HR, Reports and
+Masters & Setup ship with `keep_closed = 1` so the sidebar opens at roughly the
+mock's height.
+
+### The home page was not stripped
+
+Step 1 owns the information architecture only. The ten link cards that used to
+crowd the home page have moved out to the six children and the three cards from
+the design (Sales · Operations · Accounts & reports) took their place, but the
+existing shortcuts and number cards stay exactly as they are so the page keeps
+working until steps 2–4 restyle them. The pre-redesign record is saved at
+`backup/FPS-workspace-before-redesign.json`.
+
+One incidental fix: the old header read `FPS â€” Fast Planet Shipping` — a
+double-encoded em dash. The new header is plain `Fast Planet Shipping`.
+
+Nothing from the old page is dropped except four child-table doctypes
+(`FPS AR Charge`, `FPS AP Charge`, `FPS Purchase Attachment`, `Qashio Category Map`).
+Frappe cannot open a `istable = 1` doctype as a list, so those rows never worked.
+
+### Roles
+
+Verified against the live site on 2026-09-09:
+
+| User | Roles held |
+|---|---|
+| agam@, abhishek@ | System Manager, Accounts Manager, HR Manager, FPS Operations, … |
+| ops@ | Employee, Desk User, **FPS Operations** only |
+| hello@ | Desk User, FPS Viewer, FPS Customs Access, Employee |
+
+| Workspace | `roles` |
+|---|---|
+| FPS (home) | *(none — visible to everyone, unchanged from today)* |
+| FPS Sales | FPS Operations, Sales User, Sales Manager, System Manager |
+| FPS Operations | FPS Operations, System Manager |
+| FPS Accounts | Accounts User, Accounts Manager, System Manager |
+| FPS HR | HR User, HR Manager, System Manager |
+| FPS Reports | FPS Operations, System Manager |
+| FPS Masters & Setup | System Manager |
+
+**This hides Accounts, HR and Masters & Setup from `ops@`.** That is the README's
+intent ("an accounts user should not see the Operations tree") applied
+symmetrically, and it only hides navigation — document permissions are unchanged,
+and `ops@` could not read those doctypes anyway. Say the word if ops should keep
+Accounts in the sidebar.
+
+## Design members with no primitive behind them
+
+These are named in the README's IA but have nothing to point at on this site.
+None of them are faked with a wrong link.
+
+| README member | Why not built | Where it belongs |
+|---|---|---|
+| Rate enquiry log | No doctype. It is a *filtered* view of FPS Enquiry, and a Workspace Link cannot carry a filter | Step 2, as a Shortcut with `stats_filter` |
+| Daily Job Tracker | The real object is the Kanban board `FPS Job Tracker` on `Job Order.fps_stage`. A Workspace Link has no view field | Step 2 (Shortcut has `doc_view` + `kanban_board`). Present in the sidebar as a URL item |
+| Trucking & delivery | No doctype — it is `Job Order` filtered on `fps_svc_transport = 1` | Step 2, as a Shortcut |
+| AR / AP Charges | `FPS AR Charge` / `FPS AP Charge` are child tables of Job Order, not lists | Mapped to the *Accounts Receivable* / *Accounts Payable* reports |
+| Port / Location | No doctype. ERPNext's `Location` is an Assets land record, not a seaport | Needs a decision — a new doctype, or drop it |
+| Charge Type | Charges are `Item` records in the Services group | Mapped to `Item`, labelled *Charge items* |
+| FPS Job Tracker (report) | Not a Report — it is the Kanban board | Kept as the board |
+
+## Field mapping the later steps must use
+
+The README's assumed field names differ from what Job Order and Customs Tracker
+actually have. Verified 2026-09-09:
+
+| README assumes | Actual field |
+|---|---|
+| `Job Order.status` | **`fps_stage`** — `New / Docs / In Progress / Cleared - Ready / Delivered / Invoiced / Closed / On Hold`. The `status` field exists but is `hidden = 1` and carries a different, unused value set |
+| `Job Order.sow` | `fps_category` — `CC / FF / LT / XB / GJ`; `fps_subcategory` is the built label |
+| `Job Order.eta` | `eta` exists; `fps_next_due` ("Next action due") is the better deadline for *needs action* |
+| `Job Order.route` | `pol` + `pod` (Origin / Destination) |
+| `Job Order.gross_profit` | **Already exists** (Currency, read-only), alongside `total_sale` / `total_cost`. No new field needed for card 4 |
+| `Job Order.billing_status` | Does not exist and is **not needed** — `sales_invoice` is a Link, so *delivered, not invoiced* is `fps_stage = Delivered` and `sales_invoice is not set` |
+| `Customs Tracker.status = Submitted` | Values are `Pending / In Process / Cleared / On Hold / Delayed`. *Awaiting customs clearance* is `status in (Pending, In Process)`. There is a separate `fps_doc_submission` field with `Pending / Submitted` |
+
+So both number cards the README flagged as "not expressible as plain list
+filters" **are** plain filter cards on this site.
+
+## v16 gotchas that apply to steps 2–4
+
+- `stats_filter`, `quick_list_filter` and Number Card `filters_json` rows must be
+  **4-element** `[doctype, field, op, value]`. A 5-element legacy row makes
+  `frappe.utils.cleanup_filters` silently drop the last filter.
+- Sidebar items with `link_type = URL` always render `target="_blank"` in v16.
+- Workspace Sidebar is `@site_cache`d per gunicorn worker; a stale worker can
+  serve the auto-generated sidebar until its cache clears. Re-saving Module Def
+  `FPS` clears it on the worker that handles the request; a bench restart clears
+  all of them.

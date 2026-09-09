@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: oklch(0.955 0.007 220); font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: oklch(0.5 0.1 220); text-decoration: none; }
+  a:hover { color: oklch(0.4 0.09 220); text-decoration: underline; }
+</style>
+</helmet>
+
+<section style="padding: 60px 56px 100px; display: flex; flex-direction: column; gap: 36px;">
+
+  <!-- brief -->
+  <div style="max-width: 860px; display: flex; flex-direction: column; gap: 14px;">
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: oklch(0.52 0.02 220);">Turn 1 &middot; Fast Planet Shipping &middot; Frappe / ERPNext v16</div>
+    <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 34px; line-height: 1.15; font-weight: 600; color: oklch(0.27 0.035 215);">Split the one FPS tile into a workspace tree &mdash; built only from Frappe blocks</h1>
+    <p style="margin: 0; font-size: 15px; line-height: 1.65; color: oklch(0.45 0.015 220); text-wrap: pretty;">Every region below is labelled with the actual v16 primitive it maps to, so this can be built in the Workspace editor rather than as a web page. <a href="#1a">1a</a> and <a href="#1b">1b</a> are two directions for the FPS home; <a href="#1c">1c</a> is the Job Order list view. Colour carries shipment <em>status</em>, and the only free-form markup is one Custom HTML block in 1a &mdash; <a href="#1b">1b</a> uses zero custom code.</p>
+
+    <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 8px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 5px 9px; border-radius: 5px; background: oklch(0.93 0.05 220); color: oklch(0.35 0.07 220);">Number Card</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 5px 9px; border-radius: 5px; background: oklch(0.93 0.05 195); color: oklch(0.34 0.06 195);">Shortcut</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 5px 9px; border-radius: 5px; background: oklch(0.93 0.05 150); color: oklch(0.33 0.07 150);">Quick List</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 5px 9px; border-radius: 5px; background: oklch(0.93 0.05 300); color: oklch(0.36 0.07 300);">Chart</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 5px 9px; border-radius: 5px; background: oklch(0.93 0.05 75); color: oklch(0.35 0.07 75);">Card / links</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 5px 9px; border-radius: 5px; background: oklch(0.9 0.01 220); color: oklch(0.4 0.015 220);">Header / Text</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 5px 9px; border-radius: 5px; background: oklch(0.27 0.035 215); color: oklch(0.88 0.09 195);">Custom HTML</span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 60px; align-items: flex-start;">
+
+    <!-- ==================== 1a ==================== -->
+    <div id="1a" style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; padding: 5px 9px; border-radius: 6px; background: oklch(0.27 0.035 215); color: oklch(0.9 0.09 195);">1a</span>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: oklch(0.27 0.035 215);">Pipeline first</span>
+        <span style="font-size: 13px; color: oklch(0.5 0.015 220);">one Custom HTML block for the stage strip, everything else stock</span>
+      </div>
+
+      <div style="width: 1300px; background: #fff; border: 1px solid oklch(0.89 0.01 220); border-radius: 12px; overflow: hidden; box-shadow: 0 26px 60px -32px oklch(0.3 0.04 215 / 0.4);">
+
+        <!-- desk navbar -->
+        <div style="display: flex; align-items: center; gap: 18px; padding: 10px 18px; border-bottom: 1px solid oklch(0.91 0.01 220); background: #fff;">
+          <img src="assets/fps-logo.svg" alt="FPS" style="width: 26px; height: 26px; border-radius: 7px; display: block;">
+          <div style="display: flex; align-items: center; gap: 7px; font-size: 13px; color: oklch(0.45 0.015 220);"><span style="font-weight: 600; color: oklch(0.27 0.035 215);">FPS</span><span style="color: oklch(0.7 0.01 220);">/</span><span>Home</span></div>
+          <div style="flex: 1; max-width: 380px; margin-left: 10px; padding: 7px 12px; border-radius: 7px; background: oklch(0.965 0.006 220); border: 1px solid oklch(0.91 0.01 220); font-size: 12.5px; color: oklch(0.56 0.015 220); display: flex; align-items: center; gap: 8px;">
+            <span>Search or type a command</span><span style="margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; padding: 1px 5px; border-radius: 4px; background: #fff; border: 1px solid oklch(0.9 0.01 220);">&#8984;K</span>
+          </div>
+          <div style="margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 12.5px; color: oklch(0.5 0.015 220);">
+            <span>Help</span>
+            <span style="position: relative;">Notifications<span style="position: absolute; top: -4px; right: -10px; min-width: 15px; height: 15px; border-radius: 20px; background: oklch(0.56 0.17 25); color: #fff; font-size: 10px; font-weight: 600; display: grid; place-items: center; padding: 0 3px;">5</span></span>
+            <span style="width: 26px; height: 26px; border-radius: 50%; background: oklch(0.88 0.09 195); color: oklch(0.3 0.05 200); display: grid; place-items: center; font-size: 11px; font-weight: 600;">RA</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 216px minmax(0, 1fr);">
+
+          <!-- workspace sidebar -->
+          <div style="border-right: 1px solid oklch(0.91 0.01 220); background: oklch(0.975 0.005 220); padding: 14px 10px; display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <div style="padding: 0 9px 6px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: oklch(0.58 0.015 220);">FPS Workspaces</div>
+
+              <div style="padding: 7px 9px; border-radius: 6px; background: oklch(0.91 0.05 195); font-size: 13px; font-weight: 600; color: oklch(0.27 0.035 215); display: flex; align-items: center; gap: 8px;"><span style="width: 6px; height: 6px; border-radius: 2px; background: oklch(0.6 0.12 200);"></span>FPS Home</div>
+
+              <div style="margin-top: 8px; padding: 6px 9px; font-size: 12.5px; font-weight: 600; color: oklch(0.3 0.025 218); display: flex; align-items: center; gap: 7px;"><span style="font-size: 9px; color: oklch(0.6 0.02 220);">&#9662;</span>Sales</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">FPS Enquiry</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Quotation</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Customer</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Rate enquiry log</div>
+
+              <div style="margin-top: 8px; padding: 6px 9px; font-size: 12.5px; font-weight: 600; color: oklch(0.3 0.025 218); display: flex; align-items: center; gap: 7px;"><span style="font-size: 9px; color: oklch(0.6 0.02 220);">&#9662;</span>Operations</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Job Order</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Daily Job Tracker</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Customs Tracker &middot; Mirsal</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Trucking &amp; delivery</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Proof of Delivery</div>
+
+              <div style="margin-top: 8px; padding: 6px 9px; font-size: 12.5px; font-weight: 600; color: oklch(0.3 0.025 218); display: flex; align-items: center; gap: 7px;"><span style="font-size: 9px; color: oklch(0.6 0.02 220);">&#9662;</span>Accounts</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Sales Invoice</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Purchase Invoice</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">AR / AP Charges</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Payment Entry</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">VAT 5% return</div>
+
+              <div style="margin-top: 8px; padding: 6px 9px; font-size: 12.5px; font-weight: 600; color: oklch(0.3 0.025 218); display: flex; align-items: center; gap: 7px;"><span style="font-size: 9px; color: oklch(0.6 0.02 220);">&#9662;</span>HR</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Employee</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Attendance</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Leave Application</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Shift Assignment</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Expense Claim</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Payroll Entry</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Salary Slip</div>
+
+              <div style="margin-top: 8px; padding: 6px 9px; font-size: 12.5px; font-weight: 600; color: oklch(0.3 0.025 218); display: flex; align-items: center; gap: 7px;"><span style="font-size: 9px; color: oklch(0.6 0.02 220);">&#9662;</span>Reports</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">FPS Job Tracker</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Open Jobs by SOW</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Profitability per Job Order</div>
+              <div style="padding: 5px 9px 5px 25px; font-size: 12.5px; color: oklch(0.4 0.015 220);">Monthly GP Trend</div>
+
+              <div style="margin-top: 8px; padding: 6px 9px; font-size: 12.5px; font-weight: 600; color: oklch(0.3 0.025 218); display: flex; align-items: center; gap: 7px;"><span style="font-size: 9px; color: oklch(0.6 0.02 220);">&#9656;</span>Masters &amp; Setup</div>
+            </div>
+
+            <div style="padding: 10px; border-radius: 8px; background: #fff; border: 1px dashed oklch(0.85 0.02 220); font-size: 11.5px; line-height: 1.5; color: oklch(0.48 0.015 220);">Five categories, each a child workspace of FPS with its own link cards &mdash; every doctype now has one obvious home.</div>
+
+            <div style="margin-top: auto; display: flex; flex-direction: column; gap: 2px;">
+              <div style="padding: 7px 9px; font-size: 13px; color: oklch(0.45 0.015 220);">ERPNext</div>
+              <div style="padding: 7px 9px; font-size: 13px; color: oklch(0.45 0.015 220);">HR</div>
+              <div style="padding: 7px 9px; font-size: 13px; color: oklch(0.45 0.015 220);">Settings</div>
+            </div>
+          </div>
+
+          <!-- workspace body -->
+          <div style="padding: 22px 24px 30px; display: flex; flex-direction: column; gap: 24px; background: #fff;">
+
+            <!-- header block -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.9 0.01 220); color: oklch(0.4 0.015 220);">Header + Text block</span>
+              <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;">
+                <div>
+                  <h2 style="margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: oklch(0.27 0.035 215);">Fast Planet Shipping &mdash; {{ userName }}</h2>
+                  <div style="font-size: 13.5px; color: oklch(0.48 0.015 220);">9 jobs need you today &middot; 3 past their customs deadline &middot; 11 delivered but unbilled</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- custom html: pipeline -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.27 0.035 215); color: oklch(0.88 0.09 195);">Custom HTML block &middot; one server-side call</span>
+              <div style="border: 1px solid oklch(0.9 0.01 220); border-radius: 12px; overflow: hidden; background: oklch(0.985 0.004 220);">
+                <div style="padding: 13px 18px; display: flex; align-items: baseline; gap: 12px; border-bottom: 1px solid oklch(0.93 0.01 220); background: #fff;">
+                  <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: oklch(0.27 0.035 215);">Shipment pipeline</span>
+                  <span style="font-size: 12.5px; color: oklch(0.52 0.015 220);">live count by stage &mdash; click a stage to open Job Order filtered to it</span>
+                  <span style="margin-left: auto; font-size: 12px; color: oklch(0.52 0.015 220);">74 jobs &middot; last 90 days</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: oklch(0.92 0.01 220);">
+                  <div style="background: #fff; padding: 14px 12px 13px; display: flex; flex-direction: column; gap: 9px; border-top: 3px solid oklch(0.68 0.1 220);">
+                    <span style="font-size: 11.5px; font-weight: 500; color: oklch(0.45 0.015 220);">Enquiry</span>
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600; color: oklch(0.27 0.035 215); line-height: 1;">39</span>
+                    <span style="font-size: 11px; color: oklch(0.55 0.015 220);">4 unanswered</span>
+                  </div>
+                  <div style="background: #fff; padding: 14px 12px 13px; display: flex; flex-direction: column; gap: 9px; border-top: 3px solid oklch(0.66 0.11 205);">
+                    <span style="font-size: 11.5px; font-weight: 500; color: oklch(0.45 0.015 220);">Quotation</span>
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600; color: oklch(0.27 0.035 215); line-height: 1;">28</span>
+                    <span style="font-size: 11px; color: oklch(0.55 0.015 220);">9 awaiting reply</span>
+                  </div>
+                  <div style="background: #fff; padding: 14px 12px 13px; display: flex; flex-direction: column; gap: 9px; border-top: 3px solid oklch(0.62 0.12 195);">
+                    <span style="font-size: 11.5px; font-weight: 500; color: oklch(0.45 0.015 220);">Job Order open</span>
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600; color: oklch(0.27 0.035 215); line-height: 1;">22</span>
+                    <span style="font-size: 11px; color: oklch(0.55 0.015 220);">sea 9 &middot; air 7 &middot; land 6</span>
+                  </div>
+                  <div style="background: #fff; padding: 14px 12px 13px; display: flex; flex-direction: column; gap: 9px; border-top: 3px solid oklch(0.65 0.14 75);">
+                    <span style="font-size: 11.5px; font-weight: 500; color: oklch(0.45 0.015 220);">Customs / Mirsal</span>
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600; color: oklch(0.5 0.13 60); line-height: 1;">14</span>
+                    <span style="font-size: 11px; font-weight: 500; color: oklch(0.5 0.16 25);">3 past deadline</span>
+                  </div>
+                  <div style="background: #fff; padding: 14px 12px 13px; display: flex; flex-direction: column; gap: 9px; border-top: 3px solid oklch(0.66 0.1 265);">
+                    <span style="font-size: 11.5px; font-weight: 500; color: oklch(0.45 0.015 220);">Trucking</span>
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600; color: oklch(0.27 0.035 215); line-height: 1;">8</span>
+                    <span style="font-size: 11px; color: oklch(0.55 0.015 220);">2 delivering today</span>
+                  </div>
+                  <div style="background: #fff; padding: 14px 12px 13px; display: flex; flex-direction: column; gap: 9px; border-top: 3px solid oklch(0.62 0.12 150);">
+                    <span style="font-size: 11.5px; font-weight: 500; color: oklch(0.45 0.015 220);">POD received</span>
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600; color: oklch(0.27 0.035 215); line-height: 1;">29</span>
+                    <span style="font-size: 11px; color: oklch(0.55 0.015 220);">11 not invoiced</span>
+                  </div>
+                  <div style="background: #fff; padding: 14px 12px 13px; display: flex; flex-direction: column; gap: 9px; border-top: 3px solid oklch(0.55 0.12 300);">
+                    <span style="font-size: 11.5px; font-weight: 500; color: oklch(0.45 0.015 220);">Invoiced</span>
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600; color: oklch(0.27 0.035 215); line-height: 1;">63</span>
+                    <span style="font-size: 11px; color: oklch(0.55 0.015 220);">AED 210k open</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- number cards -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.93 0.05 220); color: oklch(0.35 0.07 220);">Number Card &times; 4</span>
+              <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;">
+                <div style="padding: 15px 16px; border: 1px solid oklch(0.9 0.04 25); background: oklch(0.975 0.02 25); border-radius: 10px; display: flex; flex-direction: column; gap: 7px;">
+                  <span style="font-size: 12.5px; color: oklch(0.42 0.06 25); font-weight: 500;">Jobs past deadline</span>
+                  <span style="font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600; color: oklch(0.5 0.17 25); line-height: 1;">3</span>
+                  <span style="font-size: 11.5px; color: oklch(0.45 0.06 25);">Job Order &middot; ETA &lt; today, status not Delivered</span>
+                </div>
+                <div style="padding: 15px 16px; border: 1px solid oklch(0.9 0.04 75); background: oklch(0.978 0.02 75); border-radius: 10px; display: flex; flex-direction: column; gap: 7px;">
+                  <span style="font-size: 12.5px; color: oklch(0.42 0.055 70); font-weight: 500;">Awaiting customs clearance</span>
+                  <span style="font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600; color: oklch(0.52 0.13 65); line-height: 1;">14</span>
+                  <span style="font-size: 11.5px; color: oklch(0.45 0.055 70);">Customs Tracker &middot; status = Submitted</span>
+                </div>
+                <div style="padding: 15px 16px; border: 1px solid oklch(0.9 0.04 300); background: oklch(0.977 0.018 300); border-radius: 10px; display: flex; flex-direction: column; gap: 7px;">
+                  <span style="font-size: 12.5px; color: oklch(0.42 0.055 300); font-weight: 500;">Delivered, not invoiced</span>
+                  <span style="font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600; color: oklch(0.45 0.13 300); line-height: 1;">11</span>
+                  <span style="font-size: 11.5px; color: oklch(0.44 0.05 300);">POD exists, no Sales Invoice</span>
+                </div>
+                <div style="padding: 15px 16px; border: 1px solid oklch(0.9 0.04 150); background: oklch(0.977 0.018 150); border-radius: 10px; display: flex; flex-direction: column; gap: 7px;">
+                  <span style="font-size: 12.5px; color: oklch(0.38 0.05 150); font-weight: 500;">GP this month</span>
+                  <span style="font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600; color: oklch(0.44 0.12 150); line-height: 1;">AED 186k</span>
+                  <span style="font-size: 11.5px; color: oklch(0.4 0.05 150);">Sales &minus; Purchase Invoice per job &middot; +9%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- shortcuts -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.93 0.05 195); color: oklch(0.34 0.06 195);">Shortcut &times; 6 &middot; colour + doc count</span>
+              <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px;">
+                <div style="padding: 14px; border-radius: 10px; background: oklch(0.94 0.055 195); display: flex; flex-direction: column; gap: 12px; min-height: 74px;">
+                  <span style="font-size: 13px; font-weight: 600; color: oklch(0.3 0.05 200); line-height: 1.3;">New Enquiry</span>
+                  <span style="margin-top: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.38 0.05 200);">4 open</span>
+                </div>
+                <div style="padding: 14px; border-radius: 10px; background: oklch(0.93 0.055 220); display: flex; flex-direction: column; gap: 12px; min-height: 74px;">
+                  <span style="font-size: 13px; font-weight: 600; color: oklch(0.3 0.06 225); line-height: 1.3;">New Job Order</span>
+                  <span style="margin-top: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.38 0.055 225);">22 open</span>
+                </div>
+                <div style="padding: 14px; border-radius: 10px; background: oklch(0.94 0.055 75); display: flex; flex-direction: column; gap: 12px; min-height: 74px;">
+                  <span style="font-size: 13px; font-weight: 600; color: oklch(0.33 0.06 65); line-height: 1.3;">Customs Tracker</span>
+                  <span style="margin-top: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.4 0.06 65);">14 pending</span>
+                </div>
+                <div style="padding: 14px; border-radius: 10px; background: oklch(0.94 0.05 150); display: flex; flex-direction: column; gap: 12px; min-height: 74px;">
+                  <span style="font-size: 13px; font-weight: 600; color: oklch(0.3 0.055 150); line-height: 1.3;">Proof of Delivery</span>
+                  <span style="margin-top: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.37 0.055 150);">29 filed</span>
+                </div>
+                <div style="padding: 14px; border-radius: 10px; background: oklch(0.94 0.05 300); display: flex; flex-direction: column; gap: 12px; min-height: 74px;">
+                  <span style="font-size: 13px; font-weight: 600; color: oklch(0.32 0.06 300); line-height: 1.3;">Sales Invoice</span>
+                  <span style="margin-top: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.4 0.06 300);">63 &middot; 210k open</span>
+                </div>
+                <div style="padding: 14px; border-radius: 10px; background: oklch(0.93 0.012 220); display: flex; flex-direction: column; gap: 12px; min-height: 74px;">
+                  <span style="font-size: 13px; font-weight: 600; color: oklch(0.33 0.02 220); line-height: 1.3;">Purchase Invoice</span>
+                  <span style="margin-top: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.42 0.02 220);">53 booked</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- quick lists + chart -->
+            <div style="display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; align-items: start;">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.93 0.05 150); color: oklch(0.33 0.07 150);">Quick List &middot; Job Order</span>
+                <div style="border: 1px solid oklch(0.91 0.01 220); border-radius: 10px; overflow: hidden;">
+                  <div style="padding: 12px 15px; border-bottom: 1px solid oklch(0.93 0.01 220); display: flex; align-items: center; gap: 10px;">
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13.5px; font-weight: 600; color: oklch(0.27 0.035 215);">Jobs needing action</span>
+                    <span style="margin-left: auto; font-size: 11.5px; color: oklch(0.52 0.015 220);">sorted by deadline</span>
+                  </div>
+                  <div style="padding: 11px 15px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; align-items: center; gap: 11px;">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.56 0.17 25); flex: none;"></span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.45 0.015 220); flex: none;">JO-0241</span>
+                    <span style="font-size: 13px; color: oklch(0.28 0.02 220); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Al Futtaim &mdash; 2&times;40HC Jebel Ali &rarr; Riyadh</span>
+                    <span style="margin-left: auto; font-size: 11.5px; font-weight: 600; color: oklch(0.5 0.16 25); flex: none;">2d late</span>
+                  </div>
+                  <div style="padding: 11px 15px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; align-items: center; gap: 11px;">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.56 0.17 25); flex: none;"></span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.45 0.015 220); flex: none;">JO-0238</span>
+                    <span style="font-size: 13px; color: oklch(0.28 0.02 220); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Gulf Metals &mdash; air freight DXB &rarr; FRA</span>
+                    <span style="margin-left: auto; font-size: 11.5px; font-weight: 600; color: oklch(0.5 0.16 25); flex: none;">1d late</span>
+                  </div>
+                  <div style="padding: 11px 15px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; align-items: center; gap: 11px;">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.65 0.14 70); flex: none;"></span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.45 0.015 220); flex: none;">JO-0247</span>
+                    <span style="font-size: 13px; color: oklch(0.28 0.02 220); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Emaar Interiors &mdash; customs clearance only</span>
+                    <span style="margin-left: auto; font-size: 11.5px; font-weight: 500; color: oklch(0.48 0.1 65); flex: none;">Today</span>
+                  </div>
+                  <div style="padding: 11px 15px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; align-items: center; gap: 11px;">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.65 0.14 70); flex: none;"></span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.45 0.015 220); flex: none;">JO-0249</span>
+                    <span style="font-size: 13px; color: oklch(0.28 0.02 220); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Nesto Hyper &mdash; LCL Sharjah &rarr; Muscat</span>
+                    <span style="margin-left: auto; font-size: 11.5px; font-weight: 500; color: oklch(0.48 0.1 65); flex: none;">Today</span>
+                  </div>
+                  <div style="padding: 11px 15px; display: flex; align-items: center; gap: 11px;">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.62 0.12 220); flex: none;"></span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.45 0.015 220); flex: none;">JO-0252</span>
+                    <span style="font-size: 13px; color: oklch(0.28 0.02 220); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Danube Home &mdash; 1&times;20GP Jebel Ali &rarr; Doha</span>
+                    <span style="margin-left: auto; font-size: 11.5px; color: oklch(0.5 0.015 220); flex: none;">Thu</span>
+                  </div>
+                </div>
+              </div>
+
+              <sc-if value="{{ showCharts }}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.93 0.05 300); color: oklch(0.36 0.07 300);">Chart &middot; bar &middot; FPS Monthly GP Trend</span>
+                  <div style="border: 1px solid oklch(0.91 0.01 220); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+                    <div style="display: flex; align-items: baseline; gap: 10px;">
+                      <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13.5px; font-weight: 600; color: oklch(0.27 0.035 215);">Gross profit by month</span>
+                      <span style="margin-left: auto; font-size: 11.5px; color: oklch(0.52 0.015 220);">AED &middot; 6 months</span>
+                    </div>
+                    <div style="display: flex; align-items: flex-end; gap: 10px; height: 108px;">
+                      <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; height: 100%;"><div style="height: 54%; border-radius: 4px 4px 0 0; background: oklch(0.86 0.06 220);"></div></div>
+                      <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; height: 100%;"><div style="height: 61%; border-radius: 4px 4px 0 0; background: oklch(0.86 0.06 220);"></div></div>
+                      <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; height: 100%;"><div style="height: 47%; border-radius: 4px 4px 0 0; background: oklch(0.86 0.06 220);"></div></div>
+                      <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; height: 100%;"><div style="height: 72%; border-radius: 4px 4px 0 0; background: oklch(0.86 0.06 220);"></div></div>
+                      <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; height: 100%;"><div style="height: 66%; border-radius: 4px 4px 0 0; background: oklch(0.86 0.06 220);"></div></div>
+                      <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; height: 100%;"><div style="height: 88%; border-radius: 4px 4px 0 0; background: oklch(0.62 0.12 200);"></div></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.56 0.015 220);">
+                      <span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+
+            <!-- link cards -->
+            <sc-if value="{{ showLinkCards }}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.93 0.05 75); color: oklch(0.35 0.07 75);">Card / links &times; 3 &middot; the rest of the doctypes, out of the way</span>
+                <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+                  <div style="border: 1px solid oklch(0.91 0.01 220); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 9px;">
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: oklch(0.27 0.035 215);">Sales</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">FPS Enquiry</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">Quotation</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">Customer</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">Rate enquiry log</span>
+                  </div>
+                  <div style="border: 1px solid oklch(0.91 0.01 220); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 9px;">
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: oklch(0.27 0.035 215);">Operations</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">Job Order</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">Daily Job Tracker</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">Customs Tracker &middot; Mirsal</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">Proof of Delivery</span>
+                  </div>
+                  <div style="border: 1px solid oklch(0.91 0.01 220); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 9px;">
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: oklch(0.27 0.035 215);">Accounts &amp; reports</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">AR / AP Charges</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">Payment Entry &middot; VAT 5%</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">Profitability per Job Order</span>
+                    <span style="font-size: 12.5px; color: oklch(0.42 0.015 220);">FPS Job Tracker</span>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+      </div>
+
+      <div style="width: 1300px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding-top: 4px;">
+        <div style="font-size: 13px; line-height: 1.6; color: oklch(0.45 0.015 220); text-wrap: pretty;"><strong style="color: oklch(0.27 0.035 215);">Trains staff fast.</strong> The stage strip is the company's actual process, left to right, so a new hire reads the workflow off the home page.</div>
+        <div style="font-size: 13px; line-height: 1.6; color: oklch(0.45 0.015 220); text-wrap: pretty;"><strong style="color: oklch(0.27 0.035 215);">Build cost.</strong> One Custom HTML block with a whitelisted method returning seven counts; everything else is editor-only config.</div>
+        <div style="font-size: 13px; line-height: 1.6; color: oklch(0.45 0.015 220); text-wrap: pretty;"><strong style="color: oklch(0.27 0.035 215);">Watch out.</strong> Custom blocks are yours to maintain across v16 upgrades, and the strip needs a real mobile fallback (it will scroll horizontally).</div>
+      </div>
+    </div>
+
+    <!-- ==================== 1b ==================== -->
+    <div id="1b" style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; padding: 5px 9px; border-radius: 6px; background: oklch(0.27 0.035 215); color: oklch(0.9 0.09 195);">1b</span>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: oklch(0.27 0.035 215);">Zero custom code</span>
+        <span style="font-size: 13px; color: oklch(0.5 0.015 220);">stock blocks only &mdash; buildable this afternoon in the Workspace editor</span>
+      </div>
+
+      <div style="width: 1300px; background: #fff; border: 1px solid oklch(0.89 0.01 220); border-radius: 12px; overflow: hidden; box-shadow: 0 26px 60px -32px oklch(0.3 0.04 215 / 0.4);">
+
+        <div style="display: flex; align-items: center; gap: 18px; padding: 10px 18px; border-bottom: 1px solid oklch(0.91 0.01 220);">
+          <img src="assets/fps-logo.svg" alt="FPS" style="width: 26px; height: 26px; border-radius: 7px; display: block;">
+          <div style="display: flex; align-items: center; gap: 7px; font-size: 13px; color: oklch(0.45 0.015 220);"><span style="font-weight: 600; color: oklch(0.27 0.035 215);">FPS</span><span style="color: oklch(0.7 0.01 220);">/</span><span>My work</span></div>
+          <div style="flex: 1; max-width: 380px; margin-left: 10px; padding: 7px 12px; border-radius: 7px; background: oklch(0.965 0.006 220); border: 1px solid oklch(0.91 0.01 220); font-size: 12.5px; color: oklch(0.56 0.015 220);">Search or type a command</div>
+          <div style="margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 12.5px; color: oklch(0.5 0.015 220);">
+            <span>Notifications</span>
+            <span style="width: 26px; height: 26px; border-radius: 50%; background: oklch(0.88 0.09 195); color: oklch(0.3 0.05 200); display: grid; place-items: center; font-size: 11px; font-weight: 600;">RA</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 216px minmax(0, 1fr);">
+          <div style="border-right: 1px solid oklch(0.91 0.01 220); background: oklch(0.975 0.005 220); padding: 14px 10px; display: flex; flex-direction: column; gap: 2px;">
+            <div style="padding: 0 9px 6px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: oklch(0.58 0.015 220);">Workspaces</div>
+            <div style="padding: 7px 9px; border-radius: 6px; background: oklch(0.91 0.05 195); font-size: 13px; font-weight: 600; color: oklch(0.27 0.035 215);">FPS &mdash; My work</div>
+            <div style="padding: 7px 9px 7px 23px; font-size: 13px; color: oklch(0.38 0.015 220);">Sea freight</div>
+            <div style="padding: 7px 9px 7px 23px; font-size: 13px; color: oklch(0.38 0.015 220);">Air freight</div>
+            <div style="padding: 7px 9px 7px 23px; font-size: 13px; color: oklch(0.38 0.015 220);">Land &amp; trucking</div>
+            <div style="padding: 7px 9px 7px 23px; font-size: 13px; color: oklch(0.38 0.015 220);">Customs clearance</div>
+            <div style="padding: 7px 9px 7px 23px; font-size: 13px; color: oklch(0.38 0.015 220);">Billing &amp; collection</div>
+            <div style="padding: 7px 9px 7px 23px; font-size: 13px; color: oklch(0.38 0.015 220);">Reports</div>
+            <div style="margin-top: 14px; padding: 10px; border-radius: 8px; background: #fff; border: 1px dashed oklch(0.85 0.02 220); font-size: 11.5px; line-height: 1.5; color: oklch(0.48 0.015 220);">Split by SOW instead of by function &mdash; matches how an operator thinks about a job.</div>
+          </div>
+
+          <div style="padding: 22px 24px 30px; display: flex; flex-direction: column; gap: 22px;">
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.9 0.01 220); color: oklch(0.4 0.015 220);">Header block</span>
+              <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 23px; font-weight: 600; color: oklch(0.27 0.035 215);">My work &mdash; Wednesday 9 September</h2>
+            </div>
+
+            <!-- number cards, 6, status-coloured -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.93 0.05 220); color: oklch(0.35 0.07 220);">Number Card &times; 6 &middot; each one a saved filter someone owns</span>
+              <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px;">
+                <div style="padding: 13px 14px; border-radius: 10px; background: oklch(0.965 0.03 25); border: 1px solid oklch(0.9 0.05 25); display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: oklch(0.5 0.17 25); line-height: 1;">3</span>
+                  <span style="font-size: 11.5px; line-height: 1.35; color: oklch(0.4 0.06 25); font-weight: 500;">Past deadline</span>
+                </div>
+                <div style="padding: 13px 14px; border-radius: 10px; background: oklch(0.968 0.028 75); border: 1px solid oklch(0.9 0.045 75); display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: oklch(0.52 0.13 65); line-height: 1;">14</span>
+                  <span style="font-size: 11.5px; line-height: 1.35; color: oklch(0.4 0.055 70); font-weight: 500;">At customs</span>
+                </div>
+                <div style="padding: 13px 14px; border-radius: 10px; background: oklch(0.965 0.028 265); border: 1px solid oklch(0.9 0.04 265); display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: oklch(0.44 0.11 265); line-height: 1;">8</span>
+                  <span style="font-size: 11.5px; line-height: 1.35; color: oklch(0.4 0.05 265); font-weight: 500;">In transit</span>
+                </div>
+                <div style="padding: 13px 14px; border-radius: 10px; background: oklch(0.967 0.026 300); border: 1px solid oklch(0.9 0.04 300); display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: oklch(0.45 0.13 300); line-height: 1;">11</span>
+                  <span style="font-size: 11.5px; line-height: 1.35; color: oklch(0.4 0.055 300); font-weight: 500;">Unbilled</span>
+                </div>
+                <div style="padding: 13px 14px; border-radius: 10px; background: oklch(0.967 0.026 150); border: 1px solid oklch(0.9 0.04 150); display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: oklch(0.44 0.12 150); line-height: 1;">186k</span>
+                  <span style="font-size: 11.5px; line-height: 1.35; color: oklch(0.38 0.05 150); font-weight: 500;">GP this month</span>
+                </div>
+                <div style="padding: 13px 14px; border-radius: 10px; background: oklch(0.96 0.008 220); border: 1px solid oklch(0.91 0.01 220); display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: oklch(0.35 0.02 220); line-height: 1;">210k</span>
+                  <span style="font-size: 11.5px; line-height: 1.35; color: oklch(0.42 0.015 220); font-weight: 500;">Receivable open</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- three quick lists -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.93 0.05 150); color: oklch(0.33 0.07 150);">Quick List &times; 3 &middot; the spine of the page</span>
+              <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+
+                <div style="border: 1px solid oklch(0.91 0.01 220); border-radius: 10px; overflow: hidden;">
+                  <div style="padding: 11px 14px; border-bottom: 1px solid oklch(0.93 0.01 220); display: flex; align-items: center; gap: 8px;">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.56 0.17 25);"></span>
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: oklch(0.27 0.035 215);">Late or due today</span>
+                  </div>
+                  <div style="padding: 10px 14px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">JO-0241 &middot; Al Futtaim</span>
+                    <span style="font-size: 11.5px; color: oklch(0.5 0.13 25);">Sea &middot; ETA 7 Sep &middot; 2 days late</span>
+                  </div>
+                  <div style="padding: 10px 14px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">JO-0238 &middot; Gulf Metals</span>
+                    <span style="font-size: 11.5px; color: oklch(0.5 0.13 25);">Air &middot; ETA 8 Sep &middot; 1 day late</span>
+                  </div>
+                  <div style="padding: 10px 14px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">JO-0247 &middot; Emaar Interiors</span>
+                    <span style="font-size: 11.5px; color: oklch(0.48 0.1 65);">Clearance &middot; due today</span>
+                  </div>
+                  <div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">JO-0249 &middot; Nesto Hyper</span>
+                    <span style="font-size: 11.5px; color: oklch(0.48 0.1 65);">Sea LCL &middot; due today</span>
+                  </div>
+                </div>
+
+                <div style="border: 1px solid oklch(0.91 0.01 220); border-radius: 10px; overflow: hidden;">
+                  <div style="padding: 11px 14px; border-bottom: 1px solid oklch(0.93 0.01 220); display: flex; align-items: center; gap: 8px;">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.65 0.14 70);"></span>
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: oklch(0.27 0.035 215);">Customs Tracker</span>
+                  </div>
+                  <div style="padding: 10px 14px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">CT-0119 &middot; Mirsal submitted</span>
+                    <span style="font-size: 11.5px; color: oklch(0.5 0.015 220);">JO-0247 &middot; 6 hrs waiting</span>
+                  </div>
+                  <div style="padding: 10px 14px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">CT-0121 &middot; Inspection held</span>
+                    <span style="font-size: 11.5px; color: oklch(0.5 0.13 25);">JO-0241 &middot; needs escalation</span>
+                  </div>
+                  <div style="padding: 10px 14px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">CT-0122 &middot; Duty paid</span>
+                    <span style="font-size: 11.5px; color: oklch(0.5 0.015 220);">JO-0250 &middot; release pending</span>
+                  </div>
+                  <div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">CT-0123 &middot; Docs incomplete</span>
+                    <span style="font-size: 11.5px; color: oklch(0.48 0.1 65);">JO-0252 &middot; COO missing</span>
+                  </div>
+                </div>
+
+                <div style="border: 1px solid oklch(0.91 0.01 220); border-radius: 10px; overflow: hidden;">
+                  <div style="padding: 11px 14px; border-bottom: 1px solid oklch(0.93 0.01 220); display: flex; align-items: center; gap: 8px;">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.5 0.13 300);"></span>
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: oklch(0.27 0.035 215);">Delivered, not invoiced</span>
+                  </div>
+                  <div style="padding: 10px 14px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">JO-0219 &middot; POD 2 Sep</span>
+                    <span style="font-size: 11.5px; color: oklch(0.5 0.015 220);">est. AED 14,200 &middot; 7 days</span>
+                  </div>
+                  <div style="padding: 10px 14px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">JO-0223 &middot; POD 3 Sep</span>
+                    <span style="font-size: 11.5px; color: oklch(0.5 0.015 220);">est. AED 8,600 &middot; 6 days</span>
+                  </div>
+                  <div style="padding: 10px 14px; border-bottom: 1px solid oklch(0.96 0.006 220); display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">JO-0228 &middot; POD 5 Sep</span>
+                    <span style="font-size: 11.5px; color: oklch(0.5 0.015 220);">est. AED 22,400 &middot; 4 days</span>
+                  </div>
+                  <div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 12.5px; font-weight: 500; color: oklch(0.28 0.02 220);">JO-0231 &middot; POD 6 Sep</span>
+                    <span style="font-size: 11.5px; color: oklch(0.5 0.015 220);">est. AED 5,100 &middot; 3 days</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- shortcuts compact -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.93 0.05 195); color: oklch(0.34 0.06 195);">Shortcut &times; 7 &middot; create-new only</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 9px;">
+                <span style="padding: 9px 14px; border-radius: 8px; background: oklch(0.93 0.055 195); font-size: 12.5px; font-weight: 600; color: oklch(0.3 0.05 200);">+ Enquiry</span>
+                <span style="padding: 9px 14px; border-radius: 8px; background: oklch(0.92 0.055 220); font-size: 12.5px; font-weight: 600; color: oklch(0.3 0.06 225);">+ Quotation</span>
+                <span style="padding: 9px 14px; border-radius: 8px; background: oklch(0.27 0.035 215); font-size: 12.5px; font-weight: 600; color: oklch(0.9 0.09 195);">+ Job Order</span>
+                <span style="padding: 9px 14px; border-radius: 8px; background: oklch(0.93 0.05 75); font-size: 12.5px; font-weight: 600; color: oklch(0.33 0.06 65);">+ Customs Tracker</span>
+                <span style="padding: 9px 14px; border-radius: 8px; background: oklch(0.93 0.05 150); font-size: 12.5px; font-weight: 600; color: oklch(0.3 0.055 150);">+ Proof of Delivery</span>
+                <span style="padding: 9px 14px; border-radius: 8px; background: oklch(0.93 0.05 300); font-size: 12.5px; font-weight: 600; color: oklch(0.32 0.06 300);">+ Sales Invoice</span>
+                <span style="padding: 9px 14px; border-radius: 8px; background: oklch(0.93 0.012 220); font-size: 12.5px; font-weight: 600; color: oklch(0.33 0.02 220);">+ Purchase Invoice</span>
+              </div>
+            </div>
+
+            <sc-if value="{{ showCharts }}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 4px 8px; border-radius: 5px; background: oklch(0.93 0.05 300); color: oklch(0.36 0.07 300);">Chart &times; 2 &middot; donut + line</span>
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+                  <div style="border: 1px solid oklch(0.91 0.01 220); border-radius: 10px; padding: 16px; display: flex; align-items: center; gap: 20px;">
+                    <div style="width: 108px; height: 108px; border-radius: 50%; flex: none; background: conic-gradient(oklch(0.62 0.12 195) 0turn 0.41turn, oklch(0.65 0.14 70) 0.41turn 0.73turn, oklch(0.55 0.11 265) 0.73turn 0.9turn, oklch(0.55 0.12 300) 0.9turn 1turn); display: grid; place-items: center;">
+                      <div style="width: 64px; height: 64px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 600; color: oklch(0.27 0.035 215);">22</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+                      <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: oklch(0.27 0.035 215);">Open jobs by SOW</span>
+                      <span style="font-size: 12px; color: oklch(0.42 0.015 220); display: flex; align-items: center; gap: 7px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: oklch(0.62 0.12 195);"></span>Sea freight &middot; 9</span>
+                      <span style="font-size: 12px; color: oklch(0.42 0.015 220); display: flex; align-items: center; gap: 7px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: oklch(0.65 0.14 70);"></span>Air freight &middot; 7</span>
+                      <span style="font-size: 12px; color: oklch(0.42 0.015 220); display: flex; align-items: center; gap: 7px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: oklch(0.55 0.11 265);"></span>Land &middot; 4</span>
+                      <span style="font-size: 12px; color: oklch(0.42 0.015 220); display: flex; align-items: center; gap: 7px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: oklch(0.55 0.12 300);"></span>Clearance only &middot; 2</span>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid oklch(0.91 0.01 220); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+                    <div style="display: flex; align-items: baseline; gap: 10px;">
+                      <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: oklch(0.27 0.035 215);">Monthly GP trend</span>
+                      <span style="margin-left: auto; font-size: 11.5px; color: oklch(0.52 0.015 220);">AED &middot; 6 months</span>
+                    </div>
+                    <div style="display: flex; align-items: flex-end; gap: 9px; height: 88px;">
+                      <div style="flex: 1; height: 54%; border-radius: 3px 3px 0 0; background: oklch(0.87 0.05 220);"></div>
+                      <div style="flex: 1; height: 61%; border-radius: 3px 3px 0 0; background: oklch(0.87 0.05 220);"></div>
+                      <div style="flex: 1; height: 47%; border-radius: 3px 3px 0 0; background: oklch(0.87 0.05 220);"></div>
+                      <div style="flex: 1; height: 72%; border-radius: 3px 3px 0 0; background: oklch(0.87 0.05 220);"></div>
+                      <div style="flex: 1; height: 66%; border-radius: 3px 3px 0 0; background: oklch(0.87 0.05 220);"></div>
+                      <div style="flex: 1; height: 88%; border-radius: 3px 3px 0 0; background: oklch(0.62 0.12 200);"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.56 0.015 220);"><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span></div>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+      </div>
+
+      <div style="width: 1300px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding-top: 4px;">
+        <div style="font-size: 13px; line-height: 1.6; color: oklch(0.45 0.015 220); text-wrap: pretty;"><strong style="color: oklch(0.27 0.035 215);">Nothing to maintain.</strong> Number cards, quick lists, shortcuts and charts are all editor config &mdash; no Python, no upgrade risk.</div>
+        <div style="font-size: 13px; line-height: 1.6; color: oklch(0.45 0.015 220); text-wrap: pretty;"><strong style="color: oklch(0.27 0.035 215);">Answers &ldquo;what do I do now&rdquo;.</strong> Three named queues instead of a dashboard you have to interpret.</div>
+        <div style="font-size: 13px; line-height: 1.6; color: oklch(0.45 0.015 220); text-wrap: pretty;"><strong style="color: oklch(0.27 0.035 215);">Watch out.</strong> No end-to-end view of the pipeline &mdash; managers lose the shape of the funnel that <a href="#1a">1a</a> gives them.</div>
+      </div>
+    </div>
+
+    <!-- ==================== 1c ==================== -->
+    <div id="1c" style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; padding: 5px 9px; border-radius: 6px; background: oklch(0.27 0.035 215); color: oklch(0.9 0.09 195);">1c</span>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: oklch(0.27 0.035 215);">Job Order list view</span>
+        <span style="font-size: 13px; color: oklch(0.5 0.015 220);">indicators, columns and group-by sidebar &mdash; all list-view settings</span>
+      </div>
+
+      <div style="width: 1300px; background: #fff; border: 1px solid oklch(0.89 0.01 220); border-radius: 12px; overflow: hidden; box-shadow: 0 26px 60px -32px oklch(0.3 0.04 215 / 0.4);">
+        <div style="padding: 14px 20px; border-bottom: 1px solid oklch(0.91 0.01 220); display: flex; align-items: center; gap: 14px;">
+          <div>
+            <h2 style="margin: 0 0 2px; font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 600; color: oklch(0.27 0.035 215);">Job Order</h2>
+            <div style="font-size: 12px; color: oklch(0.52 0.015 220);">22 of 74 &middot; filter: status not in (Delivered, Cancelled)</div>
+          </div>
+          <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+            <span style="padding: 7px 12px; border-radius: 7px; border: 1px solid oklch(0.91 0.01 220); font-size: 12.5px; color: oklch(0.4 0.015 220);">Filter</span>
+            <span style="padding: 7px 12px; border-radius: 7px; border: 1px solid oklch(0.91 0.01 220); font-size: 12.5px; color: oklch(0.4 0.015 220);">Sort: deadline</span>
+            <span style="padding: 7px 13px; border-radius: 7px; background: oklch(0.27 0.035 215); color: oklch(0.9 0.09 195); font-size: 12.5px; font-weight: 600;">+ Add Job Order</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 250px;">
+          <div>
+            <!-- saved-filter tabs -->
+            <div style="padding: 12px 20px; border-bottom: 1px solid oklch(0.93 0.01 220); display: flex; gap: 7px; align-items: center;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 8px; border-radius: 5px; background: oklch(0.9 0.01 220); color: oklch(0.4 0.015 220);">Saved views</span>
+              <span style="padding: 6px 12px; border-radius: 20px; background: oklch(0.27 0.035 215); color: #fff; font-size: 12px; font-weight: 500;">Needs action 9</span>
+              <span style="padding: 6px 12px; border-radius: 20px; background: oklch(0.96 0.008 220); color: oklch(0.4 0.015 220); font-size: 12px;">At customs 14</span>
+              <span style="padding: 6px 12px; border-radius: 20px; background: oklch(0.96 0.008 220); color: oklch(0.4 0.015 220); font-size: 12px;">In transit 8</span>
+              <span style="padding: 6px 12px; border-radius: 20px; background: oklch(0.96 0.008 220); color: oklch(0.4 0.015 220); font-size: 12px;">Unbilled 11</span>
+              <span style="padding: 6px 12px; border-radius: 20px; background: oklch(0.96 0.008 220); color: oklch(0.4 0.015 220); font-size: 12px;">Mine 6</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 26px 108px minmax(0, 1fr) 118px 96px 104px 88px; padding: 9px 20px; background: oklch(0.975 0.005 220); border-bottom: 1px solid oklch(0.93 0.01 220); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: oklch(0.55 0.015 220); align-items: center;">
+              <span></span><span>Job</span><span>Customer / route</span><span>Status</span><span>SOW</span><span>Deadline</span><span>Margin</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 26px 108px minmax(0, 1fr) 118px 96px 104px 88px; padding: 12px 20px; border-bottom: 1px solid oklch(0.96 0.006 220); align-items: center; font-size: 13px; color: oklch(0.28 0.02 220);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: oklch(0.56 0.17 25);"></span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;">JO-0241</span>
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Al Futtaim &mdash; 2&times;40HC Jebel Ali &rarr; Riyadh</span>
+              <span style="font-size: 11.5px; font-weight: 600; color: oklch(0.42 0.15 25);">Inspection held</span>
+              <span style="font-size: 12px; color: oklch(0.48 0.015 220);">Sea</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.5 0.16 25); font-weight: 500;">2d late</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.44 0.12 150);">18%</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 26px 108px minmax(0, 1fr) 118px 96px 104px 88px; padding: 12px 20px; border-bottom: 1px solid oklch(0.96 0.006 220); align-items: center; font-size: 13px; color: oklch(0.28 0.02 220);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: oklch(0.56 0.17 25);"></span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;">JO-0238</span>
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Gulf Metals &mdash; 1,240kg DXB &rarr; FRA</span>
+              <span style="font-size: 11.5px; font-weight: 600; color: oklch(0.42 0.15 25);">Docs pending</span>
+              <span style="font-size: 12px; color: oklch(0.48 0.015 220);">Air</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.5 0.16 25); font-weight: 500;">1d late</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.5 0.16 25);">4%</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 26px 108px minmax(0, 1fr) 118px 96px 104px 88px; padding: 12px 20px; border-bottom: 1px solid oklch(0.96 0.006 220); align-items: center; font-size: 13px; color: oklch(0.28 0.02 220);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: oklch(0.65 0.14 70);"></span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;">JO-0247</span>
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Emaar Interiors &mdash; clearance, Mirsal submitted</span>
+              <span style="font-size: 11.5px; font-weight: 600; color: oklch(0.45 0.12 65);">At customs</span>
+              <span style="font-size: 12px; color: oklch(0.48 0.015 220);">Clearance</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.48 0.1 65); font-weight: 500;">Today</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.44 0.12 150);">31%</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 26px 108px minmax(0, 1fr) 118px 96px 104px 88px; padding: 12px 20px; border-bottom: 1px solid oklch(0.96 0.006 220); align-items: center; font-size: 13px; color: oklch(0.28 0.02 220);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: oklch(0.65 0.14 70);"></span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;">JO-0249</span>
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Nesto Hyper &mdash; LCL Sharjah &rarr; Muscat</span>
+              <span style="font-size: 11.5px; font-weight: 600; color: oklch(0.45 0.12 65);">Awaiting duty</span>
+              <span style="font-size: 12px; color: oklch(0.48 0.015 220);">Sea</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.48 0.1 65); font-weight: 500;">Today</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.44 0.12 150);">22%</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 26px 108px minmax(0, 1fr) 118px 96px 104px 88px; padding: 12px 20px; border-bottom: 1px solid oklch(0.96 0.006 220); align-items: center; font-size: 13px; color: oklch(0.28 0.02 220);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: oklch(0.55 0.11 265);"></span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;">JO-0252</span>
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Danube Home &mdash; 1&times;20GP Jebel Ali &rarr; Doha</span>
+              <span style="font-size: 11.5px; font-weight: 600; color: oklch(0.42 0.1 265);">In transit</span>
+              <span style="font-size: 12px; color: oklch(0.48 0.015 220);">Land</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.5 0.015 220);">11 Sep</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.44 0.12 150);">26%</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 26px 108px minmax(0, 1fr) 118px 96px 104px 88px; padding: 12px 20px; border-bottom: 1px solid oklch(0.96 0.006 220); align-items: center; font-size: 13px; color: oklch(0.28 0.02 220);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: oklch(0.55 0.12 300);"></span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;">JO-0228</span>
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Sharaf DG &mdash; delivered 5 Sep, POD filed</span>
+              <span style="font-size: 11.5px; font-weight: 600; color: oklch(0.42 0.12 300);">Unbilled</span>
+              <span style="font-size: 12px; color: oklch(0.48 0.015 220);">Air</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.5 0.015 220);">Invoice due</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.44 0.12 150);">29%</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 26px 108px minmax(0, 1fr) 118px 96px 104px 88px; padding: 12px 20px; align-items: center; font-size: 13px; color: oklch(0.4 0.02 220);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: oklch(0.62 0.12 150);"></span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;">JO-0219</span>
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Lulu Group &mdash; closed &amp; collected</span>
+              <span style="font-size: 11.5px; font-weight: 600; color: oklch(0.4 0.1 150);">Closed</span>
+              <span style="font-size: 12px; color: oklch(0.52 0.015 220);">Sea</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.55 0.015 220);">Done</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.44 0.12 150);">24%</span>
+            </div>
+          </div>
+
+          <!-- group-by sidebar -->
+          <div style="border-left: 1px solid oklch(0.91 0.01 220); background: oklch(0.975 0.005 220); padding: 14px 16px; display: flex; flex-direction: column; gap: 18px;">
+            <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 8px; border-radius: 5px; background: oklch(0.9 0.01 220); color: oklch(0.4 0.015 220);">Sidebar group-by</span>
+            <div style="display: flex; flex-direction: column; gap: 7px;">
+              <span style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; color: oklch(0.56 0.015 220);">Assigned to</span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; justify-content: space-between;"><span>Ramesh A.</span><span style="color: oklch(0.55 0.015 220);">6</span></span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; justify-content: space-between;"><span>Ops &mdash; Sea desk</span><span style="color: oklch(0.55 0.015 220);">9</span></span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; justify-content: space-between;"><span>Ops &mdash; Air desk</span><span style="color: oklch(0.55 0.015 220);">7</span></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 7px;">
+              <span style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; color: oklch(0.56 0.015 220);">Status</span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; align-items: center; gap: 7px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.56 0.17 25);"></span>Blocked / late &middot; 3</span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; align-items: center; gap: 7px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.65 0.14 70);"></span>At customs &middot; 14</span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; align-items: center; gap: 7px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.55 0.11 265);"></span>In transit &middot; 8</span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; align-items: center; gap: 7px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.55 0.12 300);"></span>Unbilled &middot; 11</span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; align-items: center; gap: 7px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: oklch(0.62 0.12 150);"></span>Closed &middot; 38</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 7px;">
+              <span style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; color: oklch(0.56 0.015 220);">Scope of work</span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; justify-content: space-between;"><span>Sea freight</span><span style="color: oklch(0.55 0.015 220);">9</span></span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; justify-content: space-between;"><span>Air freight</span><span style="color: oklch(0.55 0.015 220);">7</span></span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; justify-content: space-between;"><span>Land transport</span><span style="color: oklch(0.55 0.015 220);">4</span></span>
+              <span style="font-size: 12.5px; color: oklch(0.35 0.015 220); display: flex; justify-content: space-between;"><span>Customs clearance</span><span style="color: oklch(0.55 0.015 220);">2</span></span>
+            </div>
+            <div style="padding: 11px; border-radius: 8px; background: #fff; border: 1px dashed oklch(0.85 0.02 220); font-size: 11.5px; line-height: 1.5; color: oklch(0.48 0.015 220);">Five indicator colours, fixed meanings, reused on every FPS doctype &mdash; that is the whole colour system.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="width: 1300px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding-top: 4px;">
+        <div style="font-size: 13px; line-height: 1.6; color: oklch(0.45 0.015 220); text-wrap: pretty;"><strong style="color: oklch(0.27 0.035 215);">Indicators.</strong> <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">get_indicator</code> in <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">job_order_list.js</code> returns [label, colour, filter] &mdash; red only for late or blocked.</div>
+        <div style="font-size: 13px; line-height: 1.6; color: oklch(0.45 0.015 220); text-wrap: pretty;"><strong style="color: oklch(0.27 0.035 215);">Findability.</strong> Route and customer in the title column, deadline pressure and margin as the two right columns &mdash; no need to open the record to triage.</div>
+        <div style="font-size: 13px; line-height: 1.6; color: oklch(0.45 0.015 220); text-wrap: pretty;"><strong style="color: oklch(0.27 0.035 215);">Needs from you.</strong> A single <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">status</code> select on Job Order with these exact values, plus a stored margin field so it can be sorted.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- build spec -->
+  <div id="build" style="max-width: 1300px; margin-top: 20px; border: 1px solid oklch(0.89 0.01 220); border-radius: 12px; background: #fff; overflow: hidden;">
+    <div style="padding: 18px 24px; background: oklch(0.27 0.035 215); display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;">
+      <span style="font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600; color: #fff;">How to build <a href="#1a" style="color: oklch(0.88 0.09 195);">1a</a> in ERPNext v16</span>
+      <span style="font-size: 12.5px; color: oklch(0.82 0.03 200);">everything except step 6 is config, not code</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: oklch(0.92 0.01 220);">
+
+      <div style="background: #fff; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.55 0.02 220);">01</span>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: oklch(0.27 0.035 215);">Turn FPS into a parent workspace</span>
+        <span style="font-size: 13px; line-height: 1.6; color: oklch(0.42 0.015 220); text-wrap: pretty;">Sidebar &rarr; <strong>Create Workspace</strong>, once per category (Sales, Operations, Accounts, HR, Reports, Masters &amp; Setup). In each one set <strong>Parent</strong> = FPS and give it a <strong>sequence</strong> so the order sticks. Keep the existing FPS page as the parent and rename its title to <em>FPS Home</em>. For HR, don't rebuild anything &mdash; link to the stock HR doctypes (Employee, Attendance, Leave Application, Shift Assignment, Expense Claim, Payroll Entry, Salary Slip) so ERPNext's own permissions and reports keep working.</span>
+      </div>
+
+      <div style="background: #fff; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.55 0.02 220);">02</span>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: oklch(0.27 0.035 215);">Shortcuts with live counts</span>
+        <span style="font-size: 13px; line-height: 1.6; color: oklch(0.42 0.015 220); text-wrap: pretty;">Edit mode &rarr; <strong>Add Shortcut</strong>. Set <strong>Type</strong> = DocType, <strong>Color</strong> from the fixed palette, and fill <strong>Statistics Filter</strong> &mdash; that is what draws the count badge (e.g. Customs Tracker with <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">{"status":"Submitted"}</code>). Set <strong>DocView</strong> = List so it opens filtered.</span>
+      </div>
+
+      <div style="background: #fff; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.55 0.02 220);">03</span>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: oklch(0.27 0.035 215);">The four number cards</span>
+        <span style="font-size: 13px; line-height: 1.6; color: oklch(0.42 0.015 220); text-wrap: pretty;">New <strong>Number Card</strong> per KPI: document type, <strong>function</strong> Count or Sum, filters, colour, and <em>Is Public</em> on. &ldquo;Delivered, not invoiced&rdquo; and &ldquo;GP this month&rdquo; can't be expressed as plain filters &mdash; make those two <strong>Report-type</strong> number cards pointing at a query report, or add a <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">billing_status</code> / <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">gross_profit</code> field on Job Order kept current by a hook.</span>
+      </div>
+
+      <div style="background: #fff; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.55 0.02 220);">04</span>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: oklch(0.27 0.035 215);">Quick lists and charts</span>
+        <span style="font-size: 13px; line-height: 1.6; color: oklch(0.42 0.015 220); text-wrap: pretty;"><strong>Add Quick List</strong> &rarr; Job Order, filter <em>status not in Delivered/Cancelled</em>, sort by deadline. Charts are <strong>Dashboard Chart</strong> records: <em>Monthly GP Trend</em> as a Sum / bar with time interval Monthly, <em>Open Jobs by SOW</em> as a Group By / donut on the SOW field. Add both to the page with <strong>Add Chart</strong>.</span>
+      </div>
+
+      <div style="background: #fff; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.55 0.02 220);">05</span>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: oklch(0.27 0.035 215);">List view indicators</span>
+        <span style="font-size: 13px; line-height: 1.6; color: oklch(0.42 0.015 220); text-wrap: pretty;">Add <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">fps_erpnext/fps/doctype/job_order/job_order_list.js</code> exporting <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">frappe.listview_settings["Job Order"]</code> with <strong>add_fields</strong>, <strong>get_indicator</strong> returning <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">[label, colour, filter]</code>, and <strong>formatters</strong> for the margin column. Five colours only: red late/blocked, orange at customs, blue in transit, purple unbilled, green closed &mdash; same meanings on every FPS doctype.</span>
+      </div>
+
+      <div style="background: #fff; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.55 0.02 220);">06</span>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: oklch(0.27 0.035 215);">The pipeline strip &mdash; the only custom code</span>
+        <span style="font-size: 13px; line-height: 1.6; color: oklch(0.42 0.015 220); text-wrap: pretty;">Create a <strong>Custom HTML Block</strong>, paste the strip markup, and in its script call one <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">@frappe.whitelist()</code> method in <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">fps_erpnext/api/</code> that returns the seven stage counts in a single grouped query. Each tile links to <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">/app/job-order?status=&hellip;</code>. Skip this block entirely and you have <a href="#1b">1b</a>.</span>
+      </div>
+
+      <div style="background: #fff; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px; grid-column: span 2;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.55 0.02 220);">07</span>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: oklch(0.27 0.035 215);">Get it out of the browser and into the app</span>
+        <span style="font-size: 13px; line-height: 1.6; color: oklch(0.42 0.015 220); text-wrap: pretty;">Workspaces, number cards, charts and custom blocks built in the UI live in your <em>site database</em>, not in <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">fps_erpnext</code>. Build them on a staging site, then export &mdash; <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">bench --site &lt;site&gt; export-fixtures</code> with the Workspace / Number Card / Dashboard Chart doctypes listed in <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">fixtures</code> in <code style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">hooks.py</code> &mdash; so the layout ships with the app, survives a fresh install, and is reviewable in git. Roles matter too: point each category workspace at the roles that use it, so an accounts user never sees the Operations tree.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;userName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Ramesh A.&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;showCharts&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Blocks&quot;},&quot;showLinkCards&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Blocks&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      userName: this.props.userName ?? "Ramesh A.",
+      showCharts: this.props.showCharts ?? true,
+      showLinkCards: this.props.showLinkCards ?? true,
+    };
+  }
+}
+</script>
+</body>
+</html>

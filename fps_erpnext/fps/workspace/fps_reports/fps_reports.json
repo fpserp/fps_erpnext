@@ -1,0 +1,144 @@
+{
+ "app": "fps_erpnext",
+ "charts": [],
+ "content": "[{\"id\":\"hdr_fps_reports\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS Reports</b></span>\",\"col\":12}},{\"id\":\"txt_fps_reports\",\"type\":\"paragraph\",\"data\":{\"text\":\"Job tracking and profitability reporting.\",\"col\":12}},{\"id\":\"c0_fps_reports\",\"type\":\"card\",\"data\":{\"card_name\":\"FPS reports\",\"col\":4}},{\"id\":\"c1_fps_reports\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting reports\",\"col\":4}}]",
+ "creation": "2026-09-09 13:30:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "table",
+ "idx": 0,
+ "indicator_color": "",
+ "is_hidden": 0,
+ "label": "FPS Reports",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "FPS reports",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "FPS Open Jobs by SOW",
+   "link_count": 0,
+   "link_to": "FPS Open Jobs by SOW",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "FPS Profitability per Job Order",
+   "link_count": 0,
+   "link_to": "FPS Profitability per Job Order",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "FPS Monthly GP Trend",
+   "link_count": 0,
+   "link_to": "FPS Monthly GP Trend",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Accounting reports",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "General Ledger",
+   "link_count": 0,
+   "link_to": "General Ledger",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Accounts Receivable",
+   "link_count": 0,
+   "link_to": "Accounts Receivable",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Accounts Payable",
+   "link_count": 0,
+   "link_to": "Accounts Payable",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales Register",
+   "link_count": 0,
+   "link_to": "Sales Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Trial Balance",
+   "link_count": 0,
+   "link_to": "Trial Balance",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-09-09 13:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "FPS Reports",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "FPS",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "FPS Operations"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 5.0,
+ "shortcuts": [],
+ "title": "FPS Reports",
+ "type": "Workspace"
+}
