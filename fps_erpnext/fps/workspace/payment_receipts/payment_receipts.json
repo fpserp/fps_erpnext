@@ -1,0 +1,264 @@
+{
+ "app": "fps_erpnext",
+ "charts": [],
+ "content": "[{\"id\":\"prhdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Payment Receipts</b></span>\",\"col\":12}},{\"id\":\"prtip\",\"type\":\"paragraph\",\"data\":{\"text\":\"One receipt can settle many invoices: <b>New Receipt</b> &rarr; choose the customer &rarr; <b>Get Outstanding Invoices</b> &rarr; tick the invoices paid &rarr; Submit &rarr; Print (FPS Receipt).\",\"col\":12}},{\"id\":\"prnc1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Received This Month\",\"col\":4}},{\"id\":\"prnc2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Receipts This Month\",\"col\":4}},{\"id\":\"prnc3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Outstanding Receivables\",\"col\":4}},{\"id\":\"prsc1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Receipt\",\"col\":3}},{\"id\":\"prsc2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer Receipts\",\"col\":3}},{\"id\":\"prsc3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Draft Receipts\",\"col\":3}},{\"id\":\"prsc4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Unpaid Invoices\",\"col\":3}},{\"id\":\"prsc5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Payment Reconciliation\",\"col\":3}},{\"id\":\"prsc6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Bank Reconciliation\",\"col\":3}},{\"id\":\"prql1\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Latest Receipts\",\"col\":6}},{\"id\":\"prql2\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Invoices Awaiting Payment\",\"col\":6}},{\"id\":\"prcd1\",\"type\":\"card\",\"data\":{\"card_name\":\"Receipts\",\"col\":4}},{\"id\":\"prcd2\",\"type\":\"card\",\"data\":{\"card_name\":\"Receipt Reports\",\"col\":4}}]",
+ "creation": "2026-09-09 13:30:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "receipt-text",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Payment Receipts",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Receipts",
+   "link_count": 6,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Receipts",
+   "link_count": 0,
+   "link_to": "Payment Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Reconciliation",
+   "link_count": 0,
+   "link_to": "Payment Reconciliation",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Unreconcile Payment",
+   "link_count": 0,
+   "link_to": "Unreconcile Payment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Bank Reconciliation Tool",
+   "link_count": 0,
+   "link_to": "Bank Reconciliation Tool",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Bank Transactions",
+   "link_count": 0,
+   "link_to": "Bank Transaction",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Bank Statements",
+   "link_count": 0,
+   "link_to": "FPS Bank Statement",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Receipt Reports",
+   "link_count": 7,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Accounts Receivable",
+   "link_count": 0,
+   "link_to": "Accounts Receivable",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Accounts Receivable Summary",
+   "link_count": 0,
+   "link_to": "Accounts Receivable Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Customer Ledger Summary",
+   "link_count": 0,
+   "link_to": "Customer Ledger Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Payment Ledger",
+   "link_count": 0,
+   "link_to": "Payment Ledger",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Payment Period Based On Invoice Date",
+   "link_count": 0,
+   "link_to": "Payment Period Based On Invoice Date",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Bank Clearance Summary",
+   "link_count": 0,
+   "link_to": "Bank Clearance Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Bank Reconciliation Statement",
+   "link_count": 0,
+   "link_to": "Bank Reconciliation Statement",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-09-09 13:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "Payment Receipts",
+ "number_cards": [
+  {
+   "label": "Received This Month",
+   "number_card_name": "Received This Month"
+  },
+  {
+   "label": "Receipts This Month",
+   "number_card_name": "Receipts This Month"
+  },
+  {
+   "label": "Outstanding Receivables",
+   "number_card_name": "Outstanding Receivables"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "FPS Accounts",
+ "public": 1,
+ "quick_lists": [
+  {
+   "document_type": "Payment Entry",
+   "label": "Latest Receipts",
+   "quick_list_filter": "[[\"Payment Entry\",\"payment_type\",\"=\",\"Receive\"]]"
+  },
+  {
+   "document_type": "Sales Invoice",
+   "label": "Invoices Awaiting Payment",
+   "quick_list_filter": "[[\"Sales Invoice\",\"status\",\"in\",[\"Unpaid\",\"Overdue\",\"Partly Paid\"]],[\"Sales Invoice\",\"docstatus\",\"=\",1]]"
+  }
+ ],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Green",
+   "doc_view": "New",
+   "label": "New Receipt",
+   "link_to": "Payment Entry",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "format": "{} Submitted",
+   "label": "Customer Receipts",
+   "link_to": "Payment Entry",
+   "stats_filter": "[[\"Payment Entry\",\"payment_type\",\"=\",\"Receive\"],[\"Payment Entry\",\"docstatus\",\"=\",1]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "format": "{} Draft",
+   "label": "Draft Receipts",
+   "link_to": "Payment Entry",
+   "stats_filter": "[[\"Payment Entry\",\"payment_type\",\"=\",\"Receive\"],[\"Payment Entry\",\"docstatus\",\"=\",0]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Red",
+   "doc_view": "List",
+   "format": "{} Unpaid",
+   "label": "Unpaid Invoices",
+   "link_to": "Sales Invoice",
+   "stats_filter": "[[\"Sales Invoice\",\"status\",\"in\",[\"Unpaid\",\"Overdue\",\"Partly Paid\"]],[\"Sales Invoice\",\"docstatus\",\"=\",1]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "Payment Reconciliation",
+   "link_to": "Payment Reconciliation",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Bank Reconciliation",
+   "link_to": "FPS Bank Statement",
+   "type": "DocType"
+  }
+ ],
+ "title": "Payment Receipts",
+ "type": "Workspace"
+}

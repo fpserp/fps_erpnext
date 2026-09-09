@@ -32,6 +32,7 @@ workspaces (`erpnext/accounts/workspace/invoicing/invoicing.json`).
     fps_erpnext/fps/workspace/fps_hr/fps_hr.json
     fps_erpnext/fps/workspace/fps_reports/fps_reports.json
     fps_erpnext/fps/workspace/fps_masters_and_setup/fps_masters_and_setup.json
+    fps_erpnext/fps/workspace/payment_receipts/payment_receipts.json   ← under Accounts
     fps_erpnext/fps/workspace_sidebar/fps/fps.json                     ← v16 sidebar
 
 Regenerate with `python docs/design_handoff_fps_workspace/build_workspaces.py`;
@@ -77,6 +78,28 @@ six collapsible sections whose members are indented under them. HR, Reports and
 Masters & Setup ship with `keep_closed = 1` so the sidebar opens at roughly the
 mock's height.
 
+### Payment Receipts is a sub-tab of Accounts, and now ships in the app
+
+It was built in the site DB on 2026-09-05 and lived **only** there — a fresh
+install would not have had it at all — and it sat as a seventh sibling of the six
+categories, holding `sequence_id = 1` where FPS Sales wanted to be.
+
+It is now adopted into the app from `adopted/payment_receipts.source.json` (a
+cleaned copy of the live record) and re-parented to `parent_page = FPS Accounts`
+with `sequence_id = 1` among that parent's children. Verified byte-faithful
+against the live record: all 15 links, 6 shortcuts, 3 number cards, 2 quick lists
+and every content block are identical. The only deliberate changes are
+`parent_page` and `roles`.
+
+A `Workspace Link` cannot point at a Workspace — `link_type` is `DocType / Page /
+Report` only — so Accounts links to it with a paragraph block to
+`/desk/payment-receipts`, and the sidebar nests it under the Accounts section
+(a Workspace Sidebar Item *can* use `link_type = Workspace`). That paragraph
+moved off the home page, where it used to sit, onto Accounts.
+
+Refresh the source after any desk-UI edit by re-fetching
+`/api/resource/Workspace/Payment%20Receipts` and stripping the volatile fields.
+
 ### The home page was not stripped
 
 Step 1 owns the information architecture only. The ten link cards that used to
@@ -112,8 +135,9 @@ Verified against the live site on 2026-09-09:
 | FPS HR | HR User, HR Manager, System Manager |
 | FPS Reports | FPS Operations, System Manager |
 | FPS Masters & Setup | System Manager |
+| Payment Receipts | Accounts User, Accounts Manager, System Manager *(was none)* |
 
-**This hides Accounts, HR and Masters & Setup from `ops@`.** That is the README's
+**This hides Accounts, HR, Masters & Setup and Payment Receipts from `ops@`.** That is the README's
 intent ("an accounts user should not see the Operations tree") applied
 symmetrically, and it only hides navigation — document permissions are unchanged,
 and `ops@` could not read those doctypes anyway. Say the word if ops should keep

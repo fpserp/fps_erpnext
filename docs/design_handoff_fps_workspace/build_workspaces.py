@@ -86,6 +86,41 @@ def number_card_block(number_card_name, bid, col=3):
     return block("number_card", {"id": bid, "number_card_name": number_card_name, "col": col})
 
 
+def shortcut(label, link_to, color, doc_view="List", stats_filter=None,
+             fmt=None, stype="DocType", kanban_board=None, icon=None):
+    """A Workspace Shortcut row.
+
+    stats_filter is stored as a JSON *string* of 4-element rows
+    [doctype, fieldname, operator, value]; a 5-element row makes v16's
+    frappe.utils.cleanup_filters silently drop the last filter. `fmt` is the
+    badge template, e.g. "{} open". Colours are Frappe's Title-case palette
+    names (Red / Orange / Yellow / Blue / Cyan / Green / Purple / Pink / Grey).
+    """
+    row = {
+        "color": color,
+        "doc_view": doc_view,
+        "format": fmt,
+        "icon": icon,
+        "kanban_board": kanban_board,
+        "label": label,
+        "link_to": link_to,
+        "restrict_to_domain": None,
+        "stats_filter": json.dumps(stats_filter, separators=(",", ":")) if stats_filter else None,
+        "type": stype,
+        "url": None,
+    }
+    return row
+
+
+def quick_list(label, document_type, quick_list_filter=None):
+    return {
+        "document_type": document_type,
+        "label": label,
+        "quick_list_filter": (json.dumps(quick_list_filter, separators=(",", ":"))
+                              if quick_list_filter else None),
+    }
+
+
 def workspace(name, title, sequence_id, icon, content, links,
               parent_page="", roles=None, indicator_color="",
               shortcuts=None, number_cards=None, charts=None,
@@ -188,11 +223,6 @@ FPS_HOME_CONTENT = [
     number_card_block("Cleared - delivery pending", "fpstrkc10"),
     number_card_block("Delivered - not invoiced", "fpstrkc11"),
     header("Operations documents", "fpsopsh", size="h5"),
-    paragraph(
-        '<a href="/desk/payment-receipts"><b>Payment Receipts</b> &rarr; '
-        'receipts dashboard, customer receipts, unpaid invoices</a>',
-        "fpspayrcpt",
-    ),
     shortcut_block("Customs Tracker", "fpsops1"),
     shortcut_block("FPS Enquiry", "fpsops2"),
     shortcut_block("Proof of Delivery", "fpsops3"),
@@ -361,10 +391,11 @@ MASTERS_LINKS = (
 )
 
 
-def child_content(title, blurb, cards):
+def child_content(title, blurb, cards, extra=None):
     blocks = [header(title, "hdr_" + title.lower().replace(" ", "_").replace("&", "n"))]
     if blurb:
         blocks.append(paragraph(blurb, "txt_" + title.lower().replace(" ", "_").replace("&", "n")))
+    blocks.extend(extra or [])
     for i, name in enumerate(cards):
         blocks.append(card_block(name, "c%d_%s" % (i, title.lower().replace(" ", "_").replace("&", "n"))))
     return blocks
@@ -387,6 +418,10 @@ CHILDREN = [
         name="FPS Accounts", title="FPS Accounts", sequence_id=3, icon="accounting",
         roles=ACCOUNTS_ROLES, links=ACCOUNTS_LINKS,
         blurb="Invoicing, payments, bank reconciliation and VAT.",
+        extra=[paragraph(
+            '<a href="/desk/payment-receipts"><b>Payment Receipts</b> &rarr; '
+            'receipts dashboard, customer receipts, unpaid invoices</a>',
+            "acc_payrcpt")],
         cards=["Billing", "Buying", "Bank & reconciliation", "Receivables & payables", "Tax"],
     ),
     dict(
@@ -514,6 +549,50 @@ SIDEBAR = {
 
 # --------------------------------------------------------------------------
 
+# ==========================================================================
+# Payment Receipts -- adopted, not authored
+#
+# This workspace was built in the site DB on 2026-09-05 and existed only there,
+# so a fresh install would not have had it at all. It is pulled into the app
+# verbatim from `adopted/payment_receipts.source.json` (a cleaned copy of the
+# live record) and re-parented from FPS to FPS Accounts, which is where it
+# belongs: it is the receipts sub-tab of Accounts, not a seventh category.
+#
+# To refresh the source after editing the page in the desk UI, re-fetch
+# /api/resource/Workspace/Payment%20Receipts and strip the volatile fields
+# (name, owner, creation, modified, modified_by, docstatus, idx, parent,
+# parentfield, parenttype, doctype) from the doc and every child row.
+# ==========================================================================
+
+ADOPTED_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "adopted")
+
+
+def payment_receipts():
+    with open(os.path.join(ADOPTED_DIR, "payment_receipts.source.json"),
+              encoding="utf-8") as fh:
+        src = json.load(fh)
+
+    return workspace(
+        name="Payment Receipts",
+        title=src.get("title", "Payment Receipts"),
+        sequence_id=1,
+        icon=src.get("icon") or "receipt-text",
+        indicator_color=src.get("indicator_color") or "",
+        content=json.loads(src["content"]),
+        links=src.get("links") or [],
+        shortcuts=src.get("shortcuts") or [],
+        number_cards=src.get("number_cards") or [],
+        charts=src.get("charts") or [],
+        quick_lists=src.get("quick_lists") or [],
+        custom_blocks=src.get("custom_blocks") or [],
+        # Re-parented: a sub-tab of Accounts rather than a sibling of it.
+        parent_page="FPS Accounts",
+        # Matches its parent so the nav does not offer a page whose contents
+        # the viewer cannot read anyway.
+        roles=ACCOUNTS_ROLES,
+    )
+
+
 def write(rel_dir, slug, payload):
     path = os.path.join(MODULE_PATH, rel_dir, slug)
     os.makedirs(path, exist_ok=True)
@@ -542,8 +621,11 @@ def main():
             name=spec["name"], title=spec["title"],
             sequence_id=spec["sequence_id"], icon=spec["icon"],
             parent_page="FPS", roles=spec["roles"], links=spec["links"],
-            content=child_content(spec["title"], spec["blurb"], spec["cards"]),
+            content=child_content(spec["title"], spec["blurb"], spec["cards"],
+                                  spec.get("extra")),
         )))
+
+    written.append(write("workspace", "payment_receipts", payment_receipts()))
 
     written.append(write("workspace_sidebar", "fps", SIDEBAR))
 
