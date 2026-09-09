@@ -34,9 +34,16 @@ workspaces (`erpnext/accounts/workspace/invoicing/invoicing.json`).
     fps_erpnext/fps/workspace/fps_masters_and_setup/fps_masters_and_setup.json
     fps_erpnext/fps/workspace/payment_receipts/payment_receipts.json   ← under Accounts
     fps_erpnext/fps/workspace_sidebar/fps/fps.json                     ← v16 sidebar
+    fps_erpnext/fps/client_script/fps_customer_billing_indicators/…     ← Customer form
 
 Regenerate with `python docs/design_handoff_fps_workspace/build_workspaces.py`;
 edit the generator, not the JSON, so the seven files stay consistent.
+
+`client_script` is importable the same way. All 13 client scripts already on the
+site have `module = null`, so they live only in the site DB and a fresh install
+would have none of them — worth adopting later, the same way Payment Receipts was.
+The JS source lives at `client_scripts/*.js` so it stays reviewable as JavaScript;
+the generator embeds it into the fixture.
 
 Number Card, Dashboard Chart and Custom HTML Block are **not** importable this
 way — steps 3, 4 and 6 will need the `fixtures` hook in `hooks.py` plus

@@ -1,0 +1,15 @@
+{
+ "creation": "2026-09-09 13:30:00.000000",
+ "docstatus": 0,
+ "doctype": "Client Script",
+ "dt": "Customer",
+ "enabled": 1,
+ "idx": 0,
+ "modified": "2026-09-09 14:45:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "FPS Customer Billing Indicators",
+ "owner": "Administrator",
+ "script": "// Customer form: hide the \"Annual Billing\" and \"Total Unpaid\" header indicators\n// from anyone outside finance.\n//\n// ERPNext's customer.js refresh() reads frm.doc.__onload.dashboard_info and calls\n// frm.dashboard.add_indicator() once per figure. Client Scripts are appended after\n// the app's own form script, so removing the payload in onload() means refresh()\n// finds nothing left to draw. The refresh() pass is belt-and-braces for the\n// multi-company branch, which builds its row through erpnext.utils.setup_dashboard_info\n// instead, and for any later repaint.\n//\n// SCOPE: this hides the DISPLAY, not the data. dashboard_info is computed\n// server-side in Customer.onload and still reaches the browser, so the figures\n// remain readable in devtools. Sealing that needs a server-side override of the\n// Customer class (override_doctype_class in hooks.py) rather than a client script.\n\nfunction fps_can_see_receivables() {\n\tvar allowed = [\n\t\t\"Accounts User\",\n\t\t\"Accounts Manager\",\n\t\t\"System Manager\",\n\t\t\"Administrator\",\n\t\t\"Auditor\",\n\t];\n\treturn (frappe.user_roles || []).some(function (role) {\n\t\treturn allowed.indexOf(role) !== -1;\n\t});\n}\n\nfunction fps_strip_billing_indicators(frm) {\n\tvar dashboard = frm.dashboard;\n\tif (!dashboard || !dashboard.stats_area_row) return;\n\n\tvar money = /annual billing|total unpaid|outstanding|billing this year/i;\n\n\tdashboard.stats_area_row.find(\".indicator, .indicator-pill\").each(function () {\n\t\tvar $pill = $(this);\n\t\tif (!money.test($pill.text())) return;\n\t\tvar $cell = $pill.closest(\"[class*='col-']\");\n\t\t($cell.length ? $cell : $pill).remove();\n\t});\n\n\tif (dashboard.stats_area && !dashboard.stats_area_row.children().length) {\n\t\tdashboard.stats_area.addClass(\"hidden\");\n\t}\n}\n\nfrappe.ui.form.on(\"Customer\", {\n\tonload: function (frm) {\n\t\tif (fps_can_see_receivables()) return;\n\t\tif (frm.doc.__onload) delete frm.doc.__onload.dashboard_info;\n\t},\n\n\trefresh: function (frm) {\n\t\tif (fps_can_see_receivables()) return;\n\t\tif (frm.doc.__onload) delete frm.doc.__onload.dashboard_info;\n\t\tfps_strip_billing_indicators(frm);\n\t\t// The multi-company branch appends asynchronously; sweep again next tick.\n\t\tsetTimeout(function () {\n\t\t\tfps_strip_billing_indicators(frm);\n\t\t}, 0);\n\t},\n});\n",
+ "view": "Form"
+}

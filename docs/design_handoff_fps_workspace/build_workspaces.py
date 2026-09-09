@@ -655,6 +655,50 @@ def payment_receipts():
     )
 
 
+# ==========================================================================
+# Client Scripts
+#
+# `client_script` is also in IMPORTABLE_DOCTYPES, so these ship with the app
+# rather than living only in the site DB (where all 13 existing FPS client
+# scripts currently sit, with module = null -- a fresh install would have none
+# of them). The JS lives beside this file as real .js so it stays reviewable
+# and syntax-highlighted; only the generated fixture carries it as a string.
+# ==========================================================================
+
+CLIENT_SCRIPTS_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "client_scripts")
+
+CLIENT_SCRIPTS = [
+    {
+        "name": "FPS Customer Billing Indicators",
+        "source": "fps_customer_billing_indicators.js",
+        "dt": "Customer",
+        "view": "Form",
+    },
+]
+
+
+def client_script(spec):
+    with open(os.path.join(CLIENT_SCRIPTS_DIR, spec["source"]), encoding="utf-8") as fh:
+        source = fh.read()
+
+    return {
+        "creation": CREATED,
+        "docstatus": 0,
+        "doctype": "Client Script",
+        "dt": spec["dt"],
+        "enabled": 1,
+        "idx": 0,
+        "modified": STAMP,
+        "modified_by": OWNER,
+        "module": MODULE,
+        "name": spec["name"],
+        "owner": OWNER,
+        "script": source,
+        "view": spec["view"],
+    }
+
+
 def write(rel_dir, slug, payload):
     path = os.path.join(MODULE_PATH, rel_dir, slug)
     os.makedirs(path, exist_ok=True)
@@ -691,6 +735,10 @@ def main():
     written.append(write("workspace", "payment_receipts", payment_receipts()))
 
     written.append(write("workspace_sidebar", "fps", SIDEBAR))
+
+    for spec in CLIENT_SCRIPTS:
+        slug = spec["name"].lower().replace(" ", "_")
+        written.append(write("client_script", slug, client_script(spec)))
 
     for p in written:
         print(p.replace(os.sep, "/"))
