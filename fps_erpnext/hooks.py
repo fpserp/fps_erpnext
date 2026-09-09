@@ -22,6 +22,20 @@ add_to_apps_screen = [
     }
 ]
 
+# Fixtures
+# --------
+# Number Card, Dashboard Chart and Custom HTML Block are not in Frappe v16's
+# IMPORTABLE_DOCTYPES, so unlike the workspaces under fps_erpnext/fps/ they
+# cannot ship as module JSON. sync_fixtures imports fps_erpnext/fixtures/*.json
+# on every migrate. The filters below scope any future `bench export-fixtures`
+# to FPS-owned records so it cannot slurp the site's ~97 stock number cards.
+
+fixtures = [
+    {"dt": "Number Card", "filters": [["module", "=", "FPS"]]},
+    {"dt": "Dashboard Chart", "filters": [["module", "=", "FPS"]]},
+    {"dt": "Custom HTML Block", "filters": [["name", "in", ["FPS Pipeline Strip"]]]},
+]
+
 # Includes in <head>
 # ------------------
 

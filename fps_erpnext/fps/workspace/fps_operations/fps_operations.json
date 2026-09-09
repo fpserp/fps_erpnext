@@ -1,7 +1,7 @@
 {
  "app": "fps_erpnext",
  "charts": [],
- "content": "[{\"id\":\"hdr_fps_operations\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS Operations</b></span>\",\"col\":12}},{\"id\":\"txt_fps_operations\",\"type\":\"paragraph\",\"data\":{\"text\":\"Jobs from booking to delivery \\u2014 job orders, customs and proof of delivery.\",\"col\":12}},{\"id\":\"s0_fps_operations\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Daily Job Tracker\",\"col\":3}},{\"id\":\"s1_fps_operations\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Local trucking & delivery\",\"col\":3}},{\"id\":\"c0_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Jobs\",\"col\":4}},{\"id\":\"c1_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Customs\",\"col\":4}},{\"id\":\"c2_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Trucking & delivery\",\"col\":4}}]",
+ "content": "[{\"id\":\"hdr_fps_operations\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS Operations</b></span>\",\"col\":12}},{\"id\":\"txt_fps_operations\",\"type\":\"paragraph\",\"data\":{\"text\":\"Jobs from booking to delivery \\u2014 job orders, customs and proof of delivery.\",\"col\":12}},{\"id\":\"n0_fps_operations\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - Customs clearance\",\"col\":3}},{\"id\":\"n1_fps_operations\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - Freight forwarding\",\"col\":3}},{\"id\":\"n2_fps_operations\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - Land transport\",\"col\":3}},{\"id\":\"n3_fps_operations\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open - General jobs\",\"col\":3}},{\"id\":\"n4_fps_operations\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"On hold\",\"col\":3}},{\"id\":\"n5_fps_operations\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Cleared - delivery pending\",\"col\":3}},{\"id\":\"s0_fps_operations\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Daily Job Tracker\",\"col\":3}},{\"id\":\"s1_fps_operations\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Local trucking & delivery\",\"col\":3}},{\"id\":\"c0_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Jobs\",\"col\":4}},{\"id\":\"c1_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Customs\",\"col\":4}},{\"id\":\"c2_fps_operations\",\"type\":\"card\",\"data\":{\"card_name\":\"Trucking & delivery\",\"col\":4}}]",
  "creation": "2026-09-09 13:30:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -105,11 +105,36 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-09 16:30:00.000000",
+ "modified": "2026-09-09 20:15:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS Operations",
- "number_cards": [],
+ "number_cards": [
+  {
+   "label": "Open - Customs clearance",
+   "number_card_name": "Open - Customs clearance"
+  },
+  {
+   "label": "Open - Freight forwarding",
+   "number_card_name": "Open - Freight forwarding"
+  },
+  {
+   "label": "Open - Land transport",
+   "number_card_name": "Open - Land transport"
+  },
+  {
+   "label": "Open - General jobs",
+   "number_card_name": "Open - General jobs"
+  },
+  {
+   "label": "On hold",
+   "number_card_name": "On hold"
+  },
+  {
+   "label": "Cleared - delivery pending",
+   "number_card_name": "Cleared - delivery pending"
+  }
+ ],
  "owner": "Administrator",
  "parent_page": "FPS",
  "public": 1,

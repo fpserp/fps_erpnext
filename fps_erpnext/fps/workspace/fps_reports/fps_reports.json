@@ -1,7 +1,12 @@
 {
  "app": "fps_erpnext",
- "charts": [],
- "content": "[{\"id\":\"hdr_fps_reports\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS Reports</b></span>\",\"col\":12}},{\"id\":\"txt_fps_reports\",\"type\":\"paragraph\",\"data\":{\"text\":\"Job tracking and profitability reporting.\",\"col\":12}},{\"id\":\"c0_fps_reports\",\"type\":\"card\",\"data\":{\"card_name\":\"FPS reports\",\"col\":4}},{\"id\":\"c1_fps_reports\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting reports\",\"col\":4}}]",
+ "charts": [
+  {
+   "chart_name": "FPS Gross Profit by Month",
+   "label": "FPS Gross Profit by Month"
+  }
+ ],
+ "content": "[{\"id\":\"hdr_fps_reports\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS Reports</b></span>\",\"col\":12}},{\"id\":\"txt_fps_reports\",\"type\":\"paragraph\",\"data\":{\"text\":\"Job tracking and profitability reporting.\",\"col\":12}},{\"id\":\"g0_fps_reports\",\"type\":\"chart\",\"data\":{\"chart_name\":\"FPS Gross Profit by Month\",\"col\":12}},{\"id\":\"c0_fps_reports\",\"type\":\"card\",\"data\":{\"card_name\":\"FPS reports\",\"col\":4}},{\"id\":\"c1_fps_reports\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting reports\",\"col\":4}}]",
  "creation": "2026-09-09 13:30:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -119,7 +124,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-09 16:30:00.000000",
+ "modified": "2026-09-09 20:15:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS Reports",

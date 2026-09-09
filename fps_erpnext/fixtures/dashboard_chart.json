@@ -1,0 +1,36 @@
+[
+ {
+  "based_on": "jo_date",
+  "chart_name": "FPS Gross Profit by Month",
+  "chart_type": "Sum",
+  "creation": "2026-09-09 13:30:00.000000",
+  "docstatus": 0,
+  "doctype": "Dashboard Chart",
+  "document_type": "Job Order",
+  "dynamic_filters_json": null,
+  "filters_json": "[[\"Job Order\",\"docstatus\",\"<\",2]]",
+  "idx": 0,
+  "is_public": 1,
+  "is_standard": 0,
+  "modified": "2026-09-09 20:15:00.000000",
+  "modified_by": "Administrator",
+  "module": "FPS",
+  "name": "FPS Gross Profit by Month",
+  "owner": "Administrator",
+  "roles": [
+   {
+    "role": "Accounts User"
+   },
+   {
+    "role": "Accounts Manager"
+   },
+   {
+    "role": "System Manager"
+   }
+  ],
+  "time_interval": "Monthly",
+  "timespan": "Last Year",
+  "type": "Bar",
+  "value_based_on": "gross_profit"
+ }
+]

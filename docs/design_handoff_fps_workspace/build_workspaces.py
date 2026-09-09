@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-09 16:30:00.000000"
+STAMP = "2026-09-09 20:15:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -127,6 +127,18 @@ def quick_list(label, document_type, quick_list_filter=None):
     }
 
 
+def custom_block_block(block_name, bid, col=12):
+    return block("custom_block", {"id": bid, "custom_block_name": block_name, "col": col})
+
+
+def quick_list_block(quick_list_name, bid, col=12):
+    return block("quick_list", {"id": bid, "quick_list_name": quick_list_name, "col": col})
+
+
+def chart_block(chart_name, bid, col=12):
+    return block("chart", {"id": bid, "chart_name": chart_name, "col": col})
+
+
 def workspace(name, title, sequence_id, icon, content, links,
               parent_page="", roles=None, indicator_color="",
               shortcuts=None, number_cards=None, charts=None,
@@ -224,15 +236,11 @@ FPS_HOME_LINKS = (
 
 FPS_HOME_CONTENT = [
     header("Fast Planet Shipping", "fpshdr"),
-    # Step 6 inserts the Custom HTML Block pipeline strip here.
-    number_card_block("Open - Customs clearance", "fpstrkc4"),
-    number_card_block("Open - Freight forwarding", "fpstrkc5"),
-    number_card_block("Open - Land transport", "fpstrkc6"),
-    number_card_block("Open - General jobs", "fpstrkc7"),
-    number_card_block("On hold", "fpstrkc8"),
-    number_card_block("Next action overdue", "fpstrkc9"),
-    number_card_block("Cleared - delivery pending", "fpstrkc10"),
-    number_card_block("Delivered - not invoiced", "fpstrkc11"),
+    custom_block_block("FPS Pipeline Strip", "fpsstrip"),
+    number_card_block("FPS Jobs past ETA", "fpsnc1"),
+    number_card_block("FPS Clearance in progress", "fpsnc2"),
+    number_card_block("FPS Delivered not invoiced", "fpsnc3"),
+    number_card_block("FPS Cleared ready to deliver", "fpsnc4"),
     # col 2 truncated every label on the deployed page once a badge sat beside
     # it ("C", "P...", "S.", "Purc..."). col 4 gives two rows of three with room
     # for label and badge together.
@@ -242,7 +250,7 @@ FPS_HOME_CONTENT = [
     shortcut_block("Proof of Delivery", "fpssc4", col=4),
     shortcut_block("Sales Invoice", "fpssc5", col=4),
     shortcut_block("Purchase Invoice", "fpssc6", col=4),
-    # Step 4 inserts the Quick List + Dashboard Chart pair here.
+    quick_list_block("Jobs needing action", "fpsql1"),
     card_block("Sales", "fpscard1"),
     card_block("Operations", "fpscard2"),
     card_block("Accounts & reports", "fpscard3"),
@@ -329,14 +337,26 @@ OPERATIONS_SHORTCUTS = [
 
 FPS_HOME_NUMBER_CARDS = [
     {"label": lbl, "number_card_name": lbl} for lbl in (
+        "FPS Jobs past ETA",
+        "FPS Clearance in progress",
+        "FPS Delivered not invoiced",
+        "FPS Cleared ready to deliver",
+    )
+]
+
+# The SOW breakdown built in the desk on 2026-09-09 is preserved, but moved off
+# the home page to Operations where a per-service split belongs. "Next action
+# overdue" is deliberately NOT carried over: fps_next_due is empty on all 84 job
+# orders, and Frappe's ifnull() coercion makes its "<" comparison match every
+# unpopulated row, so it renders 40 when the true answer is 0.
+OPERATIONS_NUMBER_CARDS = [
+    {"label": lbl, "number_card_name": lbl} for lbl in (
         "Open - Customs clearance",
         "Open - Freight forwarding",
         "Open - Land transport",
         "Open - General jobs",
         "On hold",
-        "Next action overdue",
         "Cleared - delivery pending",
-        "Delivered - not invoiced",
     )
 ]
 
@@ -458,11 +478,18 @@ MASTERS_LINKS = (
 )
 
 
-def child_content(title, blurb, cards, extra=None, shortcuts=()):
+def child_content(title, blurb, cards, extra=None, shortcuts=(),
+                  number_cards=(), charts=()):
     blocks = [header(title, "hdr_" + title.lower().replace(" ", "_").replace("&", "n"))]
     if blurb:
         blocks.append(paragraph(blurb, "txt_" + title.lower().replace(" ", "_").replace("&", "n")))
     blocks.extend(extra or [])
+    for i, nc in enumerate(number_cards):
+        blocks.append(number_card_block(nc["number_card_name"], "n%d_%s" % (
+            i, title.lower().replace(" ", "_").replace("&", "n"))))
+    for i, ch in enumerate(charts):
+        blocks.append(chart_block(ch["chart_name"], "g%d_%s" % (
+            i, title.lower().replace(" ", "_").replace("&", "n"))))
     for i, sc in enumerate(shortcuts):
         blocks.append(shortcut_block(sc["label"], "s%d_%s" % (
             i, title.lower().replace(" ", "_").replace("&", "n")), col=3))
@@ -483,6 +510,7 @@ CHILDREN = [
         roles=OPS_ROLES, links=OPERATIONS_LINKS,
         blurb="Jobs from booking to delivery — job orders, customs and proof of delivery.",
         shortcuts=OPERATIONS_SHORTCUTS,
+        number_cards=OPERATIONS_NUMBER_CARDS,
         cards=["Jobs", "Customs", "Trucking & delivery"],
     ),
     dict(
@@ -505,6 +533,8 @@ CHILDREN = [
         name="FPS Reports", title="FPS Reports", sequence_id=5, icon="table",
         roles=OPS_ROLES, links=REPORTS_LINKS,
         blurb="Job tracking and profitability reporting.",
+        charts=[{"chart_name": "FPS Gross Profit by Month",
+                 "label": "FPS Gross Profit by Month"}],
         cards=["FPS reports", "Accounting reports"],
     ),
     dict(
@@ -708,6 +738,169 @@ def client_script(spec):
     }
 
 
+# ==========================================================================
+# Fixtures
+#
+# Number Card, Dashboard Chart and Custom HTML Block are NOT in v16's
+# IMPORTABLE_DOCTYPES, so unlike the workspaces they cannot ship as module JSON.
+# They go through the `fixtures` hook instead, which imports <app>/fixtures/*.json
+# on migrate. Hand-authored here rather than produced by `bench export-fixtures`,
+# which needs bench access this project does not have.
+#
+# Every filter row is 4 elements. Every count below was probed against live data
+# and then adversarially re-verified on 2026-09-09.
+# ==========================================================================
+
+BLOCKS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "custom_blocks")
+
+# Site convention, taken from the cards already present.
+RED, ORANGE, PURPLE, GREEN = "#C93A3A", "#B86E00", "#8F4CFF", "#10B981"
+
+
+def number_card(name, label, doctype, filters, color, function="Count",
+                based_on=None, dynamic_filters=None):
+    return {
+        "aggregate_function_based_on": based_on,
+        "color": color,
+        "creation": CREATED,
+        "docstatus": 0,
+        "doctype": "Number Card",
+        "document_type": doctype,
+        "dynamic_filters_json": (json.dumps(dynamic_filters, separators=(",", ":"))
+                                 if dynamic_filters else None),
+        "filters_json": json.dumps(filters, separators=(",", ":")),
+        "function": function,
+        "idx": 0,
+        "is_public": 1,
+        "is_standard": 0,
+        "label": label,
+        "modified": STAMP,
+        "modified_by": OWNER,
+        "module": MODULE,
+        "name": name,
+        "owner": OWNER,
+        "show_percentage_stats": 0,
+        "stats_time_interval": "Daily",
+        "type": "Document Type",
+    }
+
+
+NUMBER_CARDS = [
+    # 2 live. The ["eta","is","set"] guard is load-bearing: without it Frappe's
+    # ifnull() coercion matches all 36 open jobs that have no ETA and this reads
+    # 38. The date itself goes in dynamic_filters_json, the framework-canonical
+    # form (the shipped "Employees on Leave (Today)" card uses exactly this).
+    number_card("FPS Jobs past ETA", "Jobs past ETA", "Job Order",
+                [["Job Order", "fps_stage", "not in", ["Closed", "Invoiced"]],
+                 ["Job Order", "docstatus", "<", 2],
+                 ["Job Order", "eta", "is", "set"]],
+                RED,
+                dynamic_filters=[["Job Order", "eta", "<",
+                                  "frappe.datetime.get_today()"]]),
+
+    # 21 live. Named for what it measures. The design asked for Customs Tracker
+    # status "Submitted", which is not one of its statuses, and that doctype is
+    # per-LEG not per-job so its count could never be a job count.
+    number_card("FPS Clearance in progress", "Clearance in progress", "Job Order",
+                [["Job Order", "fps_svc_clearance", "=", 1],
+                 ["Job Order", "fps_stage", "in", ["New", "Docs", "In Progress"]],
+                 ["Job Order", "docstatus", "<", 2]],
+                ORANGE),
+
+    # 2 live. Job Order expresses this directly -- fps_stage plus the
+    # sales_invoice Link -- without needing to join through POD.
+    number_card("FPS Delivered not invoiced", "Delivered, not invoiced", "Job Order",
+                [["Job Order", "fps_stage", "=", "Delivered"],
+                 ["Job Order", "sales_invoice", "is", "not set"],
+                 ["Job Order", "docstatus", "<", 2]],
+                PURPLE),
+
+    # 9 live. Replaces the design's "GP this month", which would read AED 0.00:
+    # gross_profit is populated on only 6 of 84 job orders, all in June, netting
+    # -112,888.90. A Number Card also cannot be role-gated (no roles table), so a
+    # money card cannot live on a page ops can see. This is real and operational.
+    number_card("FPS Cleared ready to deliver", "Cleared, ready to deliver", "Job Order",
+                [["Job Order", "fps_stage", "=", "Cleared - Ready"],
+                 ["Job Order", "docstatus", "<", 2]],
+                GREEN),
+]
+
+# Dashboard Chart DOES have a roles table (Number Card does not), so the money
+# chart is gated here AND kept off the home page.
+DASHBOARD_CHARTS = [{
+    "based_on": "jo_date",
+    "chart_name": "FPS Gross Profit by Month",
+    "chart_type": "Sum",
+    "creation": CREATED,
+    "docstatus": 0,
+    "doctype": "Dashboard Chart",
+    "document_type": "Job Order",
+    "dynamic_filters_json": None,
+    "filters_json": json.dumps([["Job Order", "docstatus", "<", 2]],
+                               separators=(",", ":")),
+    "idx": 0,
+    "is_public": 1,
+    "is_standard": 0,
+    "modified": STAMP,
+    "modified_by": OWNER,
+    "module": MODULE,
+    "name": "FPS Gross Profit by Month",
+    "owner": OWNER,
+    "roles": [{"role": r} for r in
+              ("Accounts User", "Accounts Manager", "System Manager")],
+    "time_interval": "Monthly",
+    # Frappe has no "Last 6 Months"; the options are Last Year / Last Quarter /
+    # Last Month / Last Week / Select Date Range. Last Year rolls forward on its
+    # own, where a Select Date Range would freeze and need hand-editing.
+    "timespan": "Last Year",
+    "type": "Bar",
+    "value_based_on": "gross_profit",
+}]
+
+
+def custom_html_blocks():
+    def read(ext):
+        with open(os.path.join(BLOCKS_DIR, "fps_pipeline_strip." + ext),
+                  encoding="utf-8") as fh:
+            return fh.read()
+
+    return [{
+        "creation": CREATED,
+        "docstatus": 0,
+        "doctype": "Custom HTML Block",
+        "html": read("html"),
+        "idx": 0,
+        "modified": STAMP,
+        "modified_by": OWNER,
+        "name": "FPS Pipeline Strip",
+        "owner": OWNER,
+        # Left ungated on purpose: the gate is inside the API method, which omits
+        # any stage whose doctype the caller cannot read. That degrades per
+        # viewer instead of hiding the whole strip.
+        "private": 0,
+        "roles": [],
+        "script": read("js"),
+        "style": read("css"),
+    }]
+
+
+def write_fixtures():
+    out = os.path.join(APP_ROOT, "fps_erpnext", "fixtures")
+    os.makedirs(out, exist_ok=True)
+    written = []
+    for fname, payload in (
+        ("number_card.json", NUMBER_CARDS),
+        ("dashboard_chart.json", DASHBOARD_CHARTS),
+        ("custom_html_block.json", custom_html_blocks()),
+    ):
+        target = os.path.join(out, fname)
+        with open(target, "w", encoding="utf-8", newline="\n") as fh:
+            json.dump(payload, fh, indent=1, sort_keys=True, ensure_ascii=False)
+            fh.write("\n")
+        written.append(os.path.relpath(target, APP_ROOT))
+    return written
+
+
 def write(rel_dir, slug, payload):
     path = os.path.join(MODULE_PATH, rel_dir, slug)
     os.makedirs(path, exist_ok=True)
@@ -726,6 +919,12 @@ def main():
         indicator_color="cyan",
         content=FPS_HOME_CONTENT, links=FPS_HOME_LINKS,
         shortcuts=FPS_HOME_SHORTCUTS, number_cards=FPS_HOME_NUMBER_CARDS,
+        quick_lists=[quick_list(
+            "Jobs needing action", "Job Order",
+            [["Job Order", "fps_stage", "not in", ["Closed", "Invoiced"]],
+             ["Job Order", "docstatus", "<", 2]])],
+        custom_blocks=[{"custom_block_name": "FPS Pipeline Strip",
+                        "label": "FPS Pipeline Strip"}],
     )))
 
     for spec in CHILDREN:
@@ -737,13 +936,19 @@ def main():
             sequence_id=spec["sequence_id"], icon=spec["icon"],
             parent_page="FPS", roles=spec["roles"], links=spec["links"],
             content=child_content(spec["title"], spec["blurb"], spec["cards"],
-                                  spec.get("extra"), spec.get("shortcuts") or ()),
+                                  spec.get("extra"), spec.get("shortcuts") or (),
+                                  spec.get("number_cards") or (),
+                                  spec.get("charts") or ()),
             shortcuts=spec.get("shortcuts") or [],
+            number_cards=spec.get("number_cards") or [],
+            charts=spec.get("charts") or [],
         )))
 
     written.append(write("workspace", "payment_receipts", payment_receipts()))
 
     written.append(write("workspace_sidebar", "fps", SIDEBAR))
+
+    written.extend(write_fixtures())
 
     for spec in CLIENT_SCRIPTS:
         slug = spec["name"].lower().replace(" ", "_")
