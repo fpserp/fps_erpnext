@@ -30,3 +30,4 @@ fps_erpnext.patches.v1_0.place_port_of_discharge
 fps_erpnext.patches.v1_0.reset_report_columns
 fps_erpnext.patches.v1_0.fix_emit_closure
 fps_erpnext.patches.v1_0.allow_tracker_delete
+fps_erpnext.patches.v1_0.allow_job_order_delete
