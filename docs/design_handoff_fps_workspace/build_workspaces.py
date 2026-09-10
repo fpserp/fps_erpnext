@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-12 18:00:00.000000"
+STAMP = "2026-09-13 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -972,6 +972,45 @@ PROPERTY_SETTERS = [
     property_setter("FPS Enquiry", "naming_series", "in_list_view", "0", "Check"),
     property_setter("FPS Enquiry", "naming_series", "hidden", "1", "Check"),
 ]
+
+# ==========================================================================
+# Sales Invoice money totals -> permlevel 1
+#
+# WHY THIS AND NOT THE `report` PERMISSION. Ops was given report=0 on Sales
+# Invoice on the assumption that it stopped them totalling invoices up. Reading
+# the code this site actually serves: it does not. `report` gates saved Query
+# Reports and export only -- the Report VIEW, Group By -> SUM and Show Totals
+# are all gated on plain `read`. can_get_report appears ZERO times in the
+# deployed list bundle. Permlevel is the only mechanism that actually works:
+# reportview.validate_fields() strips fields the caller cannot read at their
+# permlevel, so they cannot be selected as a column, grouped, or summed.
+#
+# WHO LOSES WHAT. The permlevel-1 rows on Sales Invoice are Accounts Manager
+# (read) and All (no read); the patch adds Accounts User and System Manager.
+# Verified against live roles on 2026-09-10: agam@ and abhishek@ hold Accounts
+# Manager, Accounts User AND System Manager, so they see everything as before.
+# ops@ holds Employee, Desk User and FPS Operations only -- none of the three --
+# so ops sees no totals. That is the whole intent.
+#
+# ONLY SERVER-COMPUTED FIELDS ARE MOVED. Every field below is read_only=1 and
+# recalculated by calculate_taxes_and_totals(). That matters: Frappe's
+# validate_higher_perm_levels() RESETS permlevel-restricted fields on save, and
+# on a NEW document it resets them to the field default. It runs before
+# run_before_save_methods(), so validate() recomputes them straight afterwards
+# and the saved figures are correct. A USER-ENTERED amount would simply be
+# blanked, which is why write_off_amount is deliberately NOT in this list.
+SALES_INVOICE_TOTALS = (
+    "total", "base_total", "net_total", "base_net_total",
+    "total_taxes_and_charges", "base_total_taxes_and_charges",
+    "grand_total", "base_grand_total",
+    "rounded_total", "base_rounded_total",
+    "in_words", "base_in_words",
+    "outstanding_amount", "total_advance", "paid_amount",
+)
+
+for _f in SALES_INVOICE_TOTALS:
+    PROPERTY_SETTERS.append(
+        property_setter("Sales Invoice", _f, "permlevel", "1", "Int"))
 
 # Open the FPS doctypes in the REPORT view rather than the List view.
 #
