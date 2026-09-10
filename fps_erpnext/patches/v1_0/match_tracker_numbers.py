@@ -25,6 +25,13 @@ half-migrated. Every record that needs to move goes to a temporary name first,
 then to its final one, so no two records ever contend for a name.
 
 Re-running is safe: anything already at its target is skipped.
+
+KEEP THE rename_doc CALLS MINIMAL. The deployed Frappe (16.24.1) does not accept
+ignore_permissions on rename_doc -- passing it raised
+"TypeError: rename_doc() got an unexpected keyword argument 'ignore_permissions'"
+and took the whole migrate down. The version-16 branch does accept it, so the
+branch source is NOT a safe guide to what is running. Only `force` is passed
+here; patches already run as Administrator, so there is no permission to bypass.
 """
 
 import frappe
@@ -91,11 +98,9 @@ def _renumber(doctype, prefix, link_field, order_by):
         while frappe.db.exists(doctype, tmp):
             i += 1
             tmp = "%sTMP-%d" % (prefix, i)
-        frappe.rename_doc(doctype, old, tmp, force=True, merge=False,
-                          ignore_permissions=True, show_alert=False)
+        frappe.rename_doc(doctype, old, tmp, force=True)
         parked[tmp] = moving[old]
 
     # Phase 2 -- every target is free now.
     for tmp, final in parked.items():
-        frappe.rename_doc(doctype, tmp, final, force=True, merge=False,
-                          ignore_permissions=True, show_alert=False)
+        frappe.rename_doc(doctype, tmp, final, force=True)

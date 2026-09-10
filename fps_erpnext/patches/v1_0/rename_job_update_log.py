@@ -44,7 +44,8 @@ def _rename_doctype():
     if frappe.db.exists("DocType", NEW):
         # Already renamed, or something else claimed the name -- do not merge.
         return
-    frappe.rename_doc("DocType", OLD, NEW, force=True, ignore_permissions=True)
+    # Minimal kwargs on purpose -- see match_tracker_numbers for why.
+    frappe.rename_doc("DocType", OLD, NEW, force=True)
 
 
 def _fix_script_bodies():
