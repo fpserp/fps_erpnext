@@ -51,12 +51,19 @@ DESCRIPTION = "The port the cargo is discharged at. Leave blank when there is no
 # The fps_ prefix is kept on the two STOCK doctypes, matching the convention
 # already used there and keeping the field clear of anything ERPNext may add
 # later. The three custom doctypes take the plain name.
+# ANCHORED ON THE ORIGIN FIELD, NOT THE DESTINATION ONE, and that is not a
+# style choice -- it is where the field actually lands. Anchoring on the
+# Destination field put it 15 fields further down, in Profit Summary; anchoring
+# on Origin/POL puts it directly beneath Origin/POL inside FPS Shipment Details,
+# which is also where it was asked for. Verified against the live merged meta
+# for all five doctypes rather than reasoned about. See place_port_of_discharge
+# for why the first attempt failed and how this was measured.
 FIELDS = {
-	"Job Order": ("port_of_discharge", "pod"),
-	"Proof of Delivery": ("port_of_discharge", "destination"),
-	"FPS Enquiry": ("port_of_discharge", "destination"),
-	"Quotation": ("fps_port_of_discharge", "fps_pod"),
-	"Sales Invoice": ("fps_port_of_discharge", "fps_pod"),
+	"Job Order": ("port_of_discharge", "pol"),
+	"Proof of Delivery": ("port_of_discharge", "pol"),
+	"FPS Enquiry": ("port_of_discharge", "origin"),
+	"Quotation": ("fps_port_of_discharge", "fps_pol"),
+	"Sales Invoice": ("fps_port_of_discharge", "fps_pol"),
 }
 
 

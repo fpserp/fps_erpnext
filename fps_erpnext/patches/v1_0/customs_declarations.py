@@ -47,13 +47,23 @@ from fps_erpnext.api.customs import DEADLINES, DECLARATIONS, rollup_declarations
 TRACKER = "Customs Tracker"
 CHILD = "FPS Customs Declaration"
 
+# A Table inside a column break is rendered at that column's width -- roughly a
+# fifth of the page, which is unusable for a grid with five columns of its own.
+# Its OWN Section Break gives it the full width.
+SECTION_FIELD = {
+	"fieldname": "fps_declarations_sec",
+	"fieldtype": "Section Break",
+	"label": "Declarations",
+	"insert_after": "boe_number",
+	"description": "One row per BOE. A job that clears on two declarations has two rows.",
+}
+
 TABLE_FIELD = {
 	"fieldname": DECLARATIONS,
 	"fieldtype": "Table",
 	"label": "Declarations",
 	"options": CHILD,
-	"insert_after": "boe_number",
-	"description": "One row per BOE. A job that clears on two declarations has two rows.",
+	"insert_after": "fps_declarations_sec",
 }
 
 # Copied straight across from the tracker to its first declaration row.
@@ -99,16 +109,23 @@ def execute():
 
 
 def _add_table():
-	fieldnames = [f.fieldname for f in frappe.get_meta(TRACKER).fields]
-	if DECLARATIONS in fieldnames:
-		return
-	if TABLE_FIELD["insert_after"] not in fieldnames:
-		frappe.log_error(title="FPS: no boe_number on Customs Tracker, table not added")
-		return
-	try:
-		create_custom_field(TRACKER, dict(TABLE_FIELD), ignore_validate=True)
-	except Exception:
-		frappe.log_error(title="FPS: could not add fps_declarations")
+	"""Section first, then the table inside it -- order matters, the table
+	anchors on the section."""
+	for spec in (SECTION_FIELD, TABLE_FIELD):
+		fieldnames = [f.fieldname for f in frappe.get_meta(TRACKER).fields]
+		if spec["fieldname"] in fieldnames:
+			continue
+		if spec["insert_after"] not in fieldnames:
+			frappe.log_error(
+				title="FPS: %s has no %s, %s not added"
+				% (TRACKER, spec["insert_after"], spec["fieldname"])
+			)
+			continue
+		try:
+			create_custom_field(TRACKER, dict(spec), ignore_validate=True)
+			frappe.clear_cache(doctype=TRACKER)
+		except Exception:
+			frappe.log_error(title="FPS: could not add %s" % spec["fieldname"])
 
 
 def _deadlines_for(clearance_date):
