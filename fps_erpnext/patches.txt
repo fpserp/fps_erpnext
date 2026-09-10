@@ -6,3 +6,5 @@
 # Patches added in this section will be executed after doctypes are migrated
 fps_erpnext.patches.v1_0.restrict_ops_financial_access
 fps_erpnext.patches.v1_0.rename_docs_stage
+fps_erpnext.patches.v1_0.fix_save_as_draft_label
+fps_erpnext.patches.v1_0.match_tracker_numbers
