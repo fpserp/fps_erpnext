@@ -42,9 +42,9 @@
    "dependencies": "",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Job update log (history)",
+   "label": "Job Tracker",
    "link_count": 0,
-   "link_to": "Job Update Log",
+   "link_to": "Job Tracker",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -72,7 +72,7 @@
    "dependencies": "",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Customs Tracker · Mirsal",
+   "label": "Customs Tracker",
    "link_count": 0,
    "link_to": "Customs Tracker",
    "link_type": "DocType",
@@ -83,20 +83,9 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Trucking & delivery",
-   "link_count": 2,
+   "link_count": 1,
    "onboard": 0,
    "type": "Card Break"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Delivery Note",
-   "link_count": 0,
-   "link_to": "Delivery Note",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
   },
   {
    "dependencies": "",
@@ -110,7 +99,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-11 23:30:00.000000",
+ "modified": "2026-09-12 09:00:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS Operations",

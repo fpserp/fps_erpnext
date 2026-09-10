@@ -111,7 +111,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Bank & reconciliation",
-   "link_count": 3,
+   "link_count": 2,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -122,17 +122,6 @@
    "label": "Bank statements",
    "link_count": 0,
    "link_to": "FPS Bank Statement",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Payment Reconciliation",
-   "link_count": 0,
-   "link_to": "Payment Reconciliation",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -152,7 +141,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Receivables & payables",
-   "link_count": 3,
+   "link_count": 2,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -174,17 +163,6 @@
    "label": "Accounts Payable",
    "link_count": 0,
    "link_to": "Accounts Payable",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Customer Ledger Summary",
-   "link_count": 0,
-   "link_to": "Customer Ledger Summary",
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
@@ -220,7 +198,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-11 23:30:00.000000",
+ "modified": "2026-09-12 09:00:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS Accounts",

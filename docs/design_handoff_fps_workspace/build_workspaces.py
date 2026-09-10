@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-11 23:30:00.000000"
+STAMP = "2026-09-12 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -308,21 +308,21 @@ SALES_LINKS = (
     + card("CRM", [
         doc("Lead"),
         doc("Opportunity"),
-        doc("Contact"),
     ])
 )
 
 OPERATIONS_LINKS = (
     card("Jobs", [
         doc("Job Order"),
-        doc("Job Update Log", label="Job update log (history)"),
+        # WAS doc("Job Update Log") -- a DEAD LINK. That doctype was renamed to
+        # Job Tracker and no longer exists, so the card pointed at nothing.
+        doc("Job Tracker"),
         doc("FPS Enquiry"),
     ])
     + card("Customs", [
-        doc("Customs Tracker", label="Customs Tracker · Mirsal"),
+        doc("Customs Tracker"),
     ])
     + card("Trucking & delivery", [
-        doc("Delivery Note"),
         doc("Proof of Delivery"),
     ])
 )
@@ -341,13 +341,11 @@ ACCOUNTS_LINKS = (
     ])
     + card("Bank & reconciliation", [
         doc("FPS Bank Statement", label="Bank statements"),
-        doc("Payment Reconciliation"),
         doc("Account", label="Chart of Accounts"),
     ])
     + card("Receivables & payables", [
         doc("Accounts Receivable", "Report"),
         doc("Accounts Payable", "Report"),
-        doc("Customer Ledger Summary", "Report"),
     ])
     + card("Tax", [
         doc("UAE VAT 201", "Report", "VAT 5% return"),
@@ -359,7 +357,6 @@ HR_LINKS = (
     card("People", [
         doc("Employee"),
         doc("Attendance"),
-        doc("Shift Assignment"),
     ])
     + card("Leave & claims", [
         doc("Leave Application"),
@@ -398,14 +395,7 @@ MASTERS_LINKS = (
         doc("Stock Entry"),
         doc("Warehouse"),
     ])
-    + card("Users & roles", [
-        doc("User"),
-        doc("Role"),
-    ])
     + card("Integrations", [
-        doc("FPS Outgoing Email"),
-        doc("FPS Microsoft Settings"),
-        doc("Qashio Settings"),
         doc("Qashio Sync Log"),
     ])
 )
@@ -477,7 +467,7 @@ CHILDREN = [
         name="FPS Masters & Setup", title="FPS Masters & Setup", sequence_id=6, icon="setting",
         roles=SETUP_ROLES, links=MASTERS_LINKS,
         blurb="Reference data, users and integrations. Changes here affect every job.",
-        cards=["Masters", "Stock", "Users & roles", "Integrations"],
+        cards=["Masters", "Stock", "Integrations"],
     ),
 ]
 
@@ -971,12 +961,50 @@ PROPERTY_SETTERS = [
 # is deliberately NOT set, so anyone who prefers the List view can switch back
 # and their choice sticks.
 #
-# Quotation is stock ERPNext and was left out of the first pass for that
-# reason -- which is exactly why its columns were still rigid. It is added now
-# because it was asked for. Nothing else stock is touched: a Property Setter on
-# a stock doctype affects every user of this site, not just FPS.
-for _dt in ("Job Order", "Job Tracker", "Customs Tracker",
-            "Proof of Delivery", "FPS Enquiry", "Quotation"):
+# EVERY doctype reachable from the FPS sidebar or an FPS workspace card now
+# opens in the Report view. The first pass covered only FPS-owned doctypes,
+# on the reasoning that the stock ones are shared with the rest of the site --
+# but the rest of the site is the same four people, and they have asked twice.
+#
+# This also removes the fixed column on the right of every list (the "1 M" last
+# modified stamp, the comment count and the like heart). That chrome belongs to
+# the LIST view; the Report view has no equivalent, and still shows the record
+# count at the foot of the table.
+#
+# THREE GROUPS ARE DELIBERATELY LEFT OUT:
+#
+#   Trees -- Account, Cost Center, Item Group, Warehouse. default_view is "Tree"
+#   on all four and that is the right view for a chart of accounts or an item
+#   hierarchy. A tree has no columns to widen, so Report would be a regression,
+#   not a fix. The view switcher still offers Report on any of them.
+#
+#   Singles -- Bank Reconciliation Tool, FPS Microsoft Settings, Payment
+#   Reconciliation, Qashio Settings. A single doctype has no list at all, so
+#   default_view means nothing to it.
+#
+#   Doctypes whose navigation links were just removed -- Contact, Delivery Note,
+#   FPS Outgoing Email, Role, Shift Assignment, User. Not reachable under FPS
+#   any more, so not ours to restyle for the whole site.
+#
+# force_re_route_to_default_view stays OFF throughout: anyone who prefers the
+# List view can switch back and their choice sticks.
+for _dt in (
+        # FPS-owned
+        "Job Order", "Job Tracker", "Customs Tracker", "Proof of Delivery",
+        "FPS Enquiry", "FPS Bank Statement",
+        # Sales
+        "Quotation", "Sales Order", "Customer", "Lead", "Opportunity",
+        # Accounts
+        "Sales Invoice", "Purchase Invoice", "Payment Entry", "Journal Entry",
+        "Bank Transaction", "Unreconcile Payment",
+        "Process Statement Of Accounts",
+        # Buying
+        "Material Request", "Purchase Order", "Supplier",
+        # HR and payroll
+        "Employee", "Attendance", "Leave Application", "Expense Claim",
+        "Payroll Entry", "Salary Slip",
+        # Masters and stock
+        "Item", "Stock Entry", "Qashio Sync Log"):
     PROPERTY_SETTERS.append(
         property_setter(_dt, None, "default_view", "Report", "Select",
                         doctype_or_field="DocType"))

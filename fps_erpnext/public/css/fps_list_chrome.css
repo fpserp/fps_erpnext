@@ -1,0 +1,40 @@
+/* Remove the fixed strip on the right-hand edge of every desk LIST row.
+ *
+ * WHAT IT IS. Frappe renders this into each list row (verified by reading the
+ * list.bundle.js this site is actually serving, not the branch source):
+ *
+ *   <div class="level-item list-row-activity hidden-xs">
+ *     <div class="hidden-md hidden-xs d-flex">  assignment avatars  </div>
+ *     <span class="modified">1 M</span>
+ *     <span class="comment-count"> 0 </span>
+ *     <span class="mx-2">.</span>
+ *     <span class="list-row-like hidden-xs"> heart </span>
+ *   </div>
+ *
+ * plus a separate <span class="like-action"> heart per row, and in the header
+ * <span class="list-count">629 of 629</span> followed by
+ * <span class="list-liked-by-me"> heart </span>.
+ *
+ * WHAT IS HIDDEN. The per-row strip and both hearts. On this site it carries
+ * almost nothing: 0 open ToDos, so there are no assignment avatars to lose, and
+ * 29 comments across every doctype in the system -- all still readable on the
+ * document itself.
+ *
+ * WHAT IS KEPT. .list-count, the "629 of 629". That is a genuine piece of
+ * information and it lives in the header only, not in the rows, so keeping it
+ * costs no column width.
+ *
+ * COMMUNICATION IS EXCLUDED. The email Inbox view reuses .list-row-activity for
+ * its replied / closed status icons, which are the point of that view rather
+ * than clutter.
+ *
+ * This is belt and braces. Every FPS list now opens in the REPORT view, which
+ * has no such strip at all -- this only matters if someone switches a list back
+ * to List view.
+ */
+
+body[data-route^="List/"]:not([data-route^="List/Communication"]) .list-row-activity,
+body[data-route^="List/"]:not([data-route^="List/Communication"]) .like-action,
+body[data-route^="List/"]:not([data-route^="List/Communication"]) .list-liked-by-me {
+	display: none !important;
+}

@@ -18,7 +18,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "People",
-   "link_count": 3,
+   "link_count": 2,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -40,17 +40,6 @@
    "label": "Attendance",
    "link_count": 0,
    "link_to": "Attendance",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Shift Assignment",
-   "link_count": 0,
-   "link_to": "Shift Assignment",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -116,7 +105,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-11 23:30:00.000000",
+ "modified": "2026-09-12 09:00:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS HR",

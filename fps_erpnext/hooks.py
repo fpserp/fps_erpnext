@@ -37,14 +37,20 @@ add_to_apps_screen = [
 fixtures = [
     {"dt": "Number Card", "filters": [["module", "=", "FPS"]]},
     {"dt": "Dashboard Chart", "filters": [["module", "=", "FPS"]]},
-    {"dt": "Custom HTML Block", "filters": [["name", "in", ["FPS Overview", "FPS Job Tracker"]]]},
+    {"dt": "Custom HTML Block", "filters": [["name", "in", [
+        "FPS Overview", "FPS Job Tracker", "FPS Customs Tracker"]]]},
 ]
 
 # Includes in <head>
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/fps_erpnext/css/fps_erpnext.css"
+#
+# fps_list_chrome.css removes the fixed strip on the right of every LIST row --
+# the "1 M" modified stamp, the comment count and the like hearts -- while
+# keeping the "629 of 629" record count. Plain CSS under public/, so it is
+# symlinked to /assets/fps_erpnext/ and needs no bundle entry.
+app_include_css = "/assets/fps_erpnext/css/fps_list_chrome.css"
 # app_include_js = "/assets/fps_erpnext/js/fps_erpnext.js"
 
 # include js, css files in header of web template

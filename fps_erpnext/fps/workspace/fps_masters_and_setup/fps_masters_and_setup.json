@@ -1,7 +1,7 @@
 {
  "app": "fps_erpnext",
  "charts": [],
- "content": "[{\"id\":\"hdr_fps_masters_n_setup\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS Masters & Setup</b></span>\",\"col\":12}},{\"id\":\"txt_fps_masters_n_setup\",\"type\":\"paragraph\",\"data\":{\"text\":\"Reference data, users and integrations. Changes here affect every job.\",\"col\":12}},{\"id\":\"c0_fps_masters_n_setup\",\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":4}},{\"id\":\"c1_fps_masters_n_setup\",\"type\":\"card\",\"data\":{\"card_name\":\"Stock\",\"col\":4}},{\"id\":\"c2_fps_masters_n_setup\",\"type\":\"card\",\"data\":{\"card_name\":\"Users & roles\",\"col\":4}},{\"id\":\"c3_fps_masters_n_setup\",\"type\":\"card\",\"data\":{\"card_name\":\"Integrations\",\"col\":4}}]",
+ "content": "[{\"id\":\"hdr_fps_masters_n_setup\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS Masters & Setup</b></span>\",\"col\":12}},{\"id\":\"txt_fps_masters_n_setup\",\"type\":\"paragraph\",\"data\":{\"text\":\"Reference data, users and integrations. Changes here affect every job.\",\"col\":12}},{\"id\":\"c0_fps_masters_n_setup\",\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":4}},{\"id\":\"c1_fps_masters_n_setup\",\"type\":\"card\",\"data\":{\"card_name\":\"Stock\",\"col\":4}},{\"id\":\"c2_fps_masters_n_setup\",\"type\":\"card\",\"data\":{\"card_name\":\"Integrations\",\"col\":4}}]",
  "creation": "2026-09-09 13:30:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -110,73 +110,10 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Users & roles",
-   "link_count": 2,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "User",
-   "link_count": 0,
-   "link_to": "User",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Role",
-   "link_count": 0,
-   "link_to": "Role",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Integrations",
-   "link_count": 4,
+   "link_count": 1,
    "onboard": 0,
    "type": "Card Break"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "FPS Outgoing Email",
-   "link_count": 0,
-   "link_to": "FPS Outgoing Email",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "FPS Microsoft Settings",
-   "link_count": 0,
-   "link_to": "FPS Microsoft Settings",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Qashio Settings",
-   "link_count": 0,
-   "link_to": "Qashio Settings",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
   },
   {
    "dependencies": "",
@@ -190,7 +127,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-09-11 23:30:00.000000",
+ "modified": "2026-09-12 09:00:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS Masters & Setup",
