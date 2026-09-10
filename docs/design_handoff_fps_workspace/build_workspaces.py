@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-12 09:00:00.000000"
+STAMP = "2026-09-12 18:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -948,6 +948,29 @@ PROPERTY_SETTERS = [
     property_setter("Customs Tracker", "declaration_type", "in_standard_filter", "1", "Check"),
     property_setter("Customs Tracker", "fps_clearance_type", "in_standard_filter", "1", "Check"),
     property_setter("Customs Tracker", "fps_mofa_status", "in_standard_filter", "1", "Check"),
+
+    # A tracker is named after its job order now, by the autoname hook in
+    # fps_erpnext.api.trackers -- the FPS/JT and FPS/CT series are dead. The
+    # naming_series field is left in place (removing it would rewrite the
+    # doctype) but hidden, and no longer mandatory: nothing reads it, and a
+    # required field nobody can see is a trap waiting for the first save that
+    # arrives without a default.
+    property_setter("Job Tracker", "naming_series", "hidden", "1", "Check"),
+    property_setter("Job Tracker", "naming_series", "reqd", "0", "Check"),
+    property_setter("Customs Tracker", "naming_series", "hidden", "1", "Check"),
+    property_setter("Customs Tracker", "naming_series", "reqd", "0", "Check"),
+
+    # FPS Enquiry was the ONLY doctype on this site still showing "Series" as a
+    # list COLUMN -- checked all nine FPS and accounts doctypes, the other eight
+    # already have in_list_view 0. The column said "FPS/ENQ/.YY..MM./.###" on
+    # every single row, because that is the one and only option the field has.
+    #
+    # Hidden on the form as well: with a single option and a default there is no
+    # choice to make. It stays REQUIRED, unlike on the trackers -- the enquiry is
+    # still named from this series, so the value has to be there even though
+    # nobody needs to look at it.
+    property_setter("FPS Enquiry", "naming_series", "in_list_view", "0", "Check"),
+    property_setter("FPS Enquiry", "naming_series", "hidden", "1", "Check"),
 ]
 
 # Open the FPS doctypes in the REPORT view rather than the List view.

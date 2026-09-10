@@ -1,40 +1,61 @@
 /* Remove the fixed strip on the right-hand edge of every desk LIST row.
  *
- * WHAT IT IS. Frappe renders this into each list row (verified by reading the
- * list.bundle.js this site is actually serving, not the branch source):
+ * WHAT IT IS. Frappe renders this into each list row (read out of the
+ * list.bundle.js this site is actually serving, and cross-checked against the
+ * v16.24.1 tag -- the exact deployed version, not the branch tip):
  *
- *   <div class="level-item list-row-activity hidden-xs">
- *     <div class="hidden-md hidden-xs d-flex">  assignment avatars  </div>
- *     <span class="modified">1 M</span>
- *     <span class="comment-count"> 0 </span>
- *     <span class="mx-2">.</span>
- *     <span class="list-row-like hidden-xs"> heart </span>
+ *   <div class="level-right text-muted ellipsis">
+ *     <div class="level-item list-row-activity hidden-xs">
+ *       <div class="hidden-md hidden-xs d-flex"> assignment avatars </div>
+ *       <span class="modified"> 1 M </span>
+ *       <span class="comment-count"> 0 </span>
+ *       <span class="mx-2">.</span>
+ *       <span class="list-row-like"><span class="like-action"> heart </span></span>
+ *     </div>
+ *     <div class="level-item visible-xs text-right"> mobile status indicator </div>
  *   </div>
  *
- * plus a separate <span class="like-action"> heart per row, and in the header
- * <span class="list-count">629 of 629</span> followed by
- * <span class="list-liked-by-me"> heart </span>.
+ * and in the header, which is <header class="level list-row-head"> and does NOT
+ * carry the list-row class:
  *
- * WHAT IS HIDDEN. The per-row strip and both hearts. On this site it carries
- * almost nothing: 0 open ToDos, so there are no assignment avatars to lose, and
- * 29 comments across every doctype in the system -- all still readable on the
- * document itself.
+ *   <span class="list-count">629 of 629</span>
+ *   <span class="level-item list-liked-by-me"> heart </span>
  *
- * WHAT IS KEPT. .list-count, the "629 of 629". That is a genuine piece of
- * information and it lives in the header only, not in the rows, so keeping it
- * costs no column width.
+ * COLLAPSING THE GUTTER IS THE HALF THAT MATTERS. Hiding .list-row-activity on
+ * its own is not enough: list.scss pins the container with
+ * `.list-row .level-right { flex: 0 0 130px..200px; width: ..px }`, and
+ * update_listview_classes() puts has-assign-to / assign-to-length-N /
+ * no-assign-to on .result to choose between them. Hide only the contents and
+ * you are left with the same rigid empty column -- which was the complaint.
+ * Hence the flex/width reset, and hence !important: those rules reach six
+ * classes of specificity.
  *
- * COMMUNICATION IS EXCLUDED. The email Inbox view reuses .list-row-activity for
- * its replied / closed status icons, which are the point of that view rather
- * than clutter.
+ * WHAT IS KEPT. .list-count, the "629 of 629". It is real information and it
+ * lives in the header only, so keeping it costs no row width. The mobile-only
+ * status indicator is left alone too -- the reset changes the container's width,
+ * it does not hide it.
+ *
+ * WHAT IS LOST. The last-modified stamp, the comment count, the like hearts and
+ * the assignment avatars. On this site that is close to nothing: 0 open ToDos,
+ * so there are no avatars, and 29 comments across every doctype in the system --
+ * all still on the documents themselves.
+ *
+ * COMMUNICATION IS EXCLUDED. The email Inbox reuses .list-row-activity for its
+ * replied / closed status icons, which are the point of that view.
  *
  * This is belt and braces. Every FPS list now opens in the REPORT view, which
- * has no such strip at all -- this only matters if someone switches a list back
- * to List view.
+ * has no such strip at all; this only shows up if someone switches back to List.
  */
 
-body[data-route^="List/"]:not([data-route^="List/Communication"]) .list-row-activity,
-body[data-route^="List/"]:not([data-route^="List/Communication"]) .like-action,
-body[data-route^="List/"]:not([data-route^="List/Communication"]) .list-liked-by-me {
+body[data-route^="List/"]:not([data-route^="List/Communication"]) .frappe-list .list-row .list-row-activity,
+body[data-route^="List/"]:not([data-route^="List/Communication"]) .frappe-list .list-row .like-action,
+body[data-route^="List/"]:not([data-route^="List/Communication"]) .frappe-list .list-row-head .list-liked-by-me {
 	display: none !important;
+}
+
+/* Reclaim the width the strip was holding open. */
+body[data-route^="List/"]:not([data-route^="List/Communication"]) .frappe-list .list-row .level-right {
+	flex: 0 0 auto !important;
+	width: auto !important;
+	min-width: 0 !important;
 }

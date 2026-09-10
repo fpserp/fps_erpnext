@@ -96,16 +96,26 @@
 		}
 	}
 
-	// Row click opens THAT JOB'S tracker entries -- the Job Update Log filtered
-	// to it -- not the Job Order form. Delegated so it survives every re-render,
-	// and routed through frappe.set_route rather than an <a href> so the desk
-	// navigates in place instead of doing a full page reload.
+	// Row click opens THAT JOB'S tracker -- there is exactly one per job now, so
+	// it opens the document itself rather than a list filtered down to a single
+	// row. The name is looked up rather than assumed: it equals the job order
+	// number after the renaming, but a job whose tracker was never opened has to
+	// say so instead of routing to a 404.
+	//
+	// Delegated so it survives every re-render, and routed through
+	// frappe.set_route rather than an <a href> so the desk navigates in place
+	// instead of doing a full page reload.
 	body.addEventListener("click", function (e) {
 		var row = e.target.closest("tr[data-job]");
 		if (!row) return;
-		frappe.set_route("List", "Job Tracker", {
-			job_order: row.getAttribute("data-job"),
-		});
+		var job = row.getAttribute("data-job");
+		frappe.db
+			.get_value("Job Tracker", { job_order: job }, "name")
+			.then(function (r) {
+				var name = r && r.message && r.message.name;
+				if (name) frappe.set_route("Form", "Job Tracker", name);
+				else frappe.set_route("Form", "Job Order", job);
+			});
 	});
 
 	frappe
