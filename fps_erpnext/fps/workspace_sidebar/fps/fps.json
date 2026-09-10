@@ -398,22 +398,6 @@
    "icon": null,
    "indent": 0,
    "keep_closed": 0,
-   "label": "Accounts Receivable Summary",
-   "link_to": "Accounts Receivable Summary",
-   "link_type": "Report",
-   "navigate_to_tab": null,
-   "route_options": null,
-   "show_arrow": 0,
-   "type": "Link",
-   "url": null
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "filters": null,
-   "icon": null,
-   "indent": 0,
-   "keep_closed": 0,
    "label": "Statement of Accounts",
    "link_to": "Process Statement Of Accounts",
    "link_type": "DocType",
@@ -504,7 +488,7 @@
    "url": null
   }
  ],
- "modified": "2026-09-10 21:10:00.000000",
+ "modified": "2026-09-10 22:30:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "module_onboarding": null,

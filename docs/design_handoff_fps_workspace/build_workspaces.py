@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-10 21:10:00.000000"
+STAMP = "2026-09-10 22:30:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -579,7 +579,6 @@ SIDEBAR_ITEMS = [
     s_link("Profitability per Job Order", "Report", "FPS Profitability per Job Order"),
     s_link("Monthly GP trend", "Report", "FPS Monthly GP Trend"),
     s_link("Accounts Receivable", "Report", "Accounts Receivable"),
-    s_link("Accounts Receivable Summary", "Report", "Accounts Receivable Summary"),
     # ERPNext's own SOA generator, not a report: pick customers (or a customer
     # group), set the period and ageing buckets, and it renders a statement PDF
     # per customer and can email them straight out. That is what credit-terms
