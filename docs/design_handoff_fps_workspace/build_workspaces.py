@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-11 14:00:00.000000"
+STAMP = "2026-09-11 18:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -873,6 +873,71 @@ def write_fixtures():
     return written
 
 
+# ==========================================================================
+# Property Setters
+#
+# property_setter is in v16's IMPORTABLE_DOCTYPES, so these ship as module JSON
+# and apply on migrate -- no site-DB editing, and they are reviewable in git.
+# ==========================================================================
+
+def property_setter(doc_type, field_name, prop, value, prop_type, doctype_or_field="DocField"):
+    slug = ("%s_%s_%s" % (doc_type, field_name or "doctype", prop)).lower()
+    for ch in " -&/":
+        slug = slug.replace(ch, "_")
+    return {
+        "creation": CREATED,
+        "doc_type": doc_type,
+        "doctype": "Property Setter",
+        "doctype_or_field": doctype_or_field,
+        "docstatus": 0,
+        "field_name": field_name,
+        "idx": 0,
+        "is_system_generated": 0,
+        "modified": STAMP,
+        "modified_by": OWNER,
+        "module": MODULE,
+        "name": "%s-%s-%s" % (doc_type, field_name or "main", prop),
+        "owner": OWNER,
+        "property": prop,
+        "property_type": prop_type,
+        "row_name": None,
+        "value": value,
+        "_slug": slug,
+    }
+
+
+PROPERTY_SETTERS = [
+    # fps_route_pattern is derived and written by the rollup engine, so it is
+    # hidden from the form rather than deleted -- removing the column would make
+    # both server scripts raise on every Job Tracker save.
+    property_setter("Job Order", "fps_route_pattern", "hidden", "1", "Check"),
+
+    # The Job Order list led with the CUSTOMER, because title_field is
+    # customer_name and Frappe uses the title as the first bold column. Clearing
+    # it makes the list lead with the job order number itself -- the same shape
+    # as the Job Tracker list, whose title_field is the job_order link.
+    property_setter("Job Order", None, "title_field", "", "Data",
+                    doctype_or_field="DocType"),
+
+    # Put the date field of each FPS doctype into the standard filter row, so a
+    # date is one click away instead of three. Range filtering ("Between") is
+    # then available on the same control.
+    property_setter("Job Order", "jo_date", "in_standard_filter", "1", "Check"),
+    property_setter("Job Order", "eta", "in_standard_filter", "1", "Check"),
+    property_setter("Job Tracker", "track_date", "in_standard_filter", "1", "Check"),
+    property_setter("Customs Tracker", "ct_date", "in_standard_filter", "1", "Check"),
+    property_setter("Proof of Delivery", "pod_date", "in_standard_filter", "1", "Check"),
+]
+
+
+def write_property_setters():
+    written = []
+    for ps in PROPERTY_SETTERS:
+        slug = ps.pop("_slug")
+        written.append(write("property_setter", slug, ps))
+    return written
+
+
 def write(rel_dir, slug, payload):
     path = os.path.join(MODULE_PATH, rel_dir, slug)
     os.makedirs(path, exist_ok=True)
@@ -921,6 +986,8 @@ def main():
     written.append(write("workspace", "payment_receipts", payment_receipts()))
 
     written.append(write("workspace_sidebar", "fps", SIDEBAR))
+
+    written.extend(write_property_setters())
 
     written.extend(write_fixtures())
 
