@@ -1,0 +1,141 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-09-12 09:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "update_date",
+  "milestone",
+  "status_line",
+  "evidence_ref",
+  "detail_sec",
+  "notes",
+  "issues",
+  "follow_sec",
+  "next_action",
+  "follow_up_date",
+  "responsible",
+  "meta_cb",
+  "event_type",
+  "source",
+  "customer_visible",
+  "leg"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "default": "Today",
+   "fieldname": "update_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "columns": 2,
+   "description": "The milestone this update proves; blank for a plain note",
+   "fieldname": "milestone",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Milestone",
+   "options": "\nOPENED\nBOOKED\nDOCS\nDEPARTED\nARRIVED\nFZ_BOE\nFZ_CLEARED\nOMAN_BOE\nOMAN_CLEARED\nTRUCKS_DEPARTED\nMOFA\nBOE\nDO\nDUTY\nCLEARED\nVEHICLE\nPICKED_UP\nBORDER\nDELIVERED\nDOCS_IN\nSUBMITTED\nCOMPLETED\nINVOICED\nCLOSED\nHOLD\nRESUME"
+  },
+  {
+   "columns": 4,
+   "fieldname": "status_line",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status"
+  },
+  {
+   "columns": 3,
+   "description": "System key (CT:<tracker>:Cleared) or a document / BOE / DO number",
+   "fieldname": "evidence_ref",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Evidence"
+  },
+  {
+   "fieldname": "detail_sec",
+   "fieldtype": "Section Break",
+   "label": "Detail"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Long Text",
+   "label": "What happened"
+  },
+  {
+   "description": "Never shown to the customer",
+   "fieldname": "issues",
+   "fieldtype": "Long Text",
+   "label": "Internal note / issue"
+  },
+  {
+   "fieldname": "follow_sec",
+   "fieldtype": "Section Break",
+   "label": "Follow-up"
+  },
+  {
+   "fieldname": "next_action",
+   "fieldtype": "Data",
+   "label": "Next action"
+  },
+  {
+   "fieldname": "follow_up_date",
+   "fieldtype": "Date",
+   "label": "Next action due"
+  },
+  {
+   "fieldname": "responsible",
+   "fieldtype": "Link",
+   "label": "Responsible",
+   "options": "User"
+  },
+  {
+   "fieldname": "meta_cb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Note",
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "label": "Event type",
+   "options": "Note\nMilestone\nIssue\nCustomer update\nSystem"
+  },
+  {
+   "default": "Manual",
+   "description": "What created this update: typed in by hand, written by a server script from a document, or loaded at go-live",
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "label": "Source",
+   "options": "Manual\nClaude\nSystem\nBackfill"
+  },
+  {
+   "fieldname": "customer_visible",
+   "fieldtype": "Check",
+   "label": "Show on customer status sheet"
+  },
+  {
+   "default": "1",
+   "fieldname": "leg",
+   "fieldtype": "Int",
+   "label": "Leg"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-09-12 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "FPS Job Update",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "update_date",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}

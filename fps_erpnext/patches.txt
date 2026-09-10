@@ -11,3 +11,7 @@ fps_erpnext.patches.v1_0.purge_tracker_rebuild_noise
 fps_erpnext.patches.v1_0.match_tracker_numbers
 fps_erpnext.patches.v1_0.rename_job_update_log
 fps_erpnext.patches.v1_0.fix_docs_stage_options
+fps_erpnext.patches.v1_0.add_job_update_table
+fps_erpnext.patches.v1_0.consolidate_job_trackers
+fps_erpnext.patches.v1_0.retarget_tracker_scripts
+fps_erpnext.patches.v1_0.name_trackers_after_job_order
