@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-15 09:00:00.000000"
+STAMP = "2026-09-16 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -669,6 +669,15 @@ CLIENT_SCRIPTS_DIR = os.path.join(
 
 CLIENT_SCRIPTS = [
     {
+        # Colours the two customs chase clocks on the form. The board colours
+        # the same two columns from the same rules -- see
+        # fps_erpnext/api/customs.py, which is where the thresholds live.
+        "name": "Customs Tracker - Deadlines",
+        "source": "customs_tracker_deadlines.js",
+        "dt": "Customs Tracker",
+        "view": "Form",
+    },
+    {
         # Adopted from the site DB on 2026-09-10. Two fixes came with it: the
         # stage colour map now keys on "Docs received", and add_fields is cut
         # back to what get_indicator actually reads, which removes the two empty
@@ -1105,7 +1114,12 @@ _CT_OPTIONS = {
     "fps_mofa_status": [
         "", "N/A", "Pending", "Under Process", "Under Client", "Completed",
     ],
-    "fps_doc_submission": ["", "Not Applicable", "Pending", "Submitted"],
+    # "Completed", not "Submitted". MOFA, Deposit and Claim all say Completed,
+    # the workbook says Completed, and the deadline rule is written as "once
+    # Completed is selected". One word per state. The 17 rows that read
+    # "Submitted" are migrated by the customs_tracker_deadlines patch, which
+    # runs in the same migrate immediately after this list is applied.
+    "fps_doc_submission": ["", "Not Applicable", "Pending", "Completed"],
     "fps_deposit_claim": ["", "Not Applicable", "Pending", "Completed"],
 }
 

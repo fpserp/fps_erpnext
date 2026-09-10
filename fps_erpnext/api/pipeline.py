@@ -20,6 +20,8 @@ zero, so neither block leaks the existence of records the viewer has no rights t
 import frappe
 from frappe.utils import today
 
+from fps_erpnext.api import customs
+
 OPEN_JOB = [
     ["Job Order", "fps_stage", "not in", ["Closed", "Invoiced"]],
     ["Job Order", "docstatus", "<", 2],
@@ -248,10 +250,20 @@ CUSTOMS_COLUMNS = [
     ("clearance_type", "Type", "fps_clearance_type", True),
     ("date", "Date", "ct_date", False),
     ("mofa", "MOFA", "fps_mofa_status", True),
+    ("mofa_due", "MOFA due", "fps_mofa_deadline", False),
     ("doc_sub", "Doc Sub", "fps_doc_submission", True),
+    ("doc_due", "Doc due", "fps_doc_deadline", False),
     ("deposit", "Deposit", "fps_deposit_status", True),
     ("claim", "Claim", "fps_deposit_claim", True),
 ]
+
+# key -> the deadline spec that colours it, from fps_erpnext.api.customs.
+# The board does NOT recompute the thresholds; it asks customs.deadline_state,
+# so amber means the same thing here, on the form and in the stored dates.
+DEADLINE_COLUMNS = {
+    "doc_due": "doc",
+    "mofa_due": "mofa",
+}
 
 
 @frappe.whitelist()
@@ -266,7 +278,9 @@ def get_customs_tracker(limit=400):
     if not frappe.has_permission("Customs Tracker", "read"):
         return {"columns": [], "rows": [], "options": {}}
 
-    fields = ["name"] + [f for _k, _l, f, _fl in CUSTOMS_COLUMNS]
+    # clearance_date is fetched but never shown: it is what both deadline
+    # colours are measured from.
+    fields = ["name", "clearance_date"] + [f for _k, _l, f, _fl in CUSTOMS_COLUMNS]
 
     records = frappe.get_all(
         "Customs Tracker",
@@ -274,6 +288,9 @@ def get_customs_tracker(limit=400):
         order_by="ct_date desc, name desc",
         limit_page_length=frappe.utils.cint(limit) or 400,
     )
+
+    specs = {spec["key"]: spec for spec in customs.DEADLINES}
+    as_of = frappe.utils.today()
 
     rows = []
     for r in records:
@@ -283,7 +300,17 @@ def get_customs_tracker(limit=400):
             if field == "ct_date":
                 value = frappe.utils.formatdate(value, "dd-MM-yyyy") if value else ""
                 row["sort_date"] = str(r.get(field) or "")
+            elif key in DEADLINE_COLUMNS:
+                value = frappe.utils.formatdate(value, "dd-MM-yyyy") if value else ""
             row[key] = value or ""
+
+        # One state per deadline column, computed HERE so the board, the form
+        # and the stored dates cannot disagree about what amber means.
+        for key, spec_key in DEADLINE_COLUMNS.items():
+            spec = specs[spec_key]
+            row[key + "_state"] = customs.deadline_state(
+                r.get("clearance_date"), r.get(spec["status_field"]), spec, as_of
+            )
         rows.append(row)
 
     options = {}

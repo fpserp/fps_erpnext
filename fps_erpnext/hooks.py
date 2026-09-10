@@ -161,6 +161,11 @@ doc_events = {
     },
     "Customs Tracker": {
         "autoname": "fps_erpnext.api.trackers.name_from_job_order",
+        # Derives the document-submission and MOFA deadlines from the clearance
+        # date on every save, so the two dates can never drift out of step with
+        # the date they are calculated from. See fps_erpnext/api/customs.py for
+        # the windows and the colour thresholds.
+        "validate": "fps_erpnext.api.customs.set_deadlines",
     },
 }
 

@@ -120,6 +120,17 @@
 	}
 
 	function cell(c, row) {
+		// Deadline columns carry a state the SERVER worked out -- '', 'ok',
+		// 'warn', 'late' or 'done'. The thresholds are not repeated here; see
+		// fps_erpnext/api/customs.py. 'done' means the status column next to it
+		// says Completed (or Not Applicable), so there is nothing left to chase.
+		if (row[c.key + "_state"] !== undefined) {
+			var state = row[c.key + "_state"] || "none";
+			return (
+				'<td class="fps-ct-due fps-ct-due-' + state + '">' +
+				esc(row[c.key] || "—") + "</td>"
+			);
+		}
 		if (c.key === "status") {
 			var pill = STATUS[row.status] || ["#f1f5f9", "#475569"];
 			return (
