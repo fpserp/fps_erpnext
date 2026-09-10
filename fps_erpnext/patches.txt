@@ -28,3 +28,4 @@ fps_erpnext.patches.v1_0.customs_declarations
 fps_erpnext.patches.v1_0.read_customs_declarations
 fps_erpnext.patches.v1_0.place_port_of_discharge
 fps_erpnext.patches.v1_0.reset_report_columns
+fps_erpnext.patches.v1_0.fix_emit_closure
