@@ -1,0 +1,19 @@
+{
+ "creation": "2026-09-09 13:30:00.000000",
+ "doc_type": "Customs Tracker",
+ "docstatus": 0,
+ "doctype": "Property Setter",
+ "doctype_or_field": "DocField",
+ "field_name": "fps_clearance_type",
+ "idx": 0,
+ "is_system_generated": 0,
+ "modified": "2026-09-15 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "Customs Tracker-fps_clearance_type-options",
+ "owner": "Administrator",
+ "property": "options",
+ "property_type": "Text",
+ "row_name": null,
+ "value": "\nImport to Local from ROW\nImport to Local from FZ\nImport into Free Zone\nTransfer within FZ\nFZ Transit\nTransit In\nTransit Out\nExport\nExport from Free Zone\nRe-Export\nTemporary Admission"
+}

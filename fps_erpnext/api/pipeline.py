@@ -207,10 +207,18 @@ def _route(r):
 #   customer            46/46   8 distinct
 #   job_order           46/46
 #   ct_date             46/46
-#   declaration_type    46/46   Import / Transit
 #   fps_clearance_type  46/46   the real discriminator (FZ / ROW / transit)
 #   boe_number          46/46
-#   fps_mofa_status     22/46   Completed / Pending / N/A
+#   fps_mofa_status     28/46   Completed / Pending / N/A
+#   fps_doc_submission  38/46   Pending / Submitted
+#   fps_deposit_status  46/46   after customs_tracker_sheet_columns backfills it
+#   fps_deposit_claim   46/46   likewise
+#
+# Deposit and Claim read "Not Applicable" on all 46 today. That is NOT the same
+# as empty: it is the answer, it comes from the workbook, and it turns into real
+# information the first time a job carries a customs deposit. An empty column
+# would have been left out -- a uniform one is kept.
+#
 # Deliberately NOT shown:
 #   fps_do_status        0/46   empty on every row -- and dropped from the list
 #                               view in the same commit
@@ -218,18 +226,31 @@ def _route(r):
 #   fps_clearance_location  1/46  one row in Khorfakkan, nothing else. Add it
 #                               back the day it is being filled in; it is one
 #                               entry in COLUMNS below.
+#   fps_approval_required  "N/A" on all 46, and free text rather than a Select,
+#                               so it filters to nothing useful. On the form.
 # --------------------------------------------------------------------------
 
 # (key, label, fieldname, filterable)
+#
+# COLUMNS AND HEADINGS COME FROM THE OPERATIONS WORKBOOK, "Daily Operation's &
+# Quotes MAY 2026.xlsx" -- same order, same words (Job No., Client, BOE, Type,
+# Date, MOFA, Doc Sub, Deposit, Claim), so the board reads like the sheet it
+# replaces. ERPNext's own Status leads, because it carries the colour pill.
+#
+# declaration_type is NOT here. It is populated on all 46 rows and is still on
+# the form and in the list filters, but the workbook has no such column and
+# "Type" already answers the same question in the words operations use.
 CUSTOMS_COLUMNS = [
     ("status", "Status", "status", True),
-    ("customer", "Customer", "customer", True),
-    ("job_order", "FPS JO", "job_order", True),
+    ("customer", "Client", "customer", True),
+    ("job_order", "Job No.", "job_order", True),
+    ("boe", "BOE", "boe_number", False),
+    ("clearance_type", "Type", "fps_clearance_type", True),
     ("date", "Date", "ct_date", False),
-    ("declaration", "Declaration", "declaration_type", True),
-    ("clearance_type", "Clearance type", "fps_clearance_type", True),
-    ("boe", "BOE no.", "boe_number", False),
     ("mofa", "MOFA", "fps_mofa_status", True),
+    ("doc_sub", "Doc Sub", "fps_doc_submission", True),
+    ("deposit", "Deposit", "fps_deposit_status", True),
+    ("claim", "Claim", "fps_deposit_claim", True),
 ]
 
 

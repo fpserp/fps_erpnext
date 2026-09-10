@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-14 09:00:00.000000"
+STAMP = "2026-09-15 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -1056,6 +1056,68 @@ PROPERTY_SETTERS.append(
                     "\n".join(["FPS/.#####", "CUST-.YYYY.-"]), "Text"))
 PROPERTY_SETTERS.append(
     property_setter("Customer", "naming_series", "default", "FPS/.#####", "Text"))
+
+
+# ==========================================================================
+# Customs Tracker dropdowns, aligned to "Daily Operation's & Quotes MAY 2026"
+#
+# That workbook is the sheet operations actually keep, and its three Excel data
+# validations are the real specification for these fields:
+#
+#   Type      IMPORT TO LOCAL FROM FZ / FROM ROW, TRANSFER WITHIN FREEZONE,
+#             TRANSIT IN, TRANSIT OUT, EXPORT FROM LOCAL TO ROW
+#   MOFA      Completed, Under Process, Pending, Under Client, NOT APPLICABLE
+#   Doc Sub / Deposit / Claim    Completed, Pending, Not Applicable
+#
+# THE LISTS ARE EXTENDED, NOT REPLACED, and that is the whole point. All 46
+# customs trackers already hold values in the ERPNext spelling -- 30 on
+# "Import to Local from ROW" alone. Swapping in the workbook's UPPER CASE would
+# leave every one of them holding a value its own dropdown no longer offers,
+# which renders blank and can be written back as blank on the next save. That
+# exact mistake was made on this site once already with the Docs -> Docs received
+# rename; it is not being repeated. The workbook shouts because it is Excel, not
+# because the meanings differ.
+#
+# WHAT IS GENUINELY NEW, versus what only looks new:
+#   Transit In / Transit Out   real: the workbook splits a direction that
+#                              ERPNext holds as one value, "FZ Transit" (1 row).
+#                              Both are added; the old value is left in place
+#                              rather than guessing which direction that row was.
+#   Under Process / Under Client   real: two MOFA states ERPNext did not have.
+#   EXPORT FROM LOCAL TO ROW   NOT added -- that is what the existing "Export"
+#                              already means, and a synonym in one dropdown is
+#                              how you end up with the same job filed twice.
+#   Completed (Doc Sub)        NOT added -- "Submitted" is that state here and
+#                              17 rows already sit on it. Only the missing
+#                              "Not Applicable" is added.
+#
+# fps_deposit_claim is the one list replaced outright: it is used by 0 of 46
+# rows, so aligning it to the workbook costs nothing. Its richer former states
+# (To Claim / Claim Filed / Refunded) are recoverable from git if deposit
+# tracking ever needs them.
+_CT_OPTIONS = {
+    "fps_clearance_type": [
+        "", "Import to Local from ROW", "Import to Local from FZ",
+        "Import into Free Zone", "Transfer within FZ", "FZ Transit",
+        "Transit In", "Transit Out", "Export", "Export from Free Zone",
+        "Re-Export", "Temporary Admission",
+    ],
+    "fps_mofa_status": [
+        "", "N/A", "Pending", "Under Process", "Under Client", "Completed",
+    ],
+    "fps_doc_submission": ["", "Not Applicable", "Pending", "Submitted"],
+    "fps_deposit_claim": ["", "Not Applicable", "Pending", "Completed"],
+}
+
+for _fn, _opts in _CT_OPTIONS.items():
+    PROPERTY_SETTERS.append(
+        property_setter("Customs Tracker", _fn, "options",
+                        chr(10).join(_opts), "Text"))
+
+# The workbook calls it "Doc Sub"; the form says "Document submission". Same
+# column, and the fuller label is the one worth keeping on a form.
+PROPERTY_SETTERS.append(
+    property_setter("Customs Tracker", "fps_deposit_claim", "label", "Claim", "Data"))
 
 # Open the FPS doctypes in the REPORT view rather than the List view.
 #

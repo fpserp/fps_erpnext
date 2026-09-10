@@ -76,22 +76,28 @@
 
 .fps-ct-table {
 	width: 100%;
-	min-width: 1080px;
+	/* Ten columns now. Below this the three status columns on the right start
+	   wrapping their own headings; the container scrolls instead. */
+	min-width: 1240px;
 	table-layout: fixed;
 	border-collapse: collapse;
 	font-size: 12.5px;
 }
 
-/* Widths in source order: Status, Customer, FPS JO, Date, Declaration,
-   Clearance type, BOE no., MOFA. */
-.fps-ct-table th:nth-child(1) { width: 10%; }
-.fps-ct-table th:nth-child(2) { width: 18%; }
-.fps-ct-table th:nth-child(3) { width: 13%; }
-.fps-ct-table th:nth-child(4) { width: 9%; }
-.fps-ct-table th:nth-child(5) { width: 10%; }
-.fps-ct-table th:nth-child(6) { width: 17%; }
-.fps-ct-table th:nth-child(7) { width: 14%; }
-.fps-ct-table th:nth-child(8) { width: 9%; }
+/* Widths in source order, matching the operations workbook:
+   Status, Client, Job No., BOE, Type, Date, MOFA, Doc Sub, Deposit, Claim.
+   Client and Type get the room because they hold the long strings; the three
+   status columns on the right never exceed "Not Applicable". */
+.fps-ct-table th:nth-child(1) { width: 9%; }
+.fps-ct-table th:nth-child(2) { width: 17%; }
+.fps-ct-table th:nth-child(3) { width: 12%; }
+.fps-ct-table th:nth-child(4) { width: 12%; }
+.fps-ct-table th:nth-child(5) { width: 15%; }
+.fps-ct-table th:nth-child(6) { width: 8%; }
+.fps-ct-table th:nth-child(7) { width: 9%; }
+.fps-ct-table th:nth-child(8) { width: 8%; }
+.fps-ct-table th:nth-child(9) { width: 5%; }
+.fps-ct-table th:nth-child(10) { width: 5%; }
 
 .fps-ct-table thead th {
 	position: sticky;
