@@ -7,5 +7,6 @@
 fps_erpnext.patches.v1_0.restrict_ops_financial_access
 fps_erpnext.patches.v1_0.rename_docs_stage
 fps_erpnext.patches.v1_0.fix_save_as_draft_label
+fps_erpnext.patches.v1_0.purge_tracker_rebuild_noise
 fps_erpnext.patches.v1_0.match_tracker_numbers
 fps_erpnext.patches.v1_0.rename_job_update_log
