@@ -21,3 +21,4 @@ fps_erpnext.patches.v1_0.repoint_tracker_lookups
 fps_erpnext.patches.v1_0.add_port_of_discharge
 fps_erpnext.patches.v1_0.name_customers_from_fps_series
 fps_erpnext.patches.v1_0.customs_tracker_sheet_columns
+fps_erpnext.patches.v1_0.strip_lost_emoji_prefixes
