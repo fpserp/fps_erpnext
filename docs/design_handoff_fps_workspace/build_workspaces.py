@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-11 18:00:00.000000"
+STAMP = "2026-09-11 21:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -928,6 +928,26 @@ PROPERTY_SETTERS = [
     property_setter("Customs Tracker", "ct_date", "in_standard_filter", "1", "Check"),
     property_setter("Proof of Delivery", "pod_date", "in_standard_filter", "1", "Check"),
 ]
+
+# Open the FPS doctypes in the REPORT view rather than the List view.
+#
+# List-view columns are not resizable in this build -- dragging the header
+# divider does nothing, confirmed on the live site. The Report view is the one
+# with draggable column widths, and it remembers each user's widths, column
+# choice and order per doctype.
+#
+# default_view only sets where the doctype opens; force_re_route_to_default_view
+# is deliberately NOT set, so anyone who prefers the List view can switch back
+# and their choice sticks.
+#
+# Limited to FPS-owned doctypes on purpose. Sales Invoice, Payment Entry and the
+# rest are stock ERPNext and shared with every other user of this site, so their
+# default view is not ours to change without asking.
+for _dt in ("Job Order", "Job Tracker", "Customs Tracker",
+            "Proof of Delivery", "FPS Enquiry"):
+    PROPERTY_SETTERS.append(
+        property_setter(_dt, None, "default_view", "Report", "Select",
+                        doctype_or_field="DocType"))
 
 
 def write_property_setters():
