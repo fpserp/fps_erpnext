@@ -1,0 +1,15 @@
+{
+ "creation": "2026-09-09 13:30:00.000000",
+ "docstatus": 0,
+ "doctype": "Client Script",
+ "dt": "Job Order",
+ "enabled": 1,
+ "idx": 0,
+ "modified": "2026-09-11 23:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "Job Order - SOW List",
+ "owner": "Administrator",
+ "script": "// Job Order - SOW List (List view): colour by tracker stage, red OVERDUE when the next action date has passed.\nfrappe.listview_settings['Job Order'] = Object.assign(frappe.listview_settings['Job Order'] || {}, {\n  has_indicator_for_draft: true,\n  // ONLY what get_indicator below actually reads.\n  //\n  // Every fieldname listed here is fetched with the list, and the REPORT view\n  // turns each fetched field into a column -- which is how an empty\n  // \"Next action due\" column ended up sitting next to \"Next action\", and a\n  // stray \"On hold reason\" next to it. Neither was ever asked for.\n  //\n  // fps_next_due is empty on all 84 job orders, so the overdue branch below is\n  // inert today. Put 'fps_next_due' back in this list on the day something\n  // starts writing it -- and accept the extra column that comes with it.\n  add_fields: ['fps_stage', 'docstatus'],\n  get_indicator(doc) {\n    const colors = { 'New': 'gray', 'Docs received': 'orange', 'In Progress': 'blue', 'Cleared - Ready': 'cyan', 'Delivered': 'green', 'Invoiced': 'darkgrey', 'Closed': 'light-gray', 'On Hold': 'red' };\n    if (doc.docstatus === 2) return [__('Cancelled'), 'red', 'docstatus,=,2'];\n    const stage = doc.fps_stage || 'New';\n    const overdue = doc.fps_next_due && frappe.datetime.get_diff(frappe.datetime.get_today(), doc.fps_next_due) > 0 && !['Closed', 'Invoiced'].includes(stage);\n    if (overdue) return [__('OVERDUE · ') + __(stage), 'red', 'fps_stage,=,' + stage];\n    return [__(stage), colors[stage] || 'gray', 'fps_stage,=,' + stage];\n  },\n});\n",
+ "view": "List"
+}

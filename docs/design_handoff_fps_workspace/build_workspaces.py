@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-11 21:00:00.000000"
+STAMP = "2026-09-11 23:30:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -444,6 +444,9 @@ CHILDREN = [
         blurb="Jobs from booking to delivery — job orders, customs and proof of delivery.",
         shortcuts=OPERATIONS_SHORTCUTS,
         number_cards=OPERATIONS_NUMBER_CARDS,
+        extra=[custom_block_block("FPS Customs Tracker", "opscustoms")],
+        custom_blocks=[{"custom_block_name": "FPS Customs Tracker",
+                        "label": "FPS Customs Tracker"}],
         cards=["Jobs", "Customs", "Trucking & delivery"],
     ),
     dict(
@@ -676,6 +679,16 @@ CLIENT_SCRIPTS_DIR = os.path.join(
 
 CLIENT_SCRIPTS = [
     {
+        # Adopted from the site DB on 2026-09-10. Two fixes came with it: the
+        # stage colour map now keys on "Docs received", and add_fields is cut
+        # back to what get_indicator actually reads, which removes the two empty
+        # columns the Report view was inheriting from it.
+        "name": "Job Order - SOW List",
+        "source": "job_order_sow_list.js",
+        "dt": "Job Order",
+        "view": "List",
+    },
+    {
         "name": "FPS Customer Billing Indicators",
         "source": "fps_customer_billing_indicators.js",
         "dt": "Customer",
@@ -853,6 +866,7 @@ def custom_html_blocks():
     return [
         block("FPS Overview", "fps_overview"),
         block("FPS Job Tracker", "fps_job_tracker"),
+        block("FPS Customs Tracker", "fps_customs_tracker"),
     ]
 
 
@@ -927,6 +941,23 @@ PROPERTY_SETTERS = [
     property_setter("Job Tracker", "track_date", "in_standard_filter", "1", "Check"),
     property_setter("Customs Tracker", "ct_date", "in_standard_filter", "1", "Check"),
     property_setter("Proof of Delivery", "pod_date", "in_standard_filter", "1", "Check"),
+
+    # Customs Tracker list: drop two columns that earn no space.
+    # "Leg no." is 1 on 42 of 46 rows -- the four two-leg jobs already say so in
+    # the tracker name (…/027-2). "Delivery order" is EMPTY on all 46. Both stay
+    # on the form, where a second leg or a collected DO is recorded.
+    property_setter("Customs Tracker", "fps_leg", "in_list_view", "0", "Check"),
+    property_setter("Customs Tracker", "fps_do_status", "in_list_view", "0", "Check"),
+
+    # One dropdown per column in the Customs Tracker list, the same idea as the
+    # board on the Operations page. Only fields with real spread are worth a
+    # filter: status, declaration type and clearance type are populated on all
+    # 46 rows, MOFA on 22. fps_clearance_location is populated on ONE row, so it
+    # is deliberately not here -- an empty dropdown is worse than no dropdown.
+    property_setter("Customs Tracker", "status", "in_standard_filter", "1", "Check"),
+    property_setter("Customs Tracker", "declaration_type", "in_standard_filter", "1", "Check"),
+    property_setter("Customs Tracker", "fps_clearance_type", "in_standard_filter", "1", "Check"),
+    property_setter("Customs Tracker", "fps_mofa_status", "in_standard_filter", "1", "Check"),
 ]
 
 # Open the FPS doctypes in the REPORT view rather than the List view.
@@ -940,11 +971,12 @@ PROPERTY_SETTERS = [
 # is deliberately NOT set, so anyone who prefers the List view can switch back
 # and their choice sticks.
 #
-# Limited to FPS-owned doctypes on purpose. Sales Invoice, Payment Entry and the
-# rest are stock ERPNext and shared with every other user of this site, so their
-# default view is not ours to change without asking.
+# Quotation is stock ERPNext and was left out of the first pass for that
+# reason -- which is exactly why its columns were still rigid. It is added now
+# because it was asked for. Nothing else stock is touched: a Property Setter on
+# a stock doctype affects every user of this site, not just FPS.
 for _dt in ("Job Order", "Job Tracker", "Customs Tracker",
-            "Proof of Delivery", "FPS Enquiry"):
+            "Proof of Delivery", "FPS Enquiry", "Quotation"):
     PROPERTY_SETTERS.append(
         property_setter(_dt, None, "default_view", "Report", "Select",
                         doctype_or_field="DocType"))
@@ -959,7 +991,11 @@ def write_property_setters():
 
 
 def write(rel_dir, slug, payload):
-    path = os.path.join(MODULE_PATH, rel_dir, slug)
+    # normpath collapses the "docs/design_handoff_fps_workspace/../.." in
+    # MODULE_PATH. Without it the literal path is 38 characters longer and the
+    # longer property-setter slugs push it past Windows' 260-character limit,
+    # which fails as a bare FileNotFoundError on a directory that plainly exists.
+    path = os.path.normpath(os.path.join(MODULE_PATH, rel_dir, slug))
     os.makedirs(path, exist_ok=True)
     target = os.path.join(path, slug + ".json")
     with open(target, "w", encoding="utf-8", newline="\n") as fh:
@@ -1001,6 +1037,7 @@ def main():
             shortcuts=spec.get("shortcuts") or [],
             number_cards=spec.get("number_cards") or [],
             charts=spec.get("charts") or [],
+            custom_blocks=spec.get("custom_blocks") or [],
         )))
 
     written.append(write("workspace", "payment_receipts", payment_receipts()))

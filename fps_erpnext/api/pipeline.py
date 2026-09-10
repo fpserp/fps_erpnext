@@ -194,3 +194,86 @@ def _route(r):
     if r.pol and r.pod:
         return "%s → %s" % (r.pol, r.pod)
     return r.pol or r.pod or ""
+
+
+# --------------------------------------------------------------------------
+# Customs board
+#
+# Every customs entry in one filterable grid, spreadsheet style: one dropdown
+# per column, listing only the values that actually occur, combining with AND.
+#
+# WHICH COLUMNS, AND WHY THESE ONES. Checked against all 46 rows on 2026-09-10:
+#   status              46/46   45 Cleared, 1 In Process
+#   customer            46/46   8 distinct
+#   job_order           46/46
+#   ct_date             46/46
+#   declaration_type    46/46   Import / Transit
+#   fps_clearance_type  46/46   the real discriminator (FZ / ROW / transit)
+#   boe_number          46/46
+#   fps_mofa_status     22/46   Completed / Pending / N/A
+# Deliberately NOT shown:
+#   fps_do_status        0/46   empty on every row -- and dropped from the list
+#                               view in the same commit
+#   fps_leg              4 rows carry leg 2; it lives on the form
+#   fps_clearance_location  1/46  one row in Khorfakkan, nothing else. Add it
+#                               back the day it is being filled in; it is one
+#                               entry in COLUMNS below.
+# --------------------------------------------------------------------------
+
+# (key, label, fieldname, filterable)
+CUSTOMS_COLUMNS = [
+    ("status", "Status", "status", True),
+    ("customer", "Customer", "customer", True),
+    ("job_order", "FPS JO", "job_order", True),
+    ("date", "Date", "ct_date", False),
+    ("declaration", "Declaration", "declaration_type", True),
+    ("clearance_type", "Clearance type", "fps_clearance_type", True),
+    ("boe", "BOE no.", "boe_number", False),
+    ("mofa", "MOFA", "fps_mofa_status", True),
+]
+
+
+@frappe.whitelist()
+def get_customs_tracker(limit=400):
+    """Every customs entry, plus the distinct value list for each filterable
+    column. Read-only.
+
+    The filter options come from the ROWS THAT WERE RETURNED, not from the field
+    definition, so a dropdown never offers a value that would filter to nothing
+    -- and never offers a value from a record the caller cannot read.
+    """
+    if not frappe.has_permission("Customs Tracker", "read"):
+        return {"columns": [], "rows": [], "options": {}}
+
+    fields = ["name"] + [f for _k, _l, f, _fl in CUSTOMS_COLUMNS]
+
+    records = frappe.get_all(
+        "Customs Tracker",
+        fields=fields,
+        order_by="ct_date desc, name desc",
+        limit_page_length=frappe.utils.cint(limit) or 400,
+    )
+
+    rows = []
+    for r in records:
+        row = {"name": r.name}
+        for key, _label, field, _filterable in CUSTOMS_COLUMNS:
+            value = r.get(field)
+            if field == "ct_date":
+                value = frappe.utils.formatdate(value, "dd-MM-yyyy") if value else ""
+                row["sort_date"] = str(r.get(field) or "")
+            row[key] = value or ""
+        rows.append(row)
+
+    options = {}
+    for key, _label, _field, filterable in CUSTOMS_COLUMNS:
+        if not filterable:
+            continue
+        options[key] = sorted({r[key] for r in rows if r[key]})
+
+    return {
+        "columns": [{"key": k, "label": l, "filterable": f}
+                    for k, l, _field, f in CUSTOMS_COLUMNS],
+        "rows": rows,
+        "options": options,
+    }

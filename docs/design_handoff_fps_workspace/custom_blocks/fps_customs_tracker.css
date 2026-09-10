@@ -1,0 +1,186 @@
+/* Customs board -- a spreadsheet-style filter view over every customs entry.
+   One dropdown per column, sitting in the header where the column is, so the
+   control and the data it narrows are never separated. */
+
+.fps-ct {
+	border: 1px solid var(--border-color, #e2e8f0);
+	border-radius: 10px;
+	background: var(--card-bg, #fff);
+	overflow: hidden;
+}
+
+.fps-ct-head {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 12px 16px;
+	flex-wrap: wrap;
+}
+
+.fps-ct-title {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--text-color, #1f272e);
+}
+
+.fps-ct-help {
+	font-size: 12px;
+	color: var(--text-muted, #7c7c7c);
+}
+
+.fps-ct-search {
+	margin-left: auto;
+	min-width: 190px;
+	font-size: 12px;
+	padding: 4px 9px;
+	border: 1px solid var(--border-color, #e2e8f0);
+	border-radius: 6px;
+	background: var(--control-bg, #fff);
+	color: var(--text-color, #1f272e);
+}
+
+.fps-ct-clear {
+	font-size: 11.5px;
+	padding: 4px 10px;
+	border: 1px solid var(--border-color, #e2e8f0);
+	border-radius: 6px;
+	background: var(--control-bg, #fff);
+	color: var(--text-muted, #55606b);
+	cursor: pointer;
+}
+
+.fps-ct-clear:hover {
+	background: var(--bg-light-gray, #f7f9fa);
+}
+
+/* Hidden rather than removed: a control that appears and disappears makes the
+   header jump about as you filter. */
+.fps-ct-clear[hidden] {
+	visibility: hidden;
+	display: inline-block;
+}
+
+.fps-ct-meta {
+	width: 100%;
+	font-size: 11.5px;
+	color: var(--text-muted, #7c7c7c);
+	font-variant-numeric: tabular-nums;
+}
+
+.fps-ct-scroll {
+	overflow-x: auto;
+	max-height: 560px;
+	overflow-y: auto;
+	border-top: 1px solid var(--border-color, #e2e8f0);
+}
+
+.fps-ct-table {
+	width: 100%;
+	min-width: 1080px;
+	table-layout: fixed;
+	border-collapse: collapse;
+	font-size: 12.5px;
+}
+
+/* Widths in source order: Status, Customer, FPS JO, Date, Declaration,
+   Clearance type, BOE no., MOFA. */
+.fps-ct-table th:nth-child(1) { width: 10%; }
+.fps-ct-table th:nth-child(2) { width: 18%; }
+.fps-ct-table th:nth-child(3) { width: 13%; }
+.fps-ct-table th:nth-child(4) { width: 9%; }
+.fps-ct-table th:nth-child(5) { width: 10%; }
+.fps-ct-table th:nth-child(6) { width: 17%; }
+.fps-ct-table th:nth-child(7) { width: 14%; }
+.fps-ct-table th:nth-child(8) { width: 9%; }
+
+.fps-ct-table thead th {
+	position: sticky;
+	background: var(--card-bg, #fff);
+	text-align: left;
+	padding: 8px 10px;
+	white-space: nowrap;
+}
+
+.fps-ct-table thead tr:first-child th {
+	top: 0;
+	z-index: 2;
+	font-size: 10.5px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--text-muted, #7c7c7c);
+}
+
+/* Second sticky row. 27px is the height of the row above it -- they have to be
+   stacked by hand, because position: sticky offsets do not accumulate. */
+.fps-ct-table thead tr.fps-ct-filterrow th {
+	top: 27px;
+	z-index: 1;
+	padding: 0 6px 8px;
+	border-bottom: 1px solid var(--border-color, #e2e8f0);
+}
+
+.fps-ct-select {
+	width: 100%;
+	font-size: 11.5px;
+	padding: 3px 4px;
+	border: 1px solid var(--border-color, #e2e8f0);
+	border-radius: 5px;
+	background: var(--control-bg, #fff);
+	color: var(--text-color, #1f272e);
+}
+
+/* An active filter has to be obvious at a glance, or you spend ten minutes
+   wondering why a row you know exists is missing. */
+.fps-ct-select.is-active {
+	border-color: #0B4FE0;
+	box-shadow: inset 0 0 0 1px #0B4FE0;
+	font-weight: 600;
+}
+
+.fps-ct-table td {
+	padding: 7px 10px;
+	border-bottom: 1px solid var(--border-color, #f1f5f9);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.fps-ct-table tbody tr {
+	cursor: pointer;
+}
+
+.fps-ct-table tbody tr:hover {
+	background: var(--bg-light-gray, #f7f9fa);
+}
+
+.fps-ct-pill {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 20px;
+	font-size: 11px;
+	font-weight: 600;
+	white-space: nowrap;
+	background: var(--fps-ct-bg, #f1f5f9);
+	color: var(--fps-ct-fg, #475569);
+}
+
+.fps-ct-cust {
+	font-weight: 500;
+	color: var(--text-color, #1f272e);
+}
+
+.fps-ct-jo,
+.fps-ct-boe,
+.fps-ct-date {
+	font-family: var(--font-stack-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+	font-size: 11.5px;
+	color: var(--text-muted, #55606b);
+}
+
+.fps-ct-msg {
+	padding: 18px 16px;
+	font-size: 12.5px;
+	color: var(--text-muted, #7c7c7c);
+	white-space: normal;
+}
