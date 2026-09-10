@@ -126,22 +126,6 @@
    "icon": null,
    "indent": 0,
    "keep_closed": 0,
-   "label": "Job Tracker",
-   "link_to": "Job Order",
-   "link_type": "DocType",
-   "navigate_to_tab": null,
-   "route_options": "{\"fps_stage\":\"[\\\"not in\\\",[\\\"Closed\\\",\\\"Invoiced\\\"]]\"}",
-   "show_arrow": 0,
-   "type": "Link",
-   "url": null
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "filters": null,
-   "icon": null,
-   "indent": 0,
-   "keep_closed": 0,
    "label": "Customs Tracker",
    "link_to": "Customs Tracker",
    "link_type": "DocType",
@@ -488,7 +472,7 @@
    "url": null
   }
  ],
- "modified": "2026-09-10 22:30:00.000000",
+ "modified": "2026-09-10 23:00:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "module_onboarding": null,

@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-10 22:30:00.000000"
+STAMP = "2026-09-10 23:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -552,12 +552,11 @@ SIDEBAR_ITEMS = [
     s_link("Customer", "DocType", "Customer"),
 
     s_group("Operations", "organization"),
+    # One row, not two. "Job Tracker" pointed at the same Job Order list as this
+    # one, so both opened the same page -- a sidebar item cannot address a Kanban
+    # without link_type URL, which opens a new tab and drops this sidebar. The
+    # board is one click away in the list's own List/Kanban view switcher.
     s_link("Job Order", "DocType", "Job Order"),
-    # Was the Kanban board behind a URL item. Now a plain Job Order list filtered
-    # to the open stages, so it stays inside this sidebar. Distinct from the row
-    # above, which is every job order regardless of stage.
-    s_link("Job Tracker", "DocType", "Job Order",
-           route_options={"fps_stage": '[\"not in\",[\"Closed\",\"Invoiced\"]]'}),
     s_link("Customs Tracker", "DocType", "Customs Tracker"),
     s_link("Proof of Delivery", "DocType", "Proof of Delivery"),
 

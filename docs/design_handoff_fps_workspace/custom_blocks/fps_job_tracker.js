@@ -24,7 +24,7 @@
 
 	var STAGE = {
 		New: ["#eff6ff", "#1d4ed8"],
-		Docs: ["#fff7ed", "#b45309"],
+		"Docs received": ["#fff7ed", "#b45309"],
 		"In Progress": ["#fef3c7", "#92400e"],
 		"Cleared - Ready": ["#ede9fe", "#6d28d9"],
 		Delivered: ["#dcfce7", "#15803d"],

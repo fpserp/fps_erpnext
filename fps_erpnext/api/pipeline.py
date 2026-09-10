@@ -47,7 +47,7 @@ TILES = [
     # sitting at Delivered is open but no longer in motion -- it is waiting on
     # invoicing, and it has its own tile.
     ("job_tracker", "Job Tracker", "in motion", "Job Order",
-     [["Job Order", "fps_stage", "in", ["New", "Docs", "In Progress", "Cleared - Ready"]],
+     [["Job Order", "fps_stage", "in", ["New", "Docs received", "In Progress", "Cleared - Ready"]],
       ["Job Order", "docstatus", "<", 2]],
      "/app/job-order/view/kanban/FPS%20Job%20Tracker"),
 
