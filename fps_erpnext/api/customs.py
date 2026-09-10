@@ -57,20 +57,6 @@ DEADLINES = (
 DONE_VALUES = {"completed", "not applicable", "n/a", "submitted"}
 
 
-def set_deadlines(doc, method=None):
-	"""validate hook: derive both deadline dates from the clearance date."""
-	clearance = doc.get("clearance_date")
-	for spec in DEADLINES:
-		# The Custom Field may not exist yet -- this hook is registered in
-		# hooks.py, which the running workers pick up the moment the app is
-		# deployed, while the field arrives with the patch a few seconds later.
-		# Saving a tracker must not fail in that window.
-		if not doc.meta.get_field(spec["date_field"]):
-			continue
-		doc.set(spec["date_field"],
-		        add_days(getdate(clearance), spec["days"]) if clearance else None)
-
-
 def deadline_state(clearance_date, status, spec, as_of=None):
 	"""'' | 'done' | 'ok' | 'warn' | 'late' for one deadline on one tracker.
 
@@ -120,3 +106,123 @@ def backfill_deadlines():
 			changed += 1
 
 	return changed
+
+
+# ==========================================================================
+# Declarations
+#
+# A job can clear on more than one BOE -- an FZ transfer and then an import to
+# local is the common pair, and four live jobs are in that shape. That used to
+# mean two whole Customs Tracker documents told apart by a "Leg no." field.
+# The tracker is now the JOB and each BOE is a row in `fps_declarations`.
+#
+# THE PARENT BECOMES A SUMMARY OF ITS ROWS. Its boe_number, clearance_date,
+# status and the four chase columns are rolled up here on every save, so
+# everything that already reads the parent -- the board, the list, the print
+# formats -- keeps working without knowing the table exists.
+# ==========================================================================
+
+DECLARATIONS = "fps_declarations"
+
+# Worst-first. The parent shows what still needs chasing, so the first row that
+# is NOT done wins; only when every row is done does the last row's value show.
+ROLLUP_STATUS_FIELDS = (
+	"fps_mofa_status",
+	"fps_doc_submission",
+	"fps_deposit_status",
+	"fps_deposit_claim",
+)
+
+# Ordered by how much attention the job needs.
+STATUS_PRIORITY = ("On Hold", "Delayed", "Pending", "In Process", "Cleared")
+
+
+def _rows(doc):
+	return [r for r in (doc.get(DECLARATIONS) or [])]
+
+
+def set_deadlines(doc, method=None):
+	"""validate hook: deadlines on every declaration, then roll the parent up.
+
+	Each BOE clears on its own date and so carries its own two clocks. The
+	parent's pair is the nearest one still outstanding.
+	"""
+	rows = _rows(doc)
+
+	for row in rows:
+		for spec in DEADLINES:
+			# The Custom Field may not exist yet: hooks.py is live the moment the
+			# app deploys, while the fields arrive with the patch seconds later.
+			# Saving a tracker must not fail in that window.
+			if not row.meta.get_field(spec["date_field"]):
+				continue
+			row.set(spec["date_field"],
+			        add_days(getdate(row.clearance_date), spec["days"])
+			        if row.get("clearance_date") else None)
+
+	if not rows:
+		# No declarations yet -- a tracker created before the table existed, or
+		# one still being filled in. Fall back to the parent's own clearance
+		# date rather than blanking fields that are in use.
+		clearance = doc.get("clearance_date")
+		for spec in DEADLINES:
+			if not doc.meta.get_field(spec["date_field"]):
+				continue
+			doc.set(spec["date_field"],
+			        add_days(getdate(clearance), spec["days"]) if clearance else None)
+		return
+
+	rollup_declarations(doc)
+
+
+def rollup_declarations(doc):
+	"""Summarise the declaration rows onto the parent."""
+	rows = _rows(doc)
+	if not rows:
+		return
+
+	boes = [r.boe_number for r in rows if r.get("boe_number")]
+	if boes:
+		doc.boe_number = ", ".join(boes)
+
+	# The job is cleared on the day the LAST of its declarations clears, and not
+	# before -- so a part-cleared job shows no clearance date at all rather than
+	# the earlier BOE's, which would start both clocks too soon.
+	dates = [r.clearance_date for r in rows if r.get("clearance_date")]
+	doc.clearance_date = max(dates) if len(dates) == len(rows) else None
+
+	statuses = [r.status for r in rows if r.get("status")]
+	if statuses:
+		for candidate in STATUS_PRIORITY:
+			if candidate in statuses:
+				doc.status = candidate
+				break
+
+	# The last declaration is what the consignment finally became -- an FZ
+	# transfer followed by an import to local is an import, not a transfer.
+	last = rows[-1]
+	for field in ("fps_clearance_type", "fps_clearance_location"):
+		if last.get(field):
+			doc.set(field, last.get(field))
+
+	for field in ROLLUP_STATUS_FIELDS:
+		if not doc.meta.get_field(field):
+			continue
+		outstanding = [r.get(field) for r in rows
+		               if (r.get(field) or "").strip().lower() not in DONE_VALUES]
+		if outstanding:
+			doc.set(field, outstanding[0])
+		else:
+			doc.set(field, last.get(field))
+
+	# Nearest deadline still worth chasing; if every row is settled, the latest
+	# one, so the date is still visible rather than blank.
+	for spec in DEADLINES:
+		if not doc.meta.get_field(spec["date_field"]):
+			continue
+		live = [r.get(spec["date_field"]) for r in rows
+		        if r.get(spec["date_field"])
+		        and (r.get(spec["status_field"]) or "").strip().lower() not in DONE_VALUES]
+		done = [r.get(spec["date_field"]) for r in rows if r.get(spec["date_field"])]
+		doc.set(spec["date_field"],
+		        min(live) if live else (max(done) if done else None))

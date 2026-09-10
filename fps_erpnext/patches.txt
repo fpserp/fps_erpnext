@@ -24,3 +24,5 @@ fps_erpnext.patches.v1_0.customs_tracker_sheet_columns
 fps_erpnext.patches.v1_0.strip_lost_emoji_prefixes
 fps_erpnext.patches.v1_0.customs_tracker_deadlines
 fps_erpnext.patches.v1_0.fix_custom_field_placement
+fps_erpnext.patches.v1_0.customs_declarations
+fps_erpnext.patches.v1_0.read_customs_declarations

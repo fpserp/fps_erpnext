@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-17 09:00:00.000000"
+STAMP = "2026-09-18 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -1199,6 +1199,27 @@ for _dt, _fn in EXTRA_LIST_COLUMNS:
 # One company on this site, so the column is the same word on every row.
 PROPERTY_SETTERS.append(
     property_setter("Quotation", "company", "in_list_view", "0", "Check"))
+
+
+# Customs Tracker: the parent is a summary of its Declarations rows now.
+#
+# "Leg no." described which of a job's SEPARATE trackers you were looking at.
+# There is one tracker per job now and the leg lives on each declaration row, so
+# the field on the parent no longer means anything -- hidden rather than deleted,
+# because customs_declarations reads it when seeding the first row.
+PROPERTY_SETTERS.append(
+    property_setter("Customs Tracker", "fps_leg", "hidden", "1", "Check"))
+
+# Say where the value comes from, so nobody types over a figure that the next
+# save recomputes from the rows.
+PROPERTY_SETTERS.append(
+    property_setter("Customs Tracker", "boe_number", "description",
+                    "Every BOE on this job, from the Declarations table below.",
+                    "Text"))
+PROPERTY_SETTERS.append(
+    property_setter("Customs Tracker", "clearance_date", "description",
+                    "The date the LAST declaration cleared. Blank until they all have.",
+                    "Text"))
 
 # Open the FPS doctypes in the REPORT view rather than the List view.
 #

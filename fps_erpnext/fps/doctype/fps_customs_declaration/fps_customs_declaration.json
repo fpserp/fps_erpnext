@@ -1,0 +1,189 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-09-17 09:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "boe_number",
+  "fps_clearance_type",
+  "clearance_date",
+  "status",
+  "dec_sec",
+  "ct_date",
+  "fps_leg",
+  "fps_clearance_location",
+  "dec_cb1",
+  "customs_value",
+  "duty_amount",
+  "vat_amount",
+  "chase_sec",
+  "fps_mofa_status",
+  "fps_mofa_deadline",
+  "fps_doc_submission",
+  "fps_doc_deadline",
+  "chase_cb1",
+  "fps_do_status",
+  "fps_duty_paid_on",
+  "fps_deposit_status",
+  "fps_deposit_claim",
+  "remarks_sec",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "columns": 3,
+   "fieldname": "boe_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "BOE Number"
+  },
+  {
+   "columns": 3,
+   "fieldname": "fps_clearance_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "\nImport to Local from ROW\nImport to Local from FZ\nImport into Free Zone\nTransfer within FZ\nFZ Transit\nTransit In\nTransit Out\nExport\nExport from Free Zone\nRe-Export\nTemporary Admission"
+  },
+  {
+   "columns": 2,
+   "fieldname": "clearance_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Cleared on"
+  },
+  {
+   "columns": 2,
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "\nPending\nIn Process\nCleared\nOn Hold\nDelayed"
+  },
+  {
+   "fieldname": "dec_sec",
+   "fieldtype": "Section Break",
+   "label": "Declaration"
+  },
+  {
+   "fieldname": "ct_date",
+   "fieldtype": "Date",
+   "label": "BOE date"
+  },
+  {
+   "default": "1",
+   "description": "1 for the first declaration on this job, 2 for the next.",
+   "fieldname": "fps_leg",
+   "fieldtype": "Int",
+   "label": "Leg"
+  },
+  {
+   "fieldname": "fps_clearance_location",
+   "fieldtype": "Select",
+   "label": "Clearance location",
+   "options": "\nDnata FG5 (DXB Air)\nEmirates Cargo Village (DXB Air)\nDNATA DWC (Air)\nJebel Ali (Sea)\nPort Rashid (Sea)\nJAFZA / DWC (Land)\nDMCC (Land)\nOther UAE Free Zone (Land)\nKhorfakkan (Sharjah Sea)\nPort Sultan Qaboos (Oman)\nSohar Port (Oman)\nOther"
+  },
+  {
+   "fieldname": "dec_cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customs_value",
+   "fieldtype": "Currency",
+   "label": "Customs Value"
+  },
+  {
+   "fieldname": "duty_amount",
+   "fieldtype": "Currency",
+   "label": "Duty Amount"
+  },
+  {
+   "fieldname": "vat_amount",
+   "fieldtype": "Currency",
+   "label": "VAT Amount"
+  },
+  {
+   "fieldname": "chase_sec",
+   "fieldtype": "Section Break",
+   "label": "Follow-up"
+  },
+  {
+   "fieldname": "fps_mofa_status",
+   "fieldtype": "Select",
+   "label": "MOFA attestation",
+   "options": "\nN/A\nPending\nUnder Process\nUnder Client\nCompleted"
+  },
+  {
+   "description": "14 days from this BOE's clearance. Amber from day 9, red from day 12.",
+   "fieldname": "fps_mofa_deadline",
+   "fieldtype": "Date",
+   "label": "MOFA deadline",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fps_doc_submission",
+   "fieldtype": "Select",
+   "label": "Document submission",
+   "options": "\nNot Applicable\nPending\nCompleted"
+  },
+  {
+   "description": "30 days from this BOE's clearance. Amber from day 15, red from day 25.",
+   "fieldname": "fps_doc_deadline",
+   "fieldtype": "Date",
+   "label": "Doc submission deadline",
+   "read_only": 1
+  },
+  {
+   "fieldname": "chase_cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fps_do_status",
+   "fieldtype": "Select",
+   "label": "Delivery order",
+   "options": "\nN/A\nPending\nCollected"
+  },
+  {
+   "fieldname": "fps_duty_paid_on",
+   "fieldtype": "Date",
+   "label": "Duty / deposit paid on"
+  },
+  {
+   "fieldname": "fps_deposit_status",
+   "fieldtype": "Select",
+   "label": "Deposit",
+   "options": "\nNot Applicable\nPending\nCompleted"
+  },
+  {
+   "fieldname": "fps_deposit_claim",
+   "fieldtype": "Select",
+   "label": "Claim",
+   "options": "\nNot Applicable\nPending\nCompleted"
+  },
+  {
+   "fieldname": "remarks_sec",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-09-17 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "FPS Customs Declaration",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "idx",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}
