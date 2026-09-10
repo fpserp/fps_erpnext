@@ -29,21 +29,26 @@ Re-running is safe: anything already at its target is skipped.
 
 import frappe
 
+# Customs Tracker ONLY for now.
+#
+# Job Tracker is deliberately left alone: the one-tracker-per-job restructure
+# collapses its ~371 rows into ~84 parents, so renumbering them here would hand
+# out -2 .. -7 suffixes that the very next deploy deletes again. Once there is
+# exactly one tracker per job the naming is clean with no suffix at all
+# (FPS/JO/2607/018 -> FPS/JT/2607/018), and that restructure does it in one pass.
+#
+# Customs Tracker is genuinely per customs leg, so its numbering is unaffected by
+# that work and is wanted now. Four jobs have two legs and take -2.
 TRACKERS = (
     # (doctype, prefix, link fieldname, ordering for the suffix sequence)
-    ("Job Update Log", "FPS/JT/", "job_order", "creation asc"),
     ("Customs Tracker", "FPS/CT/", "job_order", "fps_leg asc, creation asc"),
 )
 
 
 def execute():
     for doctype, prefix, link_field, order_by in TRACKERS:
-        # "Job Update Log" becomes "Job Tracker" in a later patch. Accept either
-        # so this works whichever order the two land in.
         if not frappe.db.exists("DocType", doctype):
-            doctype = {"Job Update Log": "Job Tracker"}.get(doctype)
-            if not doctype or not frappe.db.exists("DocType", doctype):
-                continue
+            continue
         _renumber(doctype, prefix, link_field, order_by)
     frappe.clear_cache()
 

@@ -28,8 +28,9 @@ fps_milestone_state and fps_last_update.
 Rows go through frappe.delete_doc, so each is archived to Deleted Document and
 can be restored. Nothing is force-deleted.
 
-Runs BEFORE the renumbering, and re-runs it afterwards, so the -2/-3 sequences
-are numbered over what actually survives rather than leaving gaps.
+Job Tracker naming is NOT done here. The one-tracker-per-job restructure
+collapses these rows into a single parent per job, and names them then -- one
+clean name each, no suffixes.
 """
 
 import frappe
@@ -62,12 +63,7 @@ def execute():
     if deleted:
         frappe.db.commit()
 
-    # Re-sequence over the survivors so the suffixes have no holes in them.
-    try:
-        from fps_erpnext.patches.v1_0 import match_tracker_numbers
-
-        match_tracker_numbers.execute()
-    except Exception:
-        frappe.log_error(title="FPS: renumber after tracker purge")
-
+    # No renumbering pass here. Job Tracker naming is deferred to the
+    # one-tracker-per-job restructure, which collapses these rows into one parent
+    # per job and names them cleanly in a single sweep.
     frappe.clear_cache()
