@@ -96,13 +96,16 @@
 		}
 	}
 
-	// Row click opens the Job Order. Delegated so it survives every re-render,
+	// Row click opens THAT JOB'S tracker entries -- the Job Update Log filtered
+	// to it -- not the Job Order form. Delegated so it survives every re-render,
 	// and routed through frappe.set_route rather than an <a href> so the desk
 	// navigates in place instead of doing a full page reload.
 	body.addEventListener("click", function (e) {
 		var row = e.target.closest("tr[data-job]");
 		if (!row) return;
-		frappe.set_route("Form", "Job Order", row.getAttribute("data-job"));
+		frappe.set_route("List", "Job Update Log", {
+			job_order: row.getAttribute("data-job"),
+		});
 	});
 
 	frappe
