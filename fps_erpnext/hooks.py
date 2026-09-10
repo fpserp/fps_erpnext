@@ -4,7 +4,11 @@ app_publisher = "Fast Planet Shipping LLC"
 app_description = "Custom ERPNext app for Fast Planet Shipping LLC - freight forwarding operations"
 app_email = "hello@fastplanet.ae"
 app_license = "mit"
-app_logo_url = "/assets/fps_erpnext/images/fps-logo.svg"
+# Versioned filename on purpose. Frappe serves /assets with
+# "cache-control: max-age=31536000, immutable", so replacing a logo in place is
+# invisible to anyone who has already loaded the old one -- the browser never
+# re-requests it. Bump the -vN suffix whenever the mark changes.
+app_logo_url = "/assets/fps_erpnext/images/fps-logo-v2.svg"
 
 # Apps
 # ------------------
@@ -15,7 +19,7 @@ app_logo_url = "/assets/fps_erpnext/images/fps-logo.svg"
 add_to_apps_screen = [
     {
         "name": "fps_erpnext",
-        "logo": "/assets/fps_erpnext/images/fps-logo.svg",
+        "logo": "/assets/fps_erpnext/images/fps-logo-v2.svg",
         "title": "FPS",
         "route": "/app/fps",
         "has_permission": "fps_erpnext.api.permission.has_app_permission"
