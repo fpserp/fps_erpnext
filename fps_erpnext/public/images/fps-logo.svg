@@ -1,0 +1,13 @@
+<svg width="1024" height="1024" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fast Planet Shipping icon">
+  <g transform="translate(45,42)">
+    <g transform="skewX(-12)">
+      <g fill="#0B4FE0">
+        <rect x="20" y="30" width="21" height="84" rx="10"/>
+        <rect x="20" y="30" width="56" height="20" rx="10"/>
+        <rect x="20" y="61" width="44" height="18" rx="9"/>
+      </g>
+      <path d="M80 40 L106 72 L80 104 Z" fill="#5FE0F5"/>
+      <path d="M102 40 L128 72 L102 104 Z" fill="#5FE0F5"/>
+    </g>
+  </g>
+</svg>
