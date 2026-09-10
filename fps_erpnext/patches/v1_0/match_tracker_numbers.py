@@ -38,8 +38,12 @@ TRACKERS = (
 
 def execute():
     for doctype, prefix, link_field, order_by in TRACKERS:
+        # "Job Update Log" becomes "Job Tracker" in a later patch. Accept either
+        # so this works whichever order the two land in.
         if not frappe.db.exists("DocType", doctype):
-            continue
+            doctype = {"Job Update Log": "Job Tracker"}.get(doctype)
+            if not doctype or not frappe.db.exists("DocType", doctype):
+                continue
         _renumber(doctype, prefix, link_field, order_by)
     frappe.clear_cache()
 

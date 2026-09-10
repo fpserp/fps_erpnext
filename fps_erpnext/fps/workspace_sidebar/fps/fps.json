@@ -127,7 +127,7 @@
    "indent": 0,
    "keep_closed": 0,
    "label": "Job Tracker",
-   "link_to": "Job Update Log",
+   "link_to": "Job Tracker",
    "link_type": "DocType",
    "navigate_to_tab": null,
    "route_options": null,
@@ -488,7 +488,7 @@
    "url": null
   }
  ],
- "modified": "2026-09-11 09:30:00.000000",
+ "modified": "2026-09-11 14:00:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "module_onboarding": null,

@@ -103,7 +103,7 @@
 	body.addEventListener("click", function (e) {
 		var row = e.target.closest("tr[data-job]");
 		if (!row) return;
-		frappe.set_route("List", "Job Update Log", {
+		frappe.set_route("List", "Job Tracker", {
 			job_order: row.getAttribute("data-job"),
 		});
 	});

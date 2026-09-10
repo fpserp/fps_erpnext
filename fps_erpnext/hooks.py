@@ -134,6 +134,30 @@ fixtures = [
 #     }
 # }
 
+# Document Events
+# ---------------
+# Numbering is an autoname hook rather than something the creating code does, so
+# every route in gets the same names -- the JO Emit Opened server script, the
+# auto Customs Tracker below, and a user clicking New all land on
+# FPS/JT/<job order tail>. Frappe runs doc_events for "autoname" before it falls
+# back to the naming series.
+#
+# The Job Tracker is NOT created here: "JO Emit Opened" already opens one on
+# every Job Order insert with the OPENED milestone the rollup engine keys off,
+# and a second creator would double every job.
+
+doc_events = {
+    "Job Order": {
+        "after_insert": "fps_erpnext.api.trackers.on_job_order_created",
+    },
+    "Job Tracker": {
+        "autoname": "fps_erpnext.api.trackers.name_from_job_order",
+    },
+    "Customs Tracker": {
+        "autoname": "fps_erpnext.api.trackers.name_from_job_order",
+    },
+}
+
 # Scheduled Tasks
 # ---------------
 
