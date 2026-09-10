@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-16 09:00:00.000000"
+STAMP = "2026-09-17 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -1132,6 +1132,73 @@ for _fn, _opts in _CT_OPTIONS.items():
 # column, and the fuller label is the one worth keeping on a form.
 PROPERTY_SETTERS.append(
     property_setter("Customs Tracker", "fps_deposit_claim", "label", "Claim", "Data"))
+
+
+# ==========================================================================
+# Put the identifying column back in the Report view
+#
+# A REGRESSION THIS PROJECT CAUSED, and it is worth being precise about how.
+# The List view draws the doctype's TITLE FIELD as its bold first column
+# automatically. The Report view does not -- its columns are exactly the
+# in_list_view fields and nothing else. So the moment every FPS doctype was
+# switched to default_view = Report, any doctype whose title field was not ALSO
+# flagged in_list_view silently lost the one column that says which record a row
+# is. Measured on the live site: 18 of the 30 doctypes switched.
+#
+# Sales Invoice lost "Customer Name". Quotation was left with Status, Grand
+# Total, Company and Date -- four columns, none of them the customer. That is
+# what "where are all the columns" was.
+#
+# Flagging the title field in_list_view fixes both views at once: Report gains
+# the column, and List is unchanged because it was already drawing it.
+REPORT_VIEW_TITLE_COLUMNS = (
+    ("Attendance", "employee_name"),
+    ("Bank Transaction", "bank_account"),
+    ("Customer", "customer_name"),
+    ("Expense Claim", "employee_name"),
+    ("Item", "item_name"),
+    ("Job Order", "customer_name"),
+    ("Journal Entry", "title"),
+    ("Lead", "title"),
+    ("Leave Application", "employee_name"),
+    ("Material Request", "title"),
+    ("Opportunity", "title"),
+    ("Payment Entry", "title"),
+    ("Purchase Invoice", "supplier_name"),
+    ("Purchase Order", "supplier_name"),
+    ("Quotation", "customer_name"),
+    ("Sales Invoice", "customer_name"),
+    ("Sales Order", "customer_name"),
+    ("Supplier", "supplier_name"),
+)
+
+for _dt, _fn in REPORT_VIEW_TITLE_COLUMNS:
+    PROPERTY_SETTERS.append(
+        property_setter(_dt, _fn, "in_list_view", "1", "Check"))
+
+# Columns asked for by name.
+#
+# Sales Invoice: Client Reference No. sits directly after Job Order on the form
+# (insert_after fps_job_order), and list columns follow field order, so flagging
+# it puts it exactly where it was asked for -- immediately after the Job Order
+# column.
+#
+# Quotation: the shipment fields, so the list answers "what is this quote for"
+# without opening it. fps_pod is the field now labelled "Destination".
+EXTRA_LIST_COLUMNS = (
+    ("Sales Invoice", "fps_client_reference_no"),
+    ("Quotation", "fps_movement_type"),
+    ("Quotation", "fps_pol"),
+    ("Quotation", "fps_pod"),
+)
+
+for _dt, _fn in EXTRA_LIST_COLUMNS:
+    PROPERTY_SETTERS.append(
+        property_setter(_dt, _fn, "in_list_view", "1", "Check"))
+
+# One company on this site, so the column is the same word on every row.
+PROPERTY_SETTERS.append(
+    property_setter("Quotation", "company", "in_list_view", "0", "Check"))
 
 # Open the FPS doctypes in the REPORT view rather than the List view.
 #
