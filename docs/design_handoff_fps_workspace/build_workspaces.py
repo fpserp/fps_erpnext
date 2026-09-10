@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-13 09:00:00.000000"
+STAMP = "2026-09-14 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -1011,6 +1011,51 @@ SALES_INVOICE_TOTALS = (
 for _f in SALES_INVOICE_TOTALS:
     PROPERTY_SETTERS.append(
         property_setter("Sales Invoice", _f, "permlevel", "1", "Int"))
+
+
+# ==========================================================================
+# "Destination / POD" becomes just "Destination"
+#
+# One field was doing two jobs. On a sea import "Jebel Ali" is the port and the
+# customer's warehouse is the destination; on a road job there is no port at all.
+# The second field, Port of Discharge, is added by the add_port_of_discharge
+# patch -- a Custom Field needs creating, which a Property Setter cannot do.
+#
+# The field itself is KEPT, not renamed. 85 job orders, 69 invoices, the
+# quotations and the PODs all hold a value here and nothing can reliably split
+# "DUBAI" into a destination and a port after the fact, so every existing value
+# stays where it is and stays correct under the narrower label. Job Order.pod is
+# also read by both rollup server scripts, by pipeline._route() and by the Create
+# Buttons script; renaming the fieldname for a label change would mean touching
+# all of them to gain nothing a user can see.
+#
+# NOTE the "Job Order - SOW Tracker UI" client script calls set_df_property on
+# this same label every refresh -- repoint_tracker_lookups ships the corrected
+# body, or it would paint "Destination / POD" straight back over this.
+for _dt, _fn in (("Job Order", "pod"),
+                 ("Quotation", "fps_pod"),
+                 ("Sales Invoice", "fps_pod"),
+                 ("Proof of Delivery", "destination")):
+    PROPERTY_SETTERS.append(
+        property_setter(_dt, _fn, "label", "Destination", "Data"))
+
+
+# ==========================================================================
+# Customer IDs from an FPS series
+#
+# Adds FPS/.##### to the Customer series and makes it the default. The switch
+# that actually decides whether Customer uses a series AT ALL is
+# Selling Settings.cust_master_name, which ERPNext's Customer.autoname() reads --
+# that is flipped by the name_customers_from_fps_series patch. Both halves are
+# needed; the options list on its own changes nothing.
+#
+# CUST-.YYYY.- is deliberately left in the list rather than removed, so anything
+# already relying on it keeps working and the switch stays reversible.
+PROPERTY_SETTERS.append(
+    property_setter("Customer", "naming_series", "options",
+                    "\n".join(["FPS/.#####", "CUST-.YYYY.-"]), "Text"))
+PROPERTY_SETTERS.append(
+    property_setter("Customer", "naming_series", "default", "FPS/.#####", "Text"))
 
 # Open the FPS doctypes in the REPORT view rather than the List view.
 #

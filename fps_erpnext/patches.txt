@@ -16,3 +16,7 @@ fps_erpnext.patches.v1_0.consolidate_job_trackers
 fps_erpnext.patches.v1_0.retarget_tracker_scripts
 fps_erpnext.patches.v1_0.name_trackers_after_job_order
 fps_erpnext.patches.v1_0.grant_invoice_totals_at_permlevel_1
+fps_erpnext.patches.v1_0.prefix_tracker_names
+fps_erpnext.patches.v1_0.repoint_tracker_lookups
+fps_erpnext.patches.v1_0.add_port_of_discharge
+fps_erpnext.patches.v1_0.name_customers_from_fps_series

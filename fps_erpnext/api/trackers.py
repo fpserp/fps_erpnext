@@ -1,22 +1,20 @@
 """Tracker naming, creation and updates, all driven off the Job Order.
 
-NAMING. A tracker is named after the job order it belongs to, and after nothing
-else -- the FPS/JT/... and FPS/CT/... series are gone:
+NAMING. A tracker carries its OWN prefix and its job order's number:
 
     Job Order       FPS/JO/2607/018
-    Job Tracker     FPS/JO/2607/018      <- the same string
-    Customs Tracker FPS/JO/2607/018      <- and again
+    Job Tracker     FPS/JT/2607/018      <- same tail, its own prefix
+    Customs Tracker FPS/CT/2607/018      <- likewise
 
-Frappe only requires a name to be unique WITHIN a doctype, and these are three
-separate tables, so the three can share one identifier. That is the whole point:
-the job order number is the only number anyone at FPS says out loud, and now it
-is the only one they have to.
+Only the prefix differs. The year-month and the serial are the job order's, so
+a tracker and its job always share a tail and reading one tells you the other.
 
-The cost, accepted deliberately: global search returns up to three rows for
-"2607/018", one per doctype. They are labelled in the interface, but the string
-alone no longer says which record is meant -- which is the job the FPS/JT and
-FPS/CT prefixes used to do for free. Nothing customer-facing is affected;
-customers see BOE and invoice numbers, never a tracker id.
+This briefly went the other way. On 2026-09-10 the trackers were renamed to the
+job order's name outright, on the reasoning that the job number is the only
+number anyone says out loud. Seeing it live, the prefix was wanted back: with
+three doctypes sharing one string, a bare "2607/018" no longer said WHICH record
+was meant in an email or over the phone. The prefix does that job for free, and
+it costs nothing, because the tail still matches.
 
 Job Tracker is exactly one per job, so it never needs a suffix. Customs Tracker
 is per customs LEG and four jobs clear in two legs, so those take -2. That is
@@ -40,6 +38,12 @@ UPDATES = "fps_updates"
 
 TRACKERS = (JOB_TRACKER, CUSTOMS_TRACKER)
 
+# Prefix per tracker doctype. The rest of the name is the job order's tail.
+SERIES = {
+    JOB_TRACKER: "FPS/JT/",
+    CUSTOMS_TRACKER: "FPS/CT/",
+}
+
 # The scopes of work that mean this job is tracked. General-job-only work is the
 # one case with nothing to follow.
 TRACKED_SOW = (
@@ -50,8 +54,21 @@ TRACKED_SOW = (
 )
 
 
+def tracker_name_for(doctype, job_order):
+    """FPS/JO/2607/018 -> FPS/JT/2607/018 (or FPS/CT/...). None if not derivable.
+
+    Only the PREFIX differs from the job order; the year-month and the serial are
+    the job order's own, so a tracker and its job always carry the same tail.
+    """
+    prefix = SERIES.get(doctype)
+    parts = (job_order or "").split("/")
+    if not prefix or len(parts) < 2:
+        return None
+    return prefix + "/".join(parts[-2:])
+
+
 def name_from_job_order(doc, method=None):
-    """autoname hook: the tracker takes its job order's name, verbatim.
+    """autoname hook: the tracker is numbered after its job order, under its own prefix.
 
     Setting flags.name_set tells Frappe the name is decided, so the naming
     series is left alone rather than burning a counter it will never use.
@@ -68,7 +85,7 @@ def name_from_job_order(doc, method=None):
     if doc.doctype not in TRACKERS:
         return
 
-    base = doc.get("job_order")
+    base = tracker_name_for(doc.doctype, doc.get("job_order"))
     if not base:
         # Nothing to derive from -- let the naming series do its usual job
         # rather than inventing something.
@@ -118,13 +135,14 @@ def get_tracker(job_order, create=True):
 
     The exact-name check comes first, and it is not just a shortcut. If two
     events for the same job ever race and both open a tracker, the autoname hook
-    gives the second one "<job order>-2". Asking for the canonical name directly
-    means every later caller converges on the SAME tracker, instead of splitting
-    the job's history across two -- which a filter query, whose row order is not
-    defined, could otherwise do.
+    gives the second one "<canonical name>-2". Asking for the canonical name
+    directly means every later caller converges on the SAME tracker, instead of
+    splitting the job's history across two -- which a filter query, whose row
+    order is not defined, could otherwise do.
     """
-    if frappe.db.exists(JOB_TRACKER, job_order):
-        return job_order
+    canonical = tracker_name_for(JOB_TRACKER, job_order)
+    if canonical and frappe.db.exists(JOB_TRACKER, canonical):
+        return canonical
 
     name = frappe.db.get_value(
         JOB_TRACKER, {"job_order": job_order}, "name", order_by="creation asc"
