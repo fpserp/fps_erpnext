@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-20 09:00:00.000000"
+STAMP = "2026-09-21 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -926,6 +926,15 @@ PROPERTY_SETTERS = [
     # hidden from the form rather than deleted -- removing the column would make
     # both server scripts raise on every Job Tracker save.
     property_setter("Job Order", "fps_route_pattern", "hidden", "1", "Check"),
+
+    # AR Charges and Summary, hidden from the Job Order form on request
+    # (2026-09-11) but not deleted: ar_charges still feeds the "Create Sales
+    # Invoice" button's line-item prefill, and every value already saved on
+    # existing Job Orders stays exactly where it is. Hiding the Section Break
+    # is enough on its own to hide everything inside it, same as
+    # fps_route_pattern above.
+    property_setter("Job Order", "ar_sec", "hidden", "1", "Check"),
+    property_setter("Job Order", "summary_sec", "hidden", "1", "Check"),
 
     # The Job Order list led with the CUSTOMER, because title_field is
     # customer_name and Frappe uses the title as the first bold column. Clearing
