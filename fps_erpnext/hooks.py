@@ -143,14 +143,17 @@ app_include_css = "/assets/fps_erpnext/css/fps_list_chrome.css"
 # Document Events
 # ---------------
 # Numbering is an autoname hook rather than something the creating code does, so
-# every route in gets the same names -- the JO Emit Opened server script, the
-# auto Customs Tracker below, and a user clicking New all land on
-# FPS/JT/<job order tail>. Frappe runs doc_events for "autoname" before it falls
-# back to the naming series.
+# every route in gets the same names -- the auto Customs Tracker below and a
+# user clicking New both land on FPS/CT/<job order tail>. Frappe runs doc_events
+# for "autoname" before it falls back to the naming series.
 #
-# The Job Tracker is NOT created here: "JO Emit Opened" already opens one on
-# every Job Order insert with the OPENED milestone the rollup engine keys off,
-# and a second creator would double every job.
+# Job Order's own update log (fps_updates, a Table of FPS Job Update rows) is
+# what used to be a separate "Job Tracker" document per job -- see
+# fps_erpnext/api/jobs.py for the full history and why the trigger below is the
+# CHILD table's own after_insert rather than anything on Job Order itself: Job
+# Order already has a Before Save script that reverts fps_stage changes it did
+# not expect, which would fight a rollup that tried to run as part of a Job
+# Order save.
 
 doc_events = {
     "Job Order": {
@@ -167,28 +170,28 @@ doc_events = {
         # the windows and the colour thresholds.
         "validate": "fps_erpnext.api.customs.set_deadlines",
     },
+    "FPS Job Update": {
+        # Proved live before this was written: a standalone child-doctype
+        # insert (parenttype="Job Order", not appended via parent.append())
+        # fires this independently of any parent save. See
+        # fps_erpnext/api/jobs.py::on_update_inserted for what it does and
+        # frappe.flags.fps_skip_rollup for how the one-time historical copy
+        # (migrate_updates_to_job_order) avoids running it 383 times.
+        "after_insert": "fps_erpnext.api.jobs.on_update_inserted",
+    },
 }
 
 # Scheduled Tasks
 # ---------------
-
-# scheduler_events = {
-#     "all": [
-#         "fps_erpnext.tasks.all"
-#     ],
-#     "daily": [
-#         "fps_erpnext.tasks.daily"
-#     ],
-#     "hourly": [
-#         "fps_erpnext.tasks.hourly"
-#     ],
-#     "weekly": [
-#         "fps_erpnext.tasks.weekly"
-#     ],
-#     "monthly": [
-#         "fps_erpnext.tasks.monthly"
-#     ],
-# }
+# Same cadence as the retired "FPS Tracker Sweep" Server Script it replaces --
+# recomputes every open job's stage/progress/next-action from its documents and
+# update log, as the safety net for anything the after_insert path above did
+# not catch (a row removed from the grid, an edit made some other way).
+scheduler_events = {
+    "cron": {
+        "*/30 * * * *": ["fps_erpnext.api.jobs.sweep"],
+    },
+}
 
 # Testing
 # -------

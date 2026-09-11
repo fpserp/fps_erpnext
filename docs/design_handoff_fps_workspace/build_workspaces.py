@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-18 09:00:00.000000"
+STAMP = "2026-09-19 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -314,9 +314,10 @@ SALES_LINKS = (
 OPERATIONS_LINKS = (
     card("Jobs", [
         doc("Job Order"),
-        # WAS doc("Job Update Log") -- a DEAD LINK. That doctype was renamed to
-        # Job Tracker and no longer exists, so the card pointed at nothing.
-        doc("Job Tracker"),
+        # WAS doc("Job Update Log"), then doc("Job Tracker") -- both dead or
+        # dead-ending in turn. Job Tracker's one real difference from Job Order,
+        # the update log, now lives ON Job Order (the "Updates" grid below the
+        # checklist), so there is no second document left to link to here.
         doc("FPS Enquiry"),
     ])
     + card("Customs", [
@@ -546,12 +547,13 @@ SIDEBAR_ITEMS = [
 
     s_group("Operations", "organization"),
     s_link("Job Order", "DocType", "Job Order"),
-    # Job Update Log IS the job tracker -- it is the per-job event log the
-    # rollup engine derives every stage from. Pointing at it gives a genuinely
-    # different page from Job Order (the last attempt sent both to the same
-    # list), and being a DocType item it navigates in place instead of opening
-    # a new tab and dropping this sidebar the way a URL item does.
-    s_link("Job Tracker", "DocType", "Job Tracker"),
+    # Job Tracker is off the sidebar now, not because the doctype is gone --
+    # 90 documents' worth of history still exist and still open by direct
+    # link -- but because its ONE genuine difference from Job Order, the
+    # update log, moved onto Job Order itself (the "Updates" grid below the
+    # checklist on the Job Order form). A separate tab pointing at a document
+    # nothing writes to any more would be a dead end, the same trap the
+    # earlier "Job Update Log" dead link was.
     s_link("Customs Tracker", "DocType", "Customs Tracker"),
     s_link("Proof of Delivery", "DocType", "Proof of Delivery"),
 

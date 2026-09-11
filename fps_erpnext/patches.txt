@@ -31,3 +31,8 @@ fps_erpnext.patches.v1_0.reset_report_columns
 fps_erpnext.patches.v1_0.fix_emit_closure
 fps_erpnext.patches.v1_0.allow_tracker_delete
 fps_erpnext.patches.v1_0.allow_job_order_delete
+fps_erpnext.patches.v1_0.add_job_order_updates_table
+fps_erpnext.patches.v1_0.migrate_updates_to_job_order
+fps_erpnext.patches.v1_0.retarget_job_emitters
+fps_erpnext.patches.v1_0.retarget_job_client_scripts
+fps_erpnext.patches.v1_0.disable_retired_job_tracker_scripts
