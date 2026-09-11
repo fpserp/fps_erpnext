@@ -45,13 +45,11 @@ TILES = [
      OPEN_JOB,
      "/app/job-order?fps_stage=%5B%22not%20in%22%2C%5B%22Closed%22%2C%22Invoiced%22%5D%5D"),
 
-    # Distinct from Job Order on purpose: this is what is still MOVING. A job
-    # sitting at Delivered is open but no longer in motion -- it is waiting on
-    # invoicing, and it has its own tile.
-    ("job_tracker", "Job Tracker", "in motion", "Job Order",
-     [["Job Order", "fps_stage", "in", ["New", "Docs received", "In Progress", "Cleared - Ready"]],
-      ["Job Order", "docstatus", "<", 2]],
-     "/app/job-order/view/kanban/FPS%20Job%20Tracker"),
+    # WAS an 8th tile, "Job Tracker (in motion)" -- dropped 2026-09-11 as a
+    # near-duplicate of the Job Order tile right above it (both counted open
+    # jobs, one just excluded Delivered). Job Order tile plus the In Progress
+    # and Delivered tiles below already answer "what's moving" without a
+    # fourth tile restating the same Job Order rows under another name.
 
     ("customs", "Customs Tracker", "not cleared", "Customs Tracker",
      [["Customs Tracker", "status", "not in", ["Cleared"]]],

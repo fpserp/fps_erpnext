@@ -3,6 +3,10 @@
 // Colour is assigned from the SORTED customer list the server returns, so a
 // given customer keeps the same colour across reloads. Deriving it from row
 // order instead would reshuffle every time a job was touched.
+//
+// LIVE REFRESH. Polls every 30s -- see fps_overview.js for why the interval
+// checks the block's own node is still attached before each tick rather than
+// relying on any teardown hook, which these blocks do not get.
 
 (function () {
 	var scope =
@@ -12,6 +16,8 @@
 	var legend = scope.querySelector('[data-fps="legend"]');
 	var meta = scope.querySelector('[data-fps="meta"]');
 	if (!body) return;
+
+	var REFRESH_MS = 30000;
 
 	// Customer palette. Deliberately distinct from the five status hues, which
 	// carry fixed meanings -- customer identity and job status must not be
@@ -108,13 +114,31 @@
 		frappe.set_route("Form", "Job Order", row.getAttribute("data-job"));
 	});
 
-	frappe
-		.call({ method: "fps_erpnext.api.pipeline.get_job_tracker" })
-		.then(function (r) {
-			render(r && r.message);
-		})
-		.catch(function () {
-			body.innerHTML =
-				'<tr><td colspan="8" class="fps-jt-msg">Could not load the job tracker.</td></tr>';
-		});
+	var loaded = false;
+	function load() {
+		frappe
+			.call({ method: "fps_erpnext.api.pipeline.get_job_tracker" })
+			.then(function (r) {
+				loaded = true;
+				render(r && r.message);
+			})
+			.catch(function () {
+				// Only the first load's failure replaces the board with an error --
+				// a later poll that briefly fails should leave the last good rows
+				// on screen rather than blank them.
+				if (!loaded) {
+					body.innerHTML =
+						'<tr><td colspan="8" class="fps-jt-msg">Could not load the job tracker.</td></tr>';
+				}
+			});
+	}
+
+	load();
+	var timer = setInterval(function () {
+		if (!document.body.contains(body)) {
+			clearInterval(timer);
+			return;
+		}
+		load();
+	}, REFRESH_MS);
 })();

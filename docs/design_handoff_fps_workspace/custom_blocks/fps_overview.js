@@ -3,6 +3,13 @@
 // One frappe.call to one whitelisted read-only method. The method omits any tile
 // whose doctype the caller cannot read, so this renders what the viewer is
 // entitled to see and never reveals the existence of the rest.
+//
+// LIVE REFRESH. Polls every 30s so counts move without a manual page reload.
+// The interval checks the block's own DOM node is still attached before each
+// tick and clears itself the moment it is not -- the block's container gets
+// replaced wholesale on every workspace navigation, with no teardown hook of
+// its own to unhook from, so this is what stops a poll loop for a page the
+// viewer has since left from running forever in the background.
 
 (function () {
 	var scope =
@@ -13,6 +20,8 @@
 	var meta = scope.querySelector('[data-fps="meta"]');
 	if (!grid) return;
 
+	var REFRESH_MS = 30000;
+
 	// Tile identity colours, in workflow order. The handoff's oklch() values are
 	// the intent, used verbatim here because inside a Custom HTML Block we own the
 	// CSS -- unlike shortcuts and cards, which are limited to Frappe's palette.
@@ -20,7 +29,6 @@
 		enquiry: "oklch(0.68 0.1 220)",
 		quotation: "oklch(0.66 0.11 205)",
 		job_order: "oklch(0.62 0.12 195)",
-		job_tracker: "oklch(0.66 0.1 265)",
 		customs: "oklch(0.65 0.14 75)",
 		in_progress: "oklch(0.64 0.13 55)",
 		delivered: "oklch(0.62 0.12 150)",
@@ -67,12 +75,30 @@
 		}
 	}
 
-	frappe
-		.call({ method: "fps_erpnext.api.pipeline.get_overview" })
-		.then(function (r) {
-			render(r && r.message);
-		})
-		.catch(function () {
-			grid.innerHTML = '<div class="fps-ov-msg">Could not load the overview.</div>';
-		});
+	var loaded = false;
+	function load() {
+		frappe
+			.call({ method: "fps_erpnext.api.pipeline.get_overview" })
+			.then(function (r) {
+				loaded = true;
+				render(r && r.message);
+			})
+			.catch(function () {
+				// Only the FIRST load's failure replaces the grid with an error --
+				// a transient blip on a later poll should not blank out tiles that
+				// were showing real counts a moment ago.
+				if (!loaded) {
+					grid.innerHTML = '<div class="fps-ov-msg">Could not load the overview.</div>';
+				}
+			});
+	}
+
+	load();
+	var timer = setInterval(function () {
+		if (!document.body.contains(grid)) {
+			clearInterval(timer);
+			return;
+		}
+		load();
+	}, REFRESH_MS);
 })();

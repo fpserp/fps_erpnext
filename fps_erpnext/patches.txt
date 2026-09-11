@@ -36,3 +36,4 @@ fps_erpnext.patches.v1_0.migrate_updates_to_job_order
 fps_erpnext.patches.v1_0.retarget_job_emitters
 fps_erpnext.patches.v1_0.retarget_job_client_scripts
 fps_erpnext.patches.v1_0.disable_retired_job_tracker_scripts
+fps_erpnext.patches.v1_0.reorder_job_order_layout

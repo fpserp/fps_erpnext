@@ -8,6 +8,14 @@
 //
 // A column's own selection is never removed from its own list, so you can always
 // undo a choice that has narrowed everything else to nothing.
+//
+// LIVE REFRESH. Polls every 30s for new/changed rows -- see fps_overview.js
+// for why the interval checks the block's own node is still attached before
+// each tick. Only the ROWS are re-fetched and re-rendered; the header (and
+// its filter dropdowns' change listener) is built exactly once, and whatever
+// the viewer has chosen in `chosen` / typed into `term` carries across every
+// poll untouched -- a background refresh must never reset someone's filters
+// out from under them mid-review.
 
 (function () {
 	var scope =
@@ -20,6 +28,8 @@
 	var search = scope.querySelector('[data-fps="search"]');
 	var clear = scope.querySelector('[data-fps="clear"]');
 	if (!body) return;
+
+	var REFRESH_MS = 30000;
 
 	var STATUS = {
 		Pending: ["#fff7ed", "#b45309"],
@@ -204,29 +214,54 @@
 	}
 	if (clear) clear.addEventListener("click", reset);
 
-	frappe
-		.call({ method: "fps_erpnext.api.pipeline.get_customs_tracker" })
-		.then(function (r) {
-			var data = (r && r.message) || {};
-			columns = data.columns || [];
-			rows = data.rows || [];
-			if (!columns.length) {
-				body.innerHTML =
-					'<tr><td class="fps-ct-msg">No access to the customs tracker.</td></tr>';
-				return;
-			}
-			buildHeader();
-			if (!rows.length) {
-				body.innerHTML =
-					'<tr><td class="fps-ct-msg" colspan="' + columns.length +
-					'">No customs entries yet.</td></tr>';
-				if (meta) meta.textContent = "";
-				return;
-			}
-			refresh();
-		})
-		.catch(function () {
-			body.innerHTML =
-				'<tr><td class="fps-ct-msg">Could not load the customs tracker.</td></tr>';
-		});
+	var headerBuilt = false;
+	var loaded = false;
+
+	function load() {
+		frappe
+			.call({ method: "fps_erpnext.api.pipeline.get_customs_tracker" })
+			.then(function (r) {
+				var data = (r && r.message) || {};
+				columns = data.columns || [];
+				rows = data.rows || [];
+				var firstLoad = !loaded;
+				loaded = true;
+
+				if (!columns.length) {
+					body.innerHTML =
+						'<tr><td class="fps-ct-msg">No access to the customs tracker.</td></tr>';
+					return;
+				}
+				if (!headerBuilt) {
+					buildHeader();
+					headerBuilt = true;
+				}
+				if (!rows.length && firstLoad) {
+					body.innerHTML =
+						'<tr><td class="fps-ct-msg" colspan="' + columns.length +
+						'">No customs entries yet.</td></tr>';
+					if (meta) meta.textContent = "";
+					return;
+				}
+				refresh();
+			})
+			.catch(function () {
+				// Only the first load's failure replaces the grid with an error --
+				// a later poll that briefly fails should leave the last good rows
+				// (and whatever the viewer has filtered to) on screen.
+				if (!loaded) {
+					body.innerHTML =
+						'<tr><td class="fps-ct-msg">Could not load the customs tracker.</td></tr>';
+				}
+			});
+	}
+
+	load();
+	var timer = setInterval(function () {
+		if (!document.body.contains(body)) {
+			clearInterval(timer);
+			return;
+		}
+		load();
+	}, REFRESH_MS);
 })();

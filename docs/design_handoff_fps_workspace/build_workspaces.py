@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-19 09:00:00.000000"
+STAMP = "2026-09-20 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
