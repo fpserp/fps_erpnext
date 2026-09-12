@@ -28,6 +28,7 @@
   "fps_duty_paid_on",
   "fps_duty_mode",
   "fps_amount_paid",
+  "fps_claim_before",
   "fps_deposit_status",
   "fps_deposit_claim",
   "remarks_sec",
@@ -167,6 +168,13 @@
    "label": "Amount paid"
   },
   {
+   "depends_on": "eval:doc.fps_duty_mode==\"Deposit\"",
+   "description": "Deadline to file the refundable deposit claim. Only shown when \"Processed via\" is Deposit.",
+   "fieldname": "fps_claim_before",
+   "fieldtype": "Date",
+   "label": "Claim before"
+  },
+  {
    "fieldname": "fps_deposit_status",
    "fieldtype": "Select",
    "label": "Deposit",
@@ -191,7 +199,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-22 09:00:00.000000",
+ "modified": "2026-09-24 09:00:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS Customs Declaration",
