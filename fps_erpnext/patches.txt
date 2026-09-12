@@ -39,3 +39,4 @@ fps_erpnext.patches.v1_0.disable_retired_job_tracker_scripts
 fps_erpnext.patches.v1_0.reorder_job_order_layout
 fps_erpnext.patches.v1_0.add_customs_duty_mode
 fps_erpnext.patches.v1_0.move_customer_before_jo_date
+fps_erpnext.patches.v1_0.reset_job_order_report_columns_again
