@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-21 09:00:00.000000"
+STAMP = "2026-09-23 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -935,6 +935,15 @@ PROPERTY_SETTERS = [
     # fps_route_pattern above.
     property_setter("Job Order", "ar_sec", "hidden", "1", "Check"),
     property_setter("Job Order", "summary_sec", "hidden", "1", "Check"),
+
+    # Customs Value / Duty Amount / VAT Amount, hidden from Customs Tracker's
+    # own "Clearance Details" section on request (2026-09-12): not used, and
+    # superseded for anything that IS tracked by the per-declaration copies of
+    # these same three fields inside the Declarations grid below, which are
+    # untouched. Values already saved on existing Customs Trackers stay put.
+    property_setter("Customs Tracker", "customs_value", "hidden", "1", "Check"),
+    property_setter("Customs Tracker", "duty_amount", "hidden", "1", "Check"),
+    property_setter("Customs Tracker", "vat_amount", "hidden", "1", "Check"),
 
     # The Job Order list led with the CUSTOMER, because title_field is
     # customer_name and Frappe uses the title as the first bold column. Clearing

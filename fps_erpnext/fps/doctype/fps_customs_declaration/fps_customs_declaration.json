@@ -26,6 +26,8 @@
   "chase_cb1",
   "fps_do_status",
   "fps_duty_paid_on",
+  "fps_duty_mode",
+  "fps_amount_paid",
   "fps_deposit_status",
   "fps_deposit_claim",
   "remarks_sec",
@@ -152,6 +154,19 @@
    "label": "Duty / deposit paid on"
   },
   {
+   "description": "How this declaration was cleared -- duty paid outright, a refundable deposit, or an exemption.",
+   "fieldname": "fps_duty_mode",
+   "fieldtype": "Select",
+   "label": "Processed via",
+   "options": "\nDuty\nDeposit\nMOIAT Exemption\nOther Exemption"
+  },
+  {
+   "description": "Amount paid for duty or a refundable deposit, per \"Processed via\". Leave blank for an exemption.",
+   "fieldname": "fps_amount_paid",
+   "fieldtype": "Currency",
+   "label": "Amount paid"
+  },
+  {
    "fieldname": "fps_deposit_status",
    "fieldtype": "Select",
    "label": "Deposit",
@@ -176,7 +191,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-17 09:00:00.000000",
+ "modified": "2026-09-22 09:00:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS Customs Declaration",
