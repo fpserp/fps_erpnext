@@ -45,12 +45,29 @@ row via the Job Order form's own grid does not insert anything, so nothing
 fires. The 30-minute sweep (below) catches it within that window. Every OTHER
 way a row is added -- Log update, the six system emitters, Rebuild -- goes
 through an insert and recomputes instantly.
+
+THE MILESTONE LIST ITSELF (`ms`, inside rollup()) forks in one place: jobs
+with BOTH Customs clearance and Local transport ticked get a different, fixed
+order requested 2026-09-12 (docs/MOIAT limit check, arrival, delivery order,
+BOE, duty/MOIAT exemption/deposit, customs released, MOFA, transportation,
+POD, invoiced, payment) instead of the general-purpose order every other SOW
+combination still uses. No new milestone codes were needed -- every step in
+the new order reuses a code already in FPS Job Update's `milestone` Select
+options, just relabelled and resequenced, so nothing needed adding there.
+
+"Payment received (Job closed)" is not just that step's new label -- CLOSED
+now requires every non-cancelled invoice on the job to show zero outstanding
+before it can go "done", for every SOW combination, not only the CT+transport
+one. A Job Order logged or manually set to Closed while still unpaid will not
+show as done here, and will not show fps_stage="Closed" either, since stage
+reads the same isdone("CLOSED") -- it falls back to "Invoiced" until the
+balance clears, same as any other stage recompute.
 """
 
 import json
 
 import frappe
-from frappe.utils import getdate
+from frappe.utils import flt, getdate
 
 UPDATES = "fps_updates"
 
@@ -150,7 +167,7 @@ def rollup(jo_name):
 	sis = frappe.get_all(
 		"Sales Invoice",
 		filters={"fps_job_order": jo_name, "docstatus": 1, "fps_is_payment_request": 0},
-		fields=["name", "posting_date"],
+		fields=["name", "posting_date", "outstanding_amount"],
 		order_by="posting_date asc",
 	)
 
@@ -209,31 +226,57 @@ def rollup(jo_name):
 		upd["fps_route_pattern"] = route
 
 	ms = [("OPENED", "Job opened")]
-	if F:
-		ms += [("BOOKED", "Booking confirmed"), ("DOCS", "Shipping docs checked"),
-		       ("DEPARTED", "Departed origin"), ("ARRIVED", "Arrived at destination")]
-	elif C or (jo.movement_type in ("SEA", "AIR")):
-		ms += [("DOCS", "Shipping docs checked"), ("ARRIVED", "Cargo arrived")]
-	if C:
+	if C and T:
+		# Customs clearance + local transport, both ticked: the one SOW
+		# combination that covers most FPS jobs, and the exact order requested
+		# for it (2026-09-12) -- a single customs-through-payment sequence,
+		# distinct from every other combination below (which keeps its own
+		# long-standing order untouched). PICKED_UP is deliberately dropped
+		# from this list -- folded into VEHICLE's new "Transportation filed"
+		# label -- so it never appears in this flavor's checklist, though the
+		# done() call for it further down still runs harmlessly unused.
+		ms += [("DOCS", "Shipping docs checked / MOIAT limit checked"),
+		       ("ARRIVED", "Cargo arrived")]
 		if has_fz:
 			ms += [("FZ_BOE", "FZ transfer BOE filed"), ("FZ_CLEARED", "FZ transfer approved")]
 		if has_om:
 			ms += [("OMAN_BOE", "Oman declaration filed"), ("OMAN_CLEARED", "Cleared at Oman port"),
 			       ("TRUCKS_DEPARTED", "Trucks departed Oman"), ("BORDER", "Border crossed")]
-		ms += [("MOFA", "MOFA attestation"), ("BOE", "Declaration filed (BOE)"),
-		       ("DO", "Delivery order collected"), ("DUTY", "Duty / deposit paid"),
-		       ("CLEARED", "Customs released")]
-	if T or X:
-		ms += [("VEHICLE", "Vehicle assigned"), ("PICKED_UP", "Picked up / loaded")]
-		if X and not has_om:
-			ms += [("BORDER", "Border crossed")]
-	if T or X or F:
-		ms += [("DELIVERED", "Delivered")]
-	if G:
-		ms += [("DOCS_IN", "Documents collected"),
-		       ("SUBMITTED", "Application submitted / service scheduled"),
-		       ("COMPLETED", "Service completed")]
-	ms += [("INVOICED", "Invoiced"), ("CLOSED", "Job closed")]
+		ms += [
+			("DO", "Delivery order collected"),
+			("BOE", "Declaration filed (BOE)"),
+			("DUTY", "Duty / MOIAT (Exemption) / Deposit filed in CT"),
+			("CLEARED", "Customs released"),
+			("MOFA", "MOFA attestation check"),
+			("VEHICLE", "Transportation filed"),
+			("DELIVERED", "POD received"),
+		]
+	else:
+		if F:
+			ms += [("BOOKED", "Booking confirmed"), ("DOCS", "Shipping docs checked"),
+			       ("DEPARTED", "Departed origin"), ("ARRIVED", "Arrived at destination")]
+		elif C or (jo.movement_type in ("SEA", "AIR")):
+			ms += [("DOCS", "Shipping docs checked"), ("ARRIVED", "Cargo arrived")]
+		if C:
+			if has_fz:
+				ms += [("FZ_BOE", "FZ transfer BOE filed"), ("FZ_CLEARED", "FZ transfer approved")]
+			if has_om:
+				ms += [("OMAN_BOE", "Oman declaration filed"), ("OMAN_CLEARED", "Cleared at Oman port"),
+				       ("TRUCKS_DEPARTED", "Trucks departed Oman"), ("BORDER", "Border crossed")]
+			ms += [("MOFA", "MOFA attestation"), ("BOE", "Declaration filed (BOE)"),
+			       ("DO", "Delivery order collected"), ("DUTY", "Duty / deposit paid"),
+			       ("CLEARED", "Customs released")]
+		if T or X:
+			ms += [("VEHICLE", "Vehicle assigned"), ("PICKED_UP", "Picked up / loaded")]
+			if X and not has_om:
+				ms += [("BORDER", "Border crossed")]
+		if T or X or F:
+			ms += [("DELIVERED", "Delivered")]
+		if G:
+			ms += [("DOCS_IN", "Documents collected"),
+			       ("SUBMITTED", "Application submitted / service scheduled"),
+			       ("COMPLETED", "Service completed")]
+	ms += [("INVOICED", "Invoiced"), ("CLOSED", "Payment received (Job closed)")]
 	seen = set()
 	order = []
 	for code, label in ms:
@@ -311,7 +354,14 @@ def rollup(jo_name):
 		st["DELIVERED"] = ["unconfirmed", dstr(pods[-1].pod_date), "POD still in draft"]
 	if sis:
 		done("INVOICED", sis[0].posting_date, sis[0].name)
-	if ev_done.get("CLOSED") or jo.fps_stage == "Closed":
+	# "Payment received (Job closed)" means what it says (2026-09-12): closing
+	# no longer just needs a logged CLOSED update or a manual stage change --
+	# every non-cancelled invoice on the job must actually be settled too. A
+	# job logged or set to Closed while still unpaid stays "pending" here
+	# (and jo.fps_stage falls back out of "Closed" on the next rollup, same as
+	# any other stage recompute) until the outstanding balance clears.
+	paid = bool(sis) and all(flt(s.outstanding_amount) <= 0 for s in sis)
+	if (ev_done.get("CLOSED") or jo.fps_stage == "Closed") and paid:
 		done("CLOSED", ev_done.get("CLOSED") or today)
 	for code, d in ev_done.items():
 		if code in ("HOLD", "RESUME"):
