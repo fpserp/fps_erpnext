@@ -41,3 +41,4 @@ fps_erpnext.patches.v1_0.add_customs_duty_mode
 fps_erpnext.patches.v1_0.move_customer_before_jo_date
 fps_erpnext.patches.v1_0.reset_job_order_report_columns_again
 fps_erpnext.patches.v1_0.add_pod_vehicles_table
+fps_erpnext.patches.v1_0.add_ap_cost_transfer_and_lock
