@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-23 09:00:00.000000"
+STAMP = "2026-09-25 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -444,10 +444,28 @@ CHILDREN = [
         name="FPS Accounts", title="FPS Accounts", sequence_id=3, icon="accounting",
         roles=ACCOUNTS_ROLES, links=ACCOUNTS_LINKS,
         blurb="Invoicing, payments, bank reconciliation and VAT.",
-        extra=[paragraph(
-            '<a href="/desk/payment-receipts"><b>Payment Receipts</b> &rarr; '
-            'receipts dashboard, customer receipts, unpaid invoices</a>',
-            "acc_payrcpt")],
+        extra=[
+            paragraph(
+                '<a href="/desk/payment-receipts"><b>Payment Receipts</b> &rarr; '
+                'receipts dashboard, customer receipts, unpaid invoices</a>',
+                "acc_payrcpt"),
+            # The mirror image of Payment Receipts, on the paying-out side
+            # (2026-09-12): a Payment Entry pre-filled Payment Type=Pay,
+            # Party Type=Supplier, rather than a whole second dashboard --
+            # Payment Receipts exists because receipts genuinely needed
+            # their own reconciliation view (many invoices, one receipt);
+            # paying a supplier against their own Purchase Invoice is
+            # already exactly what Payment Entry's own "Get Outstanding
+            # Invoices" does, so a labelled, pre-filled entry point is
+            # enough. Query-param prefill on a New-document route is
+            # standard Frappe behaviour, the same mechanism ERPNext's own
+            # "Make Payment" buttons use.
+            paragraph(
+                '<a href="/app/payment-entry/new?payment_type=Pay&party_type=Supplier">'
+                '<b>Payment Voucher</b> &rarr; pay a supplier, linked to their Purchase '
+                'Invoice</a>',
+                "acc_payvoucher"),
+        ],
         cards=["Billing", "Buying", "Bank & reconciliation", "Receivables & payables", "Tax"],
     ),
     dict(
