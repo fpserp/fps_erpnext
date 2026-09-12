@@ -23,7 +23,7 @@ from frappe.utils import today
 from fps_erpnext.api import customs
 
 OPEN_JOB = [
-    ["Job Order", "fps_stage", "not in", ["Closed", "Invoiced"]],
+    ["Job Order", "fps_stage", "not in", ["Closed", "Completed", "Invoiced"]],
     ["Job Order", "docstatus", "<", 2],
 ]
 
@@ -43,7 +43,7 @@ TILES = [
 
     ("job_order", "Job Order", "open", "Job Order",
      OPEN_JOB,
-     "/app/job-order?fps_stage=%5B%22not%20in%22%2C%5B%22Closed%22%2C%22Invoiced%22%5D%5D"),
+     "/app/job-order?fps_stage=%5B%22not%20in%22%2C%5B%22Closed%22%2C%22Completed%22%2C%22Invoiced%22%5D%5D"),
 
     # WAS an 8th tile, "Job Tracker (in motion)" -- dropped 2026-09-11 as a
     # near-duplicate of the Job Order tile right above it (both counted open

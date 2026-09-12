@@ -55,13 +55,22 @@ combination still uses. No new milestone codes were needed -- every step in
 the new order reuses a code already in FPS Job Update's `milestone` Select
 options, just relabelled and resequenced, so nothing needed adding there.
 
-"Payment received (Job closed)" is not just that step's new label -- CLOSED
-now requires every non-cancelled invoice on the job to show zero outstanding
-before it can go "done", for every SOW combination, not only the CT+transport
-one. A Job Order logged or manually set to Closed while still unpaid will not
-show as done here, and will not show fps_stage="Closed" either, since stage
-reads the same isdone("CLOSED") -- it falls back to "Invoiced" until the
-balance clears, same as any other stage recompute.
+CLOSED AND PAID ARE TWO SEPARATE STEPS (revised 2026-09-12, the same day as
+the original CT+transport reorder above -- the first version made CLOSED
+itself require payment, which turned out to conflate two different real-world
+moments and was corrected the same day). CLOSED means "all cost has been
+entered" and is still the one stage a human may set by hand (or reach via a
+logged CLOSED update), exactly as before -- it does NOT check payment. PAID
+is new: it can only go "done" once CLOSED already is AND every non-cancelled
+invoice on the job shows zero outstanding, and unlike CLOSED it is never
+something a human can log by hand (deliberately excluded from the "Log
+update" dialog's option list on the Job Order client script) -- it exists
+purely so fps_stage can advance to "Completed" on its own once payment
+actually clears, never on anyone's say-so. The milestone code is PAID, not
+COMPLETED, specifically because COMPLETED already means something else
+entirely for a General job (service completed, has nothing to do with
+payment) -- reusing it for payment would have silently collided with that
+existing milestone in the same dedup pass that builds `codes` below.
 """
 
 import json
@@ -103,7 +112,7 @@ def sweep():
 	edited outside the normal flow, this function itself having been down)."""
 	jobs = frappe.get_all(
 		"Job Order",
-		filters={"docstatus": ["<", 2], "fps_stage": ["not in", ["Closed"]]},
+		filters={"docstatus": ["<", 2], "fps_stage": ["not in", ["Closed", "Completed"]]},
 		fields=["name"],
 		limit_page_length=2000,
 	)
@@ -276,7 +285,7 @@ def rollup(jo_name):
 			ms += [("DOCS_IN", "Documents collected"),
 			       ("SUBMITTED", "Application submitted / service scheduled"),
 			       ("COMPLETED", "Service completed")]
-	ms += [("INVOICED", "Invoiced"), ("CLOSED", "Payment received (Job closed)")]
+	ms += [("INVOICED", "Invoiced"), ("CLOSED", "Job closed"), ("PAID", "Payment received")]
 	seen = set()
 	order = []
 	for code, label in ms:
@@ -354,14 +363,7 @@ def rollup(jo_name):
 		st["DELIVERED"] = ["unconfirmed", dstr(pods[-1].pod_date), "POD still in draft"]
 	if sis:
 		done("INVOICED", sis[0].posting_date, sis[0].name)
-	# "Payment received (Job closed)" means what it says (2026-09-12): closing
-	# no longer just needs a logged CLOSED update or a manual stage change --
-	# every non-cancelled invoice on the job must actually be settled too. A
-	# job logged or set to Closed while still unpaid stays "pending" here
-	# (and jo.fps_stage falls back out of "Closed" on the next rollup, same as
-	# any other stage recompute) until the outstanding balance clears.
-	paid = bool(sis) and all(flt(s.outstanding_amount) <= 0 for s in sis)
-	if (ev_done.get("CLOSED") or jo.fps_stage == "Closed") and paid:
+	if ev_done.get("CLOSED") or jo.fps_stage in ("Closed", "Completed"):
 		done("CLOSED", ev_done.get("CLOSED") or today)
 	for code, d in ev_done.items():
 		if code in ("HOLD", "RESUME"):
@@ -385,6 +387,15 @@ def rollup(jo_name):
 	def isdone(c):
 		return st.get(c, [""])[0] == "done"
 
+	# PAID can only go done once CLOSED already is -- payment is checked
+	# against reality (every non-cancelled invoice on the job actually shows
+	# zero outstanding), never logged by hand, so this has to run down here,
+	# after isdone() exists, rather than alongside the other done() calls
+	# above.
+	paid = bool(sis) and all(flt(s.outstanding_amount) <= 0 for s in sis)
+	if isdone("CLOSED") and paid:
+		done("PAID", ev_done.get("PAID") or today)
+
 	hold_reason = None
 	ct_hold = [c for c in cts if c.status in ("On Hold", "Delayed")]
 	pod_fail = [p for p in pods if p.docstatus == 1 and p.delivery_status in ("Failed", "Returned")]
@@ -396,6 +407,8 @@ def rollup(jo_name):
 		hold_reason = "Delivery %s" % pod_fail[-1].delivery_status
 	if hold_reason:
 		stage = "On Hold"
+	elif isdone("PAID"):
+		stage = "Completed"
 	elif isdone("CLOSED"):
 		stage = "Closed"
 	elif isdone("INVOICED"):
@@ -419,10 +432,10 @@ def rollup(jo_name):
 	next_due = None
 	real_evs = [e for e in evs if not ((e.evidence_ref or "").endswith(":tracker-enabled") or ":rebuild:" in (e.evidence_ref or ""))]
 	last_ev = real_evs[-1] if real_evs else None
-	if last_ev and last_ev.next_action and stage not in ("Closed",):
+	if last_ev and last_ev.next_action and stage not in ("Closed", "Completed"):
 		next_action = last_ev.next_action
 		next_due = last_ev.follow_up_date
-	elif pending and stage != "Closed":
+	elif pending and stage not in ("Closed", "Completed"):
 		next_action = labels[pending[0]]
 	last_update = None
 	last_on = None
