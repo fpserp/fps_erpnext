@@ -7,7 +7,7 @@
  "field_name": "customer_name",
  "idx": 0,
  "is_system_generated": 0,
- "modified": "2026-09-25 09:00:00.000000",
+ "modified": "2026-09-26 09:00:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "Sales Invoice-customer_name-in_list_view",

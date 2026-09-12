@@ -26,7 +26,7 @@ OWNER = "Administrator"
 # no second chance. BUMP THIS ON EVERY CONTENT CHANGE, and do not edit these
 # workspaces in the desk UI between generating and deploying -- a desk save sets
 # `modified` to now(), which would out-race the stamp and drop the whole import.
-STAMP = "2026-09-25 09:00:00.000000"
+STAMP = "2026-09-26 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
 
 
@@ -581,6 +581,10 @@ SIDEBAR_ITEMS = [
     # The receipts themselves, not the dashboard workspace of the same name.
     s_link("Payment Receipts", "DocType", "Payment Entry",
            route_options={"payment_type": "Receive"}),
+    # Mirror of Payment Receipts on the paying-out side (2026-09-12): same
+    # doctype, same route_options mechanism, just the other Payment Type.
+    s_link("Payment Voucher", "DocType", "Payment Entry",
+           route_options={"payment_type": "Pay"}),
     s_link("Bank Reconciliation", "DocType", "FPS Bank Statement"),
 
     s_group("HR", "hr", keep_closed=1),
@@ -593,6 +597,7 @@ SIDEBAR_ITEMS = [
     s_link("Profitability per Job Order", "Report", "FPS Profitability per Job Order"),
     s_link("Monthly GP trend", "Report", "FPS Monthly GP Trend"),
     s_link("Accounts Receivable", "Report", "Accounts Receivable"),
+    s_link("Accounts Payable", "Report", "Accounts Payable"),
     # ERPNext's own SOA generator, not a report: pick customers (or a customer
     # group), set the period and ageing buckets, and it renders a statement PDF
     # per customer and can email them straight out. That is what credit-terms
