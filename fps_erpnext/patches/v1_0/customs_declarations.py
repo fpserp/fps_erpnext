@@ -40,9 +40,7 @@ Safe to re-run: a tracker that already has rows is skipped.
 
 import frappe
 from frappe.custom.doctype.custom_field.custom_field import create_custom_field
-from frappe.utils import add_days, getdate
-
-from fps_erpnext.api.customs import DEADLINES, DECLARATIONS, rollup_declarations
+from fps_erpnext.api.customs import DEADLINES, DECLARATIONS, deadline_for, rollup_declarations
 
 TRACKER = "Customs Tracker"
 CHILD = "FPS Customs Declaration"
@@ -128,12 +126,13 @@ def _add_table():
 			frappe.log_error(title="FPS: could not add %s" % spec["fieldname"])
 
 
-def _deadlines_for(clearance_date):
-	out = {}
-	for spec in DEADLINES:
-		out[spec["date_field"]] = (add_days(getdate(clearance_date), spec["days"])
-		                           if clearance_date else None)
-	return out
+def _deadlines_for(source):
+	"""Each clock from the date its spec counts from (customs_clock.DEADLINES).
+
+	When this ran on the live site (10 Sep 2026) both clocks counted from the
+	clearance date; the document clock has since moved to the declaration date.
+	"""
+	return {spec["date_field"]: deadline_for(source, spec) for spec in DEADLINES}
 
 
 def _insert_row(parent, source, idx):
@@ -148,7 +147,7 @@ def _insert_row(parent, source, idx):
 	for field in CARRY:
 		row[field] = source.get(field)
 	row["fps_leg"] = source.get("fps_leg") or 1
-	row.update(_deadlines_for(source.get("clearance_date")))
+	row.update(_deadlines_for(source))
 	frappe.get_doc(row).insert(ignore_permissions=True)
 
 

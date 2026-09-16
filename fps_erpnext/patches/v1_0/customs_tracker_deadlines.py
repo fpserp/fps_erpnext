@@ -1,19 +1,26 @@
 """Add the two customs chase clocks, and settle on one word for "done".
 
-TWO NEW DATE FIELDS on Customs Tracker, both derived from the clearance date:
+TWO NEW DATE FIELDS on Customs Tracker, both derived from dates on the record:
 
-    fps_doc_deadline    Doc submission deadline   clearance + 30 days
+    fps_doc_deadline    Doc submission deadline   declaration (ct_date) + 30 days
     fps_mofa_deadline   MOFA deadline             clearance + 14 days
+
+As first shipped (10 Sep 2026) BOTH counted from the clearance date. On 16 Sep
+2026 the document clock moved to the declaration date, to match the Dubai
+Customs Fine Start Date (see fps_erpnext/api/customs_clock.py, and the patch
+customs_doc_deadline_from_declaration that re-stamped the live rows). This
+patch already ran on the live site with the old rule; on a fresh install it now
+writes the current one, because it calls the same backfill.
 
 They are READ ONLY. Both are a fixed offset from a date already on the record,
 so a typed-over value would only ever mean "this one is wrong". Change the
-clearance date and both move; the validate hook in fps_erpnext.api.customs
-recalculates them on every save.
+declaration or clearance date and they move; the validate hook in
+fps_erpnext.api.customs recalculates them on every save.
 
-Existing rows are backfilled here. 46 of the 48 live trackers have a clearance
-date and get both deadlines; the two that have not cleared yet get neither,
-because there is nothing to count from and a deadline invented from the entry
-date would be a fake alarm.
+Existing rows are backfilled here. 46 of the 48 live trackers had a clearance
+date and got both deadlines; the two that had not cleared yet got neither,
+because a pending declaration starts no clock and a deadline invented from the
+entry date would be a fake alarm.
 
 SUBMITTED BECOMES COMPLETED. Document submission offered Pending / Submitted,
 while MOFA, Deposit and Claim all offer Completed -- and the deadline rule is
@@ -39,6 +46,13 @@ from frappe.custom.doctype.custom_field.custom_field import create_custom_field
 
 from fps_erpnext.api.customs import DEADLINES, backfill_deadlines
 
+# Shared with customs_doc_deadline_from_declaration, which rewrites the live
+# field's description to this text.
+DOC_DEADLINE_DESCRIPTION = (
+	"Dubai Customs fine start date: 30 days from the declaration (BOE) date, once "
+	"it has cleared. Originals must be in before it. Amber from day 15, red from day 25."
+)
+
 TRACKER = "Customs Tracker"
 
 NEW_FIELDS = (
@@ -49,7 +63,7 @@ NEW_FIELDS = (
 		"insert_after": "fps_doc_submission",
 		"read_only": 1,
 		"allow_on_submit": 0,
-		"description": "30 days from clearance. Amber from day 15, red from day 25.",
+		"description": DOC_DEADLINE_DESCRIPTION,
 	},
 	{
 		"fieldname": "fps_mofa_deadline",
@@ -77,10 +91,13 @@ def execute():
 	_migrate_submitted()
 	frappe.clear_cache(doctype=TRACKER)
 
-	filled = backfill_deadlines()
-	if filled:
+	result = backfill_deadlines()
+	if result["rows"] or result["parents"]:
 		frappe.db.commit()
-	frappe.logger().info("FPS: wrote customs deadlines onto %d trackers" % filled)
+	frappe.logger().info(
+		"FPS: wrote customs deadlines onto %d trackers and %d declaration rows"
+		% (result["parents"], result["rows"])
+	)
 
 
 def _add_fields():

@@ -256,8 +256,11 @@ CUSTOMS_COLUMNS = [
 ]
 
 # key -> the deadline spec that colours it, from fps_erpnext.api.customs.
-# The board does NOT recompute the thresholds; it asks customs.deadline_state,
-# so amber means the same thing here, on the form and in the stored dates.
+# The board does NOT recompute the thresholds; it asks customs.parent_state,
+# which colours each tracker by the declaration row its date came from and
+# counts from the same date as the deadline (declaration date for Doc due,
+# clearance date for MOFA due), so amber means the same thing here, on the form
+# and in the stored dates.
 DEADLINE_COLUMNS = {
     "doc_due": "doc",
     "mofa_due": "mofa",
@@ -276,9 +279,14 @@ def get_customs_tracker(limit=400):
     if not frappe.has_permission("Customs Tracker", "read"):
         return {"columns": [], "rows": [], "options": {}}
 
-    # clearance_date is fetched but never shown: it is what both deadline
-    # colours are measured from.
-    fields = ["name", "clearance_date"] + [f for _k, _l, f, _fl in CUSTOMS_COLUMNS]
+    # The clock fields (ct_date, clearance_date, status) are fetched whether
+    # shown or not: each deadline colour counts from the date its spec names
+    # ("from" in customs_clock.DEADLINES).
+    specs = {spec["key"]: spec for spec in customs.DEADLINES}
+    fields = list(dict.fromkeys(
+        ["name"] + list(customs.CLOCK_FIELDS)
+        + [f for _k, _l, f, _fl in CUSTOMS_COLUMNS]
+        + [spec["status_field"] for spec in specs.values()]))
 
     records = frappe.get_all(
         "Customs Tracker",
@@ -287,7 +295,24 @@ def get_customs_tracker(limit=400):
         limit_page_length=frappe.utils.cint(limit) or 400,
     )
 
-    specs = {spec["key"]: spec for spec in customs.DEADLINES}
+    # A tracker's dates belong to its declaration rows, so its colour does too
+    # (customs.parent_state). One query for all of them; a tracker with no
+    # rows is coloured from its own fields.
+    declarations = {}
+    names = [r.name for r in records]
+    if names:
+        for d in frappe.get_all(
+            customs.CHILD,
+            filters={"parenttype": "Customs Tracker",
+                     "parentfield": customs.DECLARATIONS,
+                     "parent": ["in", names]},
+            fields=["parent"] + list(customs.CLOCK_FIELDS)
+            + [spec["status_field"] for spec in specs.values()],
+            order_by="parent asc, idx asc",
+            limit_page_length=0,
+        ):
+            declarations.setdefault(d.parent, []).append(d)
+
     as_of = frappe.utils.today()
 
     rows = []
@@ -305,9 +330,8 @@ def get_customs_tracker(limit=400):
         # One state per deadline column, computed HERE so the board, the form
         # and the stored dates cannot disagree about what amber means.
         for key, spec_key in DEADLINE_COLUMNS.items():
-            spec = specs[spec_key]
-            row[key + "_state"] = customs.deadline_state(
-                r.get("clearance_date"), r.get(spec["status_field"]), spec, as_of
+            row[key + "_state"] = customs.parent_state(
+                r, declarations.get(r.name, []), specs[spec_key], as_of
             )
         rows.append(row)
 

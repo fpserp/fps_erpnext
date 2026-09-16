@@ -696,11 +696,20 @@ CLIENT_SCRIPTS = [
     {
         # Colours the two customs chase clocks on the form. The board colours
         # the same two columns from the same rules -- see
-        # fps_erpnext/api/customs.py, which is where the thresholds live.
+        # fps_erpnext/api/customs_clock.py, which is where the thresholds and
+        # the "count from" dates live.
+        #
+        # "stamp": this script changed on its own (2026-09-16, doc deadline
+        # counts from the declaration date) while other generated files had
+        # uncommitted work in progress, so it moves past the live row's
+        # `modified` (2026-09-26 09:00) without restamping everything else.
+        # client_script() uses the later of this and STAMP, so a future STAMP
+        # bump overtakes it and it can then be deleted.
         "name": "Customs Tracker - Deadlines",
         "source": "customs_tracker_deadlines.js",
         "dt": "Customs Tracker",
         "view": "Form",
+        "stamp": "2026-09-27 09:00:00.000000",
     },
     {
         # Adopted from the site DB on 2026-09-10. Two fixes came with it: the
@@ -732,7 +741,8 @@ def client_script(spec):
         "dt": spec["dt"],
         "enabled": 1,
         "idx": 0,
-        "modified": STAMP,
+        # Same fixed-width format, so the string max is the later timestamp.
+        "modified": max(STAMP, spec.get("stamp", STAMP)),
         "modified_by": OWNER,
         "module": MODULE,
         "name": spec["name"],

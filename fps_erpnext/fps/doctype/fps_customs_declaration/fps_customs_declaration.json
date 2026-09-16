@@ -133,7 +133,7 @@
    "options": "\nNot Applicable\nPending\nCompleted"
   },
   {
-   "description": "30 days from this BOE's clearance. Amber from day 15, red from day 25.",
+   "description": "Dubai Customs fine start date: 30 days from this BOE's declaration date (BOE date), once it has cleared. Originals must be in before it. Amber from day 15, red from day 25.",
    "fieldname": "fps_doc_deadline",
    "fieldtype": "Date",
    "label": "Doc submission deadline",
@@ -199,7 +199,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-24 09:00:00.000000",
+ "modified": "2026-09-27 09:00:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "name": "FPS Customs Declaration",
