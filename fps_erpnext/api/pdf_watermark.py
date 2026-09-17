@@ -23,6 +23,7 @@ import frappe
 _patch_installed = False
 _watermark_pdf_cache = None
 _watermark_backend_used = "none"
+_watermark_by_size = {}
 
 
 # ---------------------------------------------------------------------------
@@ -58,8 +59,13 @@ def _build_address_only_footer_file():
 # ---------------------------------------------------------------------------
 # Watermark page generation — reportlab primary, Pillow fallback
 # ---------------------------------------------------------------------------
-def _build_watermark_pdf_reportlab():
-    """Reportlab path — proper PDF transparency."""
+def _build_watermark_pdf_reportlab(page_w=None, page_h=None):
+    """Reportlab path — proper PDF transparency.
+
+    The overlay page is built at the size of the page it will be merged onto
+    (A4 portrait by default), so the watermark always sits 10 mm from the right
+    edge and 30 mm from the bottom — in the right-hand corner on landscape
+    pages too, not at the portrait position (fixed 18 Sep 2026)."""
     from reportlab.pdfgen import canvas as rl_canvas
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.utils import ImageReader
@@ -70,9 +76,11 @@ def _build_watermark_pdf_reportlab():
 
     PT_PER_MM = 2.834645669
     A4_W, A4_H = A4  # 595.27, 841.89
+    A4_W = float(page_w or A4_W)
+    A4_H = float(page_h or A4_H)
 
     buf = io.BytesIO()
-    c = rl_canvas.Canvas(buf, pagesize=A4)
+    c = rl_canvas.Canvas(buf, pagesize=(A4_W, A4_H))
 
     img = ImageReader(wm_path)
     img_w, img_h = img.getSize()
@@ -170,6 +178,17 @@ def _build_watermark_pdf_bytes():
     return None
 
 
+def _watermark_page_for_size(page_w, page_h):
+    """Reportlab overlay page matching one page size, cached per worker."""
+    from pypdf import PdfReader
+
+    key = (round(page_w), round(page_h))
+    if key not in _watermark_by_size:
+        wm = _build_watermark_pdf_reportlab(page_w, page_h)
+        _watermark_by_size[key] = PdfReader(io.BytesIO(wm)).pages[0] if wm else None
+    return _watermark_by_size[key]
+
+
 # ---------------------------------------------------------------------------
 # Post-process: merge watermark onto every page
 # ---------------------------------------------------------------------------
@@ -202,9 +221,17 @@ def _stamp_watermark_on_pdf(pdf_bytes):
         PT_PER_MM = 2.834645669
 
         for page in main_reader.pages:
+            if getattr(page, "rotation", 0):
+                # Make the visible orientation the page's real coordinate
+                # system, so "bottom-right" means what the reader sees.
+                page.transfer_rotation_to_content()
             if is_a4:
-                # Reportlab path — same-size pages, direct merge
-                page.merge_page(wm_page)
+                # Reportlab path — overlay built at THIS page's size (portrait
+                # or landscape), so the watermark lands in its right corner.
+                page_w = float(page.mediabox.width)
+                page_h = float(page.mediabox.height)
+                sized = _watermark_page_for_size(page_w, page_h)
+                page.merge_page(sized if sized is not None else wm_page)
             else:
                 # Pillow small-image path — translate into bottom-right
                 page_w = float(page.mediabox.width)
@@ -338,7 +365,7 @@ def check_watermark_status():
             "letter_head_footer_chars": len(_get_letter_head_footer_html()),
             "reportlab_available": reportlab_available,
             "watermark_backend_used": _watermark_backend_used,
-            "app_version": "0.0.13",
+            "app_version": "0.0.14",
         }
     except Exception as e:
         return {"error": str(e)}
