@@ -45,3 +45,4 @@ fps_erpnext.patches.v1_0.add_ap_cost_check_and_lock
 fps_erpnext.patches.v1_0.split_closed_and_completed
 fps_erpnext.patches.v1_0.allow_ops_payment_entry_and_ap_report
 fps_erpnext.patches.v1_0.customs_doc_deadline_from_declaration
+fps_erpnext.patches.v1_0.reload_sales_invoice_doctype
