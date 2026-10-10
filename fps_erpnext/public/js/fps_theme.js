@@ -1,9 +1,17 @@
-// FPS Pearl -- decides when the FPS desk theme is on.
+// FPS theme -- decides when the FPS desk theme is on, and in which palette.
 //
-// It sets html[data-fps-theme="pearl"] while the viewer is "under the FPS
-// app tile" and removes it everywhere else; css/fps_theme.css scopes every
-// rule under that attribute. That is ALL this file does: no frappe.call, no
-// frappe.db, no writes of any kind, nothing sent anywhere.
+// It sets html[data-fps-theme] while the viewer is "under the FPS app tile"
+// and removes it everywhere else; css/fps_theme.css scopes every rule under
+// that attribute. That is ALL this file does: no frappe.call, no frappe.db,
+// no writes of any kind, nothing sent anywhere.
+//
+// WHICH PALETTE. The value follows the user's own Frappe theme, resolved on
+// html[data-theme]: "light" -> "pearl", "dark" -> "black" (Matte Black).
+// Users switch it in Frappe's Toggle Theme dialog (avatar menu, Ctrl+Shift+G,
+// or the Command Center's sun/moon button); Frappe saves that on their own
+// profile and rewrites html[data-theme], which this file watches, so the
+// palette changes on the spot. "Automatic" follows the computer because
+// Frappe resolves it to light/dark on the same attribute.
 //
 // WHAT COUNTS AS "UNDER THE FPS TILE". The ACTIVE SIDEBAR, not the URL. A Job
 // Order opened from the FPS sidebar is FPS; the same Job Order reached from
@@ -36,12 +44,10 @@
 	"use strict";
 
 	var ATTR = "data-fps-theme";
-	// The VALUE names the palette the stylesheet carries ("pearl": light plane,
-	// off-white glass, slate ink). A new palette is a new value plus a new
-	// token block in css/fps_theme.css, never an edit to the user's own theme.
-	var VALUE = "pearl";
 	// Named after the file, not the palette: the stored value is only
-	// {url, on}, so a palette change never invalidates it.
+	// {url, on}; the palette itself is re-read from html[data-theme], which the
+	// server already renders on the first paint, so a stale palette is never
+	// replayed.
 	var STORE_KEY = "fps_theme_last";
 
 	// "FPS", or a per-user copy such as "FPS-ops@fastplanet.ae".
@@ -72,9 +78,17 @@
 		}
 	}
 
+	// The VALUE names the palette css/fps_theme.css carries a section for. A new
+	// palette is a new value plus a new section there, never an edit to the
+	// user's own Frappe theme.
+	function palette() {
+		return root.getAttribute("data-theme") === "dark" ? "black" : "pearl";
+	}
+
 	function setTheme(on) {
 		if (on) {
-			if (root.getAttribute(ATTR) !== VALUE) root.setAttribute(ATTR, VALUE);
+			var value = palette();
+			if (root.getAttribute(ATTR) !== value) root.setAttribute(ATTR, value);
 		} else if (root.hasAttribute(ATTR)) {
 			root.removeAttribute(ATTR);
 		}
@@ -154,9 +168,16 @@
 		}
 	}
 
+	// frappe.ui.set_theme() rewrites html[data-theme] when the user picks a
+	// theme (or the computer flips under "Automatic"); follow it.
+	function watchFrappeTheme() {
+		if (observer) observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+	}
+
 	// Anti-flash: same URL as the last decision in this tab -> reuse it now.
 	if (recall() === true) setTheme(true);
 
+	watchFrappeTheme();
 	if (document.body) watchRoute();
 
 	var $ = window.jQuery;

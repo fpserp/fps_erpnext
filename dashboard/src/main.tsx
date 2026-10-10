@@ -54,6 +54,7 @@ import { Component, Fragment, StrictMode, type ErrorInfo, type ReactNode } from 
 import { createRoot } from "react-dom/client";
 import CommandCenter from "@/components/dashboard/CommandCenter";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { trackPalette } from "@/lib/palette";
 import { LayerDismissProvider, ShadowProvider } from "@/lib/shadow";
 import themeCss from "./styles/theme.css?inline";
 
@@ -98,8 +99,9 @@ const PORTAL_TAG = "fps-cc-portal";
  * through shadow boundaries: tracking and alignment are reset to the design's,
  * and the optical size is pinned to the desk's so Inter renders identically
  * inside and outside the dashboard (Tailwind's preflight would reset it to
- * "normal" on :host). No `dark` class: Pearl is a light scheme (theme.css sets
- * color-scheme: light), so shadcn's dark: variants must stay off.
+ * "normal" on :host). No `dark` class, ever: shadcn's dark: variants stay
+ * off in both palettes. The palette is a data-palette attribute on these two
+ * roots, kept in step with the desk by lib/palette.ts (trackPalette).
  */
 const APP_ROOT_CLASS = "fps-cc tracking-normal text-start [font-variation-settings:'opsz'_24]";
 const PORTAL_ROOT_CLASS = "fps-cc fps-cc-portal tracking-normal text-start [font-variation-settings:'opsz'_24]";
@@ -201,6 +203,7 @@ interface PortalHost {
   container: HTMLElement;
   refs: number;
   releaseStyles: () => void;
+  untrackPalette: () => void;
 }
 
 let portalHost: PortalHost | null = null;
@@ -210,6 +213,7 @@ function acquirePortal(): { container: HTMLElement; release: () => void } {
     if (portalHost) {
       portalHost.host.remove();
       portalHost.releaseStyles();
+      portalHost.untrackPalette();
     }
     const host = document.createElement(PORTAL_TAG);
     host.setAttribute("data-fps-cc", "portal-host");
@@ -220,9 +224,10 @@ function acquirePortal(): { container: HTMLElement; release: () => void } {
     const container = document.createElement("div");
     container.className = PORTAL_ROOT_CLASS;
     container.setAttribute("data-fps-cc", "portal");
+    const untrackPalette = trackPalette(container);
     root.append(container);
     document.body.append(host);
-    portalHost = { host, container, refs: 0, releaseStyles };
+    portalHost = { host, container, refs: 0, releaseStyles, untrackPalette };
   }
   const acquired = portalHost;
   acquired.refs += 1;
@@ -236,6 +241,7 @@ function acquirePortal(): { container: HTMLElement; release: () => void } {
       if (acquired.refs > 0 || portalHost !== acquired) return;
       acquired.host.remove();
       acquired.releaseStyles();
+      acquired.untrackPalette();
       portalHost = null;
     },
   };
@@ -349,6 +355,7 @@ function createController(handle: () => MountHandle): Controller {
     const appRoot = document.createElement("div");
     appRoot.className = APP_ROOT_CLASS;
     appRoot.setAttribute("data-fps-cc", "app");
+    const untrackPalette = trackPalette(appRoot);
     shadowRoot.append(appRoot);
 
     const portal = acquirePortal();
@@ -384,6 +391,7 @@ function createController(handle: () => MountHandle): Controller {
         console.error("fps-command-center: unmount failed", err);
       }
       appRoot.remove();
+      untrackPalette();
       shadowRoot.removeEventListener("keydown", guardKeydown);
       releaseStyles();
       portal.release();

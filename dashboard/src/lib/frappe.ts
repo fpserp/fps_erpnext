@@ -9,6 +9,10 @@
  *    falling back to location.assign when the router is unavailable.
  *  - newDoc(doctype): opens a blank form (frappe.new_doc). Nothing is saved
  *    until the user saves it themselves.
+ *  - openThemeSwitcher(): opens Frappe's OWN Toggle Theme dialog (the one in
+ *    the avatar menu). Nothing is saved by this module; if the user picks a
+ *    theme there, Frappe saves it on their own profile exactly as it does
+ *    from the avatar menu, and the palette follows (lib/palette.ts).
  *  - hasRole / currentUser / currency / onRouteChange: desk context.
  *
  * NEVER add a write helper here (set_value, insert, delete, submit, xcall to a
@@ -83,6 +87,8 @@ export interface FrappeGlobal {
   route_hash?: string | null;
   router?: FrappeRouter;
   user?: FrappeUser;
+  /** frappe.ui.ThemeSwitcher: the desk's Light / Dark / Automatic dialog. */
+  ui?: { ThemeSwitcher?: new () => { show?: () => void } };
   session?: { user?: string; user_email?: string; user_fullname?: string };
   boot?: {
     sysdefaults?: { currency?: string };
@@ -338,6 +344,23 @@ export function navigate(route: string): void {
   } catch (err) {
     console.error("fps-command-center: set_route failed, falling back to a page load", err);
     window.location.assign(`${url.pathname}${url.search}${url.hash}`);
+  }
+}
+
+/**
+ * Open Frappe's own Toggle Theme dialog (frappe.ui.ThemeSwitcher, the same one
+ * the avatar menu and Ctrl+Shift+G open). Returns false when the desk API is
+ * missing (dev harness without a mock, a future Frappe without the class).
+ */
+export function openThemeSwitcher(): boolean {
+  const Switcher = desk()?.ui?.ThemeSwitcher;
+  if (typeof Switcher !== "function") return false;
+  try {
+    new Switcher().show?.();
+    return true;
+  } catch (err) {
+    console.error("fps-command-center: theme dialog failed", err);
+    return false;
   }
 }
 

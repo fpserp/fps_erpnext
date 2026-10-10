@@ -266,16 +266,30 @@ Two independent pieces, both presentation only.
    Accounts User / Accounts Manager / System Manager) plus the existing
    `pipeline.get_overview` for the stage strip.
 
-**B. FPS Pearl — every page under the FPS tile.**
+**B. The FPS theme — every page under the FPS tile, in two palettes.**
+
+Each user picks a palette for themselves with Frappe's own **Toggle Theme**
+dialog (avatar menu, Ctrl+Shift+G, or the sun/moon button in the Command
+Center header): **Light → Pearl** (the base, §1–§5), **Dark → Matte Black**
+(neutral near-black `#131416`, matte cards `#1B1C1E` at 90 %, no saturation,
+glows at 3–4 %, ink `#E8E8E6`; chart slots `#3C8DEA / #9B63B1 / #1AA598 /
+#C8800D`, validated on the card `#1A1B1D`, 382 contrast pairs ≥ minimum),
+**Automatic** → follows the computer. Frappe saves the choice on the user's own
+profile; nothing in this theme writes.
 
 1. `public/js/fps_theme.js` (via `app_include_js`) only toggles
-   `html[data-fps-theme="pearl"]`. It is on while the active sidebar is the
-   FPS sidebar ("FPS", or a per-user "FPS-<email>" copy) or the route is one of
-   the FPS workspaces / Payment Receipts. The sidebar — not the URL — is what
-   "under the FPS tile" means in v16: Sales Invoice opened from the FPS tile is
-   Pearl, the same list opened from Accounting is stock ERPNext.
+   `html[data-fps-theme]` — value `pearl` or `black`, read from Frappe's
+   resolved `html[data-theme]` and followed live. It is on while the active
+   sidebar is the FPS sidebar ("FPS", or a per-user "FPS-<email>" copy) or the
+   route is one of the FPS workspaces / Payment Receipts. The sidebar — not the
+   URL — is what "under the FPS tile" means in v16: Sales Invoice opened from
+   the FPS tile is themed, the same list opened from Accounting is stock
+   ERPNext (in the user's own Frappe Light/Dark).
 2. `public/css/fps_theme.css` (via `app_include_css`) is scoped entirely under
-   that attribute. It re-points Frappe's own CSS variables to these tokens (they
+   that attribute. The 205 rules both palettes share are written once
+   (`html[data-fps-theme]`, Pearl values); 5 light-card lifts are Pearl-only;
+   a Matte Black section at the end re-states the 24 rules whose values differ
+   (`html[data-fps-theme="black"]`, same specificity, later = wins). It re-points Frappe's own CSS variables to these tokens (they
    also inherit into the Job Tracker and Customs Tracker blocks), keeps every
    sticky or layered surface opaque, and uses real `backdrop-filter` glass only
    on workspace widgets — never on forms, grids, list/report views or anything
@@ -288,11 +302,12 @@ Two independent pieces, both presentation only.
    (`fps_theme.css?v=1`, `fps_theme.js?v=1`). Bump it on every change —
    `/assets` is cached for a year.
 6. The attribute name is palette-neutral on purpose; its value names the
-   palette. The previous palette, "Midnight" (plane `#0B0F19`, neon accents,
-   files `fps_midnight.css/js`), is preserved in git history (commit `896a324`)
-   and can be restored by swapping the two token blocks — the `:host, .fps-cc`
-   block in `dashboard/src/styles/theme.css` and the `html[data-fps-theme]`
-   token rule in `fps_theme.css` — and bumping `?v=`.
+   palette. In the dashboard, `src/lib/palette.ts` stamps `data-palette` on the
+   app and portal roots from the same attribute, and `src/styles/theme.css`
+   carries Pearl on `:host, .fps-cc` and Matte Black on
+   `.fps-cc[data-palette="black"]`. The first palette, "Midnight" (plane
+   `#0B0F19`, neon accents, files `fps_midnight.css/js`), is preserved in git
+   history (commit `896a324`).
 
 ## 10. Guardrails for future changes (read before prompting)
 

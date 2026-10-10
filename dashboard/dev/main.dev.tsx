@@ -62,11 +62,12 @@ const viewer: Viewer = params.get("viewer") === "ops" ? "ops" : "finance";
 /* ---- host-page CSS: the app's real FPS Pearl desk theme ------------------- */
 
 // fps_theme.css (hooks.py app_include_css) scopes every rule under
-// html[data-fps-theme="pearl"], which public/js/fps_theme.js sets on the live
-// desk while the FPS sidebar or an FPS workspace route is active. The harness
-// is always "on the FPS workspace" (body[data-route="Workspaces/FPS"]), so it
-// sets the same attribute directly instead of loading that script. The
-// attribute's value names the palette; it must match the sheet's selector.
+// html[data-fps-theme] ("pearl" or "black"), which public/js/fps_theme.js sets
+// on the live desk while the FPS sidebar or an FPS workspace route is active.
+// The harness is always "on the FPS workspace" (body[data-route=
+// "Workspaces/FPS"]), so it sets the attribute directly instead of loading
+// that script; ?palette=black starts in Matte Black, and the dashboard's
+// sun/moon button flips it through the mock ThemeSwitcher.
 const hostCss = import.meta.glob<string>("../../fps_erpnext/public/css/fps_theme.css", {
   query: "?url",
   import: "default",
@@ -79,7 +80,9 @@ if (hostCssUrl) {
   link.href = hostCssUrl;
   link.setAttribute("data-fps-dev", "host-css");
   document.head.append(link);
-  document.documentElement.setAttribute("data-fps-theme", "pearl");
+  const startBlack = new URLSearchParams(window.location.search).get("palette") === "black";
+  document.documentElement.setAttribute("data-theme", startBlack ? "dark" : "light");
+  document.documentElement.setAttribute("data-fps-theme", startBlack ? "black" : "pearl");
 } else {
   document.body.classList.add("fps-dev-emulate-host");
 }

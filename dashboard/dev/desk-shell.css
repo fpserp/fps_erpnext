@@ -36,6 +36,21 @@
   --fps-dev-navbar-height: 48px;
 }
 
+/* The shell follows the palette like the live desk does (Matte Black plane). */
+html[data-fps-theme="black"] {
+  --fps-dev-plane: #131416;
+  --fps-dev-chrome: #0f1013;
+  --fps-dev-raised: #202224;
+  --fps-dev-border: rgba(255, 255, 255, 0.09);
+  --fps-dev-border-strong: rgba(255, 255, 255, 0.15);
+  --fps-dev-text: #e8e8e6;
+  --fps-dev-muted: #b6b7ba;
+  --fps-dev-accent: #3c8dea;
+  --fps-dev-shadow-pop:
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
 /* desk.bundle.css paints html/body with var(--bg-color); the FPS route is the Pearl plane. */
 html,
 body {

@@ -7,11 +7,14 @@
  * also why the variables hang off :host (the shadow hosts) and .fps-cc (the
  * app and portal roots) instead of :root.
  *
- * Palette: FPS Pearl (DESIGN.md). The same --fps-* names and values sit in
- * fps_erpnext/public/css/fps_theme.css for the desk around the dashboard, so
- * the two render as one material: change a value in both files, in one
- * commit. The previous palette (Midnight, plane #0b0f19) is in git history
- * (commit 896a324) and comes back by swapping this token block and that one.
+ * Palettes (DESIGN.md): FPS Pearl is the base below; Matte Black is the
+ * .fps-cc[data-palette="black"] block after it. main.tsx stamps data-palette
+ * on the app and portal roots from html[data-fps-theme] (which the desk's
+ * fps_theme.js derives from the user's own Frappe Light/Dark choice), so the
+ * dashboard always matches the desk around it. The same --fps-* names and
+ * values sit in fps_erpnext/public/css/fps_theme.css: change a value in both
+ * files, in one commit. The first palette (Midnight, plane #0b0f19) is in git
+ * history (commit 896a324).
  *
  * Class detection: source(none) turns Tailwind's automatic scan of the Vite
  * root off (it would read dev/, scripts/ and build output too); the only
@@ -42,6 +45,16 @@
   --fps-highlight: rgba(255, 255, 255, 0.7);
   /* The drawer's page scrim: slate, not black, so the plane stays pearl under it. */
   --fps-backdrop: rgba(42, 50, 66, 0.45);
+
+  /* 2. Glass material, per palette (used by the glass utilities below). Slate
+     shadows on Pearl: on a light plane a black glow reads as dirt. */
+  --fps-glass-filter: blur(12px) saturate(140%);
+  --fps-shadow-glass: inset 0 1px 0 var(--fps-highlight), 0 8px 24px rgba(28, 34, 48, 0.08);
+  --fps-shadow-glass-raised:
+    inset 0 1px 0 var(--fps-highlight), 0 16px 40px rgba(28, 34, 48, 0.16), 0 2px 8px rgba(28, 34, 48, 0.08);
+  /* Ambient glow strength behind the bento (CommandCenter AmbientGlow). */
+  --fps-glow-electric: 10%;
+  --fps-glow-violet: 8%;
 
   /* 4. Executive palette, Pearl steps (validated on the glass card #eceef3, see DESIGN.md §4) */
   --fps-electric: #1d6fd8;
@@ -93,6 +106,56 @@
   font-family: InterVariable, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Matte Black -- the dark palette: a neutral near-black plane (no navy),
+ * nearly opaque matte cards, no saturation boost, glows at 3-4%. Validated
+ * the same way as Pearl (DESIGN.md §4-§5): every text/background pair >= 4.5:1,
+ * chart slots #3c8dea / #9b63b1 / #1aa598 / #c8800d pass the colour-blind
+ * validator on the card #1a1b1d. Only values differ; names and roles are the
+ * Pearl block's. (0,2,0) beats the base block's (0,1,0).
+ */
+.fps-cc[data-palette="black"] {
+  --fps-bg: #131416;
+  --fps-surface-1: rgba(27, 28, 30, 0.9);
+  --fps-surface-2: rgba(32, 34, 36, 0.92);
+  --fps-surface-solid: #1b1c1e;
+  --fps-surface-inset: rgba(255, 255, 255, 0.03);
+  --fps-border: rgba(255, 255, 255, 0.09);
+  --fps-border-strong: rgba(255, 255, 255, 0.15);
+  --fps-highlight: rgba(255, 255, 255, 0.04);
+  --fps-backdrop: rgba(0, 0, 0, 0.55);
+
+  --fps-glass-filter: blur(12px) saturate(100%);
+  --fps-shadow-glass: inset 0 1px 0 var(--fps-highlight), 0 4px 12px rgba(0, 0, 0, 0.35);
+  --fps-shadow-glass-raised: inset 0 1px 0 var(--fps-highlight), 0 12px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.35);
+  --fps-glow-electric: 4%;
+  --fps-glow-violet: 3%;
+
+  --fps-electric: #3c8dea;
+  --fps-electric-ui: #559ff7;
+  --fps-mint: #4dc99b;
+  --fps-violet: #b49cf2;
+  --fps-violet-series: #9b63b1;
+  --fps-cyan: #1aa598;
+  --fps-amber-series: #c8800d;
+  --fps-rose: #f17a8c;
+  --fps-amber: #e8b548;
+  --fps-series-other: #5f636a;
+
+  --fps-text: #e8e8e6;
+  --fps-text-secondary: #b6b7ba;
+  --fps-text-muted: #95979a;
+  --fps-grid: #28292b;
+  --fps-axis: #37383b;
+
+  --primary-foreground: #091018;
+  --secondary: rgba(255, 255, 255, 0.06);
+  --muted: rgba(255, 255, 255, 0.04);
+  --accent: rgba(85, 159, 247, 0.12);
+
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -156,28 +219,24 @@
 }
 
 /*
- * 2. Glass — the one material every card, banner and drawer is made of. The
- * shadows are slate (the ink colour), never black: on a light plane a black
- * glow reads as dirt. Raised glass carries the desk's pop shadow so the
- * drawer and tooltips match the desk's own popups.
+ * 2. Glass — the one material every card, banner and drawer is made of. Fill,
+ * filter and shadows come from the palette tokens above (slate shadows on
+ * Pearl, short black ones and no saturation on Matte Black). Raised glass
+ * carries the desk's pop shadow so the drawer and tooltips match the desk's
+ * own popups.
  */
 @utility glass {
   background: var(--fps-surface-1);
-  backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: var(--fps-glass-filter);
   border: 1px solid var(--fps-border);
-  box-shadow:
-    inset 0 1px 0 var(--fps-highlight),
-    0 8px 24px rgba(28, 34, 48, 0.08);
+  box-shadow: var(--fps-shadow-glass);
 }
 
 @utility glass-raised {
   background: var(--fps-surface-2);
-  backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: var(--fps-glass-filter);
   border: 1px solid var(--fps-border-strong);
-  box-shadow:
-    inset 0 1px 0 var(--fps-highlight),
-    0 16px 40px rgba(28, 34, 48, 0.16),
-    0 2px 8px rgba(28, 34, 48, 0.08);
+  box-shadow: var(--fps-shadow-glass-raised);
 }
 
 @supports not (backdrop-filter: blur(1px)) {

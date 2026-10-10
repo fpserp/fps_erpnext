@@ -217,6 +217,21 @@ export function installMockFrappe(options: MockOptions): MockController {
         return wanted.some((r) => roles.includes(r)) ? true : undefined;
       },
     },
+    // Stand-in for frappe.ui.ThemeSwitcher: instead of a dialog it flips the
+    // resolved Light/Dark (html[data-theme]) and, like public/js/fps_theme.js
+    // on the live desk, re-stamps html[data-fps-theme] -- so the harness can
+    // exercise the Pearl <-> Matte Black switch. Nothing is "saved".
+    ui: {
+      ThemeSwitcher: class {
+        show() {
+          const html = document.documentElement;
+          const dark = html.getAttribute("data-theme") !== "dark";
+          html.setAttribute("data-theme", dark ? "dark" : "light");
+          html.setAttribute("data-fps-theme", dark ? "black" : "pearl");
+          options.notify(`theme → ${dark ? "Dark (Matte Black)" : "Light (Pearl)"} (mock; nothing saved)`);
+        }
+      },
+    },
     session: { user: user.email, user_email: user.email, user_fullname: user.name },
     boot: {
       sysdefaults: { currency: "AED" },

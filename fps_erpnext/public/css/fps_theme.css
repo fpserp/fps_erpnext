@@ -1,27 +1,44 @@
-/* FPS Pearl -- the light "AI-look" desk theme for everything under the FPS
- * app tile: a muted blue-grey plane (#d9dee7, matt, never white), off-white
- * glass cards (#f7f8fb), white popups, slate ink (#1c2230) and the Electric
- * Blue / Soft Violet accents stepped deep enough to read on light surfaces.
- * color-scheme: light. Design source: DESIGN.md (tokens, glass rules, 8px
- * grid, palette).
+/* FPS theme -- the "AI-look" desk theme for everything under the FPS app
+ * tile, in TWO palettes each user picks for themselves:
  *
- * The file is palette-neutral by name (fps_theme.css) and the attribute VALUE
- * names the palette. Pearl replaced the first, dark cut of this theme
- * ("Midnight", 2026-10-10) rule for rule: the selectors are the same set plus
- * six number-card lifts that only a light card needs, so the two can be
- * diffed, and a future palette is a new token block under a new value.
+ *   Pearl (light, the base of this file): a muted blue-grey plane (#d9dee7,
+ *     matt, never white), off-white glass cards (#f7f8fb), white popups,
+ *     slate ink (#1c2230) and the Electric Blue / Soft Violet accents stepped
+ *     deep enough to read on light surfaces. color-scheme: light.
+ *   Matte Black (dark, the section at the END of this file): a neutral
+ *     near-black plane (#131416, no navy), nearly opaque matte cards
+ *     (#1b1c1e at 90%), no saturation boost, no glow, off-white ink
+ *     (#e8e8e6). color-scheme: dark.
  *
- * HOW IT IS SWITCHED ON. public/js/fps_theme.js puts
- * html[data-fps-theme="pearl"] on the document while the ACTIVE sidebar is
+ * Design source: DESIGN.md (tokens, glass rules, 8px grid, palettes).
+ *
+ * WHO PICKS. Each user, from Frappe's own Toggle Theme dialog (avatar menu,
+ * Ctrl+Shift+G, or the sun/moon button in the Command Center header): Light
+ * gives Pearl, Dark gives Matte Black, Automatic follows the computer. Frappe
+ * saves that choice on the user's own profile (User.desk_theme); this theme
+ * only reads the resolved html[data-theme].
+ *
+ * HOW IT IS SWITCHED ON. public/js/fps_theme.js puts html[data-fps-theme]
+ * on the document -- value "pearl" or "black" -- while the ACTIVE sidebar is
  * the FPS one (or the route is one of the FPS workspaces) and takes it off
  * everywhere else. It only toggles that attribute -- no server calls, no
  * writes. Without the attribute nothing in this file matches, so every other
- * app keeps the user's own Light/Dark/Automatic theme.
+ * app keeps Frappe's own Light/Dark look.
+ *
+ * LAYOUT OF THIS FILE. The palettes share 205 of their rules. Those are
+ * written once, prefix html[data-fps-theme] (any value), carrying the Pearl
+ * values as the base. Five light-card number lifts only Pearl needs use
+ * html[data-fps-theme="pearl"]. The Matte Black section at the end re-states
+ * only the 24 rules whose values differ, under html[data-fps-theme="black"];
+ * same specificity, later in the file, so it wins. Both palettes were checked
+ * to resolve to their validated rule sets exactly (generator + equivalence
+ * check: dashboard/README.md "Switching palettes").
  *
  * SCOPING RULE (checked by a script, see the report): EVERY selector here
- * starts with html[data-fps-theme="pearl"]. Specificity (0,1,1) beats
- * Frappe's :root, [data-theme="light"] and [data-theme="dark"] (0,1,0), so
- * the tokens below win in both of the user's own themes. Frappe also defines
+ * starts with html[data-fps-theme], html[data-fps-theme="pearl"] or
+ * html[data-fps-theme="black"]. Specificity (0,1,1) beats Frappe's :root,
+ * [data-theme="light"] and [data-theme="dark"] (0,1,0), so the tokens below
+ * win in both of Frappe's own themes. Frappe also defines
  * some variables LOWER in the tree (.modal, .form-in-grid, .grid-body
  * .editable-row, .chart-container, .indicator, .datatable, .print-format);
  * those get their own prefixed rules because a value set on <html> loses to a
@@ -44,10 +61,13 @@
  * suggestion lists and the Command Center drawer -- so forms, grids, list and
  * report views and the FPS Overview block never get it.
  *
- * SURFACE LADDER. Opaque surfaces climb towards white: plane #d9dee7 -> menu
- * #dde2ea -> sunken and glass-over-plane #eceef3 -> card #f7f8fb -> raised and
+ * SURFACE LADDER. Pearl climbs towards white: plane #d9dee7 -> menu #dde2ea
+ * -> sunken and glass-over-plane #eceef3 -> card #f7f8fb -> raised and
  * controls #ffffff; hover #e9edf3, selected #dde8f9. Shadows are slate at
  * 8-16% alpha, never black; tooltips alone are inverse (slate, light ink).
+ * Matte Black climbs in small neutral steps: menu #0f1013 -> plane #131416 ->
+ * sunken #161719 -> card #1b1c1e -> raised #202224 -> control #232427 ->
+ * hover #26272a; selected a quiet blue-grey #232c38.
  *
  * CUSTOM HTML BLOCKS render in shadow roots that this file cannot reach.
  * Only inherited custom properties cross that boundary, which is why the
@@ -69,7 +89,7 @@
    1. Tokens
    ========================================================================== */
 
-html[data-fps-theme="pearl"] {
+html[data-fps-theme] {
 	color-scheme: light;
 	background-color: #d9dee7;
 	scrollbar-color: #b7bfcc #e4e8ee;
@@ -398,8 +418,8 @@ html[data-fps-theme="pearl"] {
    reach a Frappe-dark user's modal. Popups and modals are white here, and a
    white control on a white modal would vanish, so inside a raised surface the
    control drops one tint step and the hairline shows the box. */
-html[data-fps-theme="pearl"] .modal,
-html[data-fps-theme="pearl"] .form-in-grid {
+html[data-fps-theme] .modal,
+html[data-fps-theme] .form-in-grid {
 	--control-bg: var(--fps-control-raised);
 	--border-color: var(--fps-border);
 }
@@ -407,12 +427,12 @@ html[data-fps-theme="pearl"] .form-in-grid {
 /* Frappe points editable grid inputs at var(--neutral), white here: pin them
    to the card so a row being edited does not flash a white strip across the
    off-white grid. */
-html[data-fps-theme="pearl"] .grid-body .editable-row {
+html[data-fps-theme] .grid-body .editable-row {
 	--control-bg: var(--fps-surface-solid);
 	--input-disabled-bg: var(--fps-disabled);
 }
 
-html[data-fps-theme="pearl"] .chart-container {
+html[data-fps-theme] .chart-container {
 	--charts-label-color: var(--fps-text-secondary);
 	--charts-axis-line-color: var(--fps-axis);
 	--charts-stroke-width: 2px;
@@ -429,7 +449,7 @@ html[data-fps-theme="pearl"] .chart-container {
 /* Frappe-dark paints indicator DOTS in the pill's background colour, light in
    the ink colour. Pearl pills are a tinted fill under deep ink, so the dot
    must take the ink whichever theme the user runs. */
-html[data-fps-theme="pearl"] .indicator {
+html[data-fps-theme] .indicator {
 	--indicator-dot-green: var(--text-on-green);
 	--indicator-dot-cyan: var(--text-on-cyan);
 	--indicator-dot-blue: var(--text-on-blue);
@@ -447,7 +467,7 @@ html[data-fps-theme="pearl"] .indicator {
 /* frappe-datatable (report view, query reports). Cells and the header are
    sticky / layered, so every surface is opaque; borders are the opaque hairline
    because neighbouring cells draw their own borders. */
-html[data-fps-theme="pearl"] .datatable {
+html[data-fps-theme] .datatable {
 	--dt-border-color: var(--fps-border-solid);
 	--dt-primary-color: var(--fps-electric);
 	--dt-light-bg: var(--fps-hover);
@@ -461,11 +481,11 @@ html[data-fps-theme="pearl"] .datatable {
 	--dt-selection-highlight-color: var(--fps-selected);
 }
 
-html[data-fps-theme="pearl"] .rating {
+html[data-fps-theme] .rating {
 	--star-fill: var(--fps-disabled-fill);
 }
 
-html[data-fps-theme="pearl"] .rating .star-hover {
+html[data-fps-theme] .rating .star-hover {
 	--star-fill: var(--fps-text-faint);
 }
 
@@ -473,12 +493,12 @@ html[data-fps-theme="pearl"] .rating .star-hover {
    2. Base
    ========================================================================== */
 
-html[data-fps-theme="pearl"] body {
+html[data-fps-theme] body {
 	background-color: var(--fps-bg);
 	color: var(--text-muted);
 }
 
-html[data-fps-theme="pearl"] ::selection {
+html[data-fps-theme] ::selection {
 	color: var(--fps-text);
 	background: rgba(29, 111, 216, 0.2);
 }
@@ -488,51 +508,51 @@ html[data-fps-theme="pearl"] ::selection {
    the heading puts headings on --fps-text while every more specific heading
    rule (section heads, modal titles, workspace headers) stays in charge, and
    the :not() keeps print previews on paper colours. */
-html[data-fps-theme="pearl"] :is(h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6):not(:is(.print-format, .print-preview, .print-preview-wrapper) *) {
+html[data-fps-theme] :is(h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6):not(:is(.print-format, .print-preview, .print-preview-wrapper) *) {
 	--gray-900: var(--fps-text);
 }
 
 /* Links in CONTENT (rich text, read-only values, messages). Navigation anchors
    (sidebar, list titles, breadcrumbs) keep their own ink on purpose. */
-html[data-fps-theme="pearl"] .ql-editor a,
-html[data-fps-theme="pearl"] .frappe-control .control-value a,
-html[data-fps-theme="pearl"] .like-disabled-input a,
-html[data-fps-theme="pearl"] .form-message a,
-html[data-fps-theme="pearl"] .msgprint a,
-html[data-fps-theme="pearl"] .help-box a,
-html[data-fps-theme="pearl"] .frappe-control .help a,
-html[data-fps-theme="pearl"] .timeline-content .content a,
-html[data-fps-theme="pearl"] .comment-content a {
+html[data-fps-theme] .ql-editor a,
+html[data-fps-theme] .frappe-control .control-value a,
+html[data-fps-theme] .like-disabled-input a,
+html[data-fps-theme] .form-message a,
+html[data-fps-theme] .msgprint a,
+html[data-fps-theme] .help-box a,
+html[data-fps-theme] .frappe-control .help a,
+html[data-fps-theme] .timeline-content .content a,
+html[data-fps-theme] .comment-content a {
 	color: var(--fps-electric-ui);
 }
 
 /* Bootstrap utilities carry Bootstrap 4's own literals (#007bff, #28a745,
    white, #f8f9fa ...) and ignore the tokens; re-point them to the Pearl scale. */
-html[data-fps-theme="pearl"] .text-primary {
+html[data-fps-theme] .text-primary {
 	color: var(--fps-electric-ui) !important;
 }
 
-html[data-fps-theme="pearl"] .text-secondary {
+html[data-fps-theme] .text-secondary {
 	color: var(--fps-text-secondary) !important;
 }
 
-html[data-fps-theme="pearl"] .text-success {
+html[data-fps-theme] .text-success {
 	color: var(--fps-mint) !important;
 }
 
-html[data-fps-theme="pearl"] .text-info {
+html[data-fps-theme] .text-info {
 	color: var(--fps-cyan-ui) !important;
 }
 
-html[data-fps-theme="pearl"] .text-warning {
+html[data-fps-theme] .text-warning {
 	color: var(--fps-amber) !important;
 }
 
-html[data-fps-theme="pearl"] .text-danger {
+html[data-fps-theme] .text-danger {
 	color: var(--fps-rose) !important;
 }
 
-html[data-fps-theme="pearl"] .text-dark {
+html[data-fps-theme] .text-dark {
 	color: var(--fps-text) !important;
 }
 
@@ -541,37 +561,37 @@ html[data-fps-theme="pearl"] .text-dark {
    own value, because FormBuilder.vue uses it for the "Drop it here" pill on
    --gray-500; this pill alone is re-inked onto its pair's own ink so the two
    stay in step if a fill ever changes: (0,2,1) beats Frappe's (0,1,0). */
-html[data-fps-theme="pearl"] .tooltip-content {
+html[data-fps-theme] .tooltip-content {
 	color: var(--text-on-dark-gray); /* #f2f4f8 on --bg-dark-gray #3f4859 = 8.36:1 */
 }
 
-html[data-fps-theme="pearl"] .text-extra-muted {
+html[data-fps-theme] .text-extra-muted {
 	color: var(--fps-text-light) !important;
 }
 
-html[data-fps-theme="pearl"] .bg-white {
+html[data-fps-theme] .bg-white {
 	background-color: var(--fps-surface-solid) !important;
 }
 
-html[data-fps-theme="pearl"] .bg-light {
+html[data-fps-theme] .bg-light {
 	background-color: var(--fps-subtle-solid) !important;
 }
 
-html[data-fps-theme="pearl"] .bg-primary {
+html[data-fps-theme] .bg-primary {
 	background-color: var(--fps-electric) !important;
 }
 
-html[data-fps-theme="pearl"] hr {
+html[data-fps-theme] hr {
 	border-top-color: var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] kbd {
+html[data-fps-theme] kbd {
 	color: var(--fps-text);
 	background-color: var(--fps-hover-raised);
 	box-shadow: inset 0 -1px 0 var(--fps-border-solid-strong);
 }
 
-html[data-fps-theme="pearl"] pre {
+html[data-fps-theme] pre {
 	color: var(--fps-text);
 }
 
@@ -581,7 +601,7 @@ html[data-fps-theme="pearl"] pre {
    (inherit), Quill chips (#f0f0f0) and print previews. Screen only, so a
    printed desk page keeps Frappe's own code colour. */
 @media screen {
-	html[data-fps-theme="pearl"] code:not(.hljs, pre code, a > code, :is(.ql-editor, .print-format, .print-preview, .print-preview-wrapper) code) {
+	html[data-fps-theme] code:not(.hljs, pre code, a > code, :is(.ql-editor, .print-format, .print-preview, .print-preview-wrapper) code) {
 		color: var(--fps-violet); /* 5.66:1 card, 5.18:1 glass card, 6.01:1 modal and control */
 	}
 }
@@ -589,7 +609,7 @@ html[data-fps-theme="pearl"] pre {
 /* Ace code fields are hard-wired to the light "tomorrow" theme
    (form/controls/code.js): a white panel on the off-white card, so a hairline
    frame marks where the editor ends. */
-html[data-fps-theme="pearl"] .frappe-control .ace-editor-target {
+html[data-fps-theme] .frappe-control .ace-editor-target {
 	border: 1px solid var(--fps-border-strong);
 	border-radius: 8px;
 	overflow: hidden;
@@ -599,33 +619,33 @@ html[data-fps-theme="pearl"] .frappe-control .ace-editor-target {
    3. Desk chrome: navbar, sidebar, page head, breadcrumbs
    ========================================================================== */
 
-html[data-fps-theme="pearl"] .navbar {
+html[data-fps-theme] .navbar {
 	background: var(--fps-bg);
 	border-bottom-color: var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] .body-sidebar {
+html[data-fps-theme] .body-sidebar {
 	background: var(--fps-menu-solid);
 	border-right-color: var(--fps-subtle-solid);
 }
 
 /* Frappe draws this with a raw var(--gray-300), #e2e2e2: 1.00:1 against the
    #dde2ea sidebar, so the divider vanishes. Pin it to the opaque hairline. */
-html[data-fps-theme="pearl"] .body-sidebar .divider {
+html[data-fps-theme] .body-sidebar .divider {
 	border-top-color: var(--fps-border-solid);
 }
 
-html[data-fps-theme="pearl"] .body-sidebar .active-sidebar {
+html[data-fps-theme] .body-sidebar .active-sidebar {
 	background: var(--sidebar-active-color);
 	box-shadow: inset 0 0 0 1px rgba(29, 111, 216, 0.3);
 }
 
-html[data-fps-theme="pearl"] .body-sidebar .active-sidebar .item-anchor {
+html[data-fps-theme] .body-sidebar .active-sidebar .item-anchor {
 	color: var(--fps-text);
 	--icon-stroke: var(--fps-electric-ui);
 }
 
-html[data-fps-theme="pearl"] .body-sidebar .sidebar-toggle-btn {
+html[data-fps-theme] .body-sidebar .sidebar-toggle-btn {
 	box-shadow: 0 1px 4px rgba(28, 34, 48, 0.18);
 }
 
@@ -634,28 +654,28 @@ html[data-fps-theme="pearl"] .body-sidebar .sidebar-toggle-btn {
    token cannot reach it and the icon would keep a raw grey (#525252, or
    #383838 for a Frappe-dark user) instead of the slate ink the rest of the
    page head uses. */
-html[data-fps-theme="pearl"] .page-title .sidebar-toggle-btn {
+html[data-fps-theme] .page-title .sidebar-toggle-btn {
 	--icon-stroke: var(--fps-text-secondary); /* 6.81:1 on the plane */
 }
 
 /* Default page head: OPAQUE (it is sticky over scrolling forms and lists).
    The FPS workspace pages swap it for glass in section 10. */
-html[data-fps-theme="pearl"] .page-head {
+html[data-fps-theme] .page-head {
 	background: var(--fps-bg);
 	border-bottom-color: var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] .navbar-breadcrumbs li:last-child > a {
+html[data-fps-theme] .navbar-breadcrumbs li:last-child > a {
 	color: var(--fps-text) !important;
 }
 
 /* Bootstrap .breadcrumb (used by a few older pages) is hard-coded white. */
-html[data-fps-theme="pearl"] .breadcrumb {
+html[data-fps-theme] .breadcrumb {
 	background-color: transparent;
 }
 
-html[data-fps-theme="pearl"] .breadcrumb-item + .breadcrumb-item::before,
-html[data-fps-theme="pearl"] .breadcrumb-item.active {
+html[data-fps-theme] .breadcrumb-item + .breadcrumb-item::before,
+html[data-fps-theme] .breadcrumb-item.active {
 	color: var(--fps-text-light);
 }
 
@@ -670,10 +690,10 @@ html[data-fps-theme="pearl"] .breadcrumb-item.active {
    main section that holds the list (.frappe-list) or report (.report-wrapper),
    so the filter row above it sits inside the same card. No overflow clipping:
    filter suggestions and menus must be free to hang below a short list. */
-html[data-fps-theme="pearl"] .layout-main-section.frappe-card,
-html[data-fps-theme="pearl"] .layout-main-section:has(> .frappe-list),
-html[data-fps-theme="pearl"] .layout-main-section:has(> .report-wrapper),
-html[data-fps-theme="pearl"] .std-form-layout > .form-layout {
+html[data-fps-theme] .layout-main-section.frappe-card,
+html[data-fps-theme] .layout-main-section:has(> .frappe-list),
+html[data-fps-theme] .layout-main-section:has(> .report-wrapper),
+html[data-fps-theme] .std-form-layout > .form-layout {
 	background-color: var(--fps-surface-solid);
 	border: 1px solid var(--fps-border);
 	border-radius: var(--fps-radius-card);
@@ -682,87 +702,87 @@ html[data-fps-theme="pearl"] .std-form-layout > .form-layout {
 
 /* The filter row paints its own --card-bg with square corners, which would
    poke out of the card's rounded top. */
-html[data-fps-theme="pearl"] .layout-main-section:has(> .frappe-list) > .page-form,
-html[data-fps-theme="pearl"] .layout-main-section:has(> .report-wrapper) > .page-form {
+html[data-fps-theme] .layout-main-section:has(> .frappe-list) > .page-form,
+html[data-fps-theme] .layout-main-section:has(> .report-wrapper) > .page-form {
 	background-color: transparent;
 	border-radius: var(--fps-radius-card) var(--fps-radius-card) 0 0;
 }
 
 /* No overflow:hidden on the form layout: it would break the sticky form tabs.
    The children carry the radius instead. */
-html[data-fps-theme="pearl"] .std-form-layout > .form-layout > .form-tabs-list {
+html[data-fps-theme] .std-form-layout > .form-layout > .form-tabs-list {
 	border-radius: var(--fps-radius-card) var(--fps-radius-card) 0 0;
 }
 
-html[data-fps-theme="pearl"] .std-form-layout > .form-layout > .form-page {
+html[data-fps-theme] .std-form-layout > .form-layout > .form-page {
 	background-color: transparent;
 	border-radius: 0 0 var(--fps-radius-card) var(--fps-radius-card);
 }
 
-html[data-fps-theme="pearl"] .frappe-card {
+html[data-fps-theme] .frappe-card {
 	border-color: var(--fps-border);
 }
 
 /* Form dashboard "Connections" chips paint var(--neutral) and take an
    --invert-neutral border on hover: slate here, the heaviest line on the form.
    Keep the chip on the control surface and give the hover the electric edge. */
-html[data-fps-theme="pearl"] .form-links .document-link {
+html[data-fps-theme] .form-links .document-link {
 	background-color: var(--fps-control);
 }
 
-html[data-fps-theme="pearl"] .form-links .document-link:hover {
+html[data-fps-theme] .form-links .document-link:hover {
 	border-color: var(--fps-electric-ui);
 }
 
 /* Copied from dark.scss so it applies under either of the user's own themes. */
-html[data-fps-theme="pearl"] .frappe-card .btn-default {
+html[data-fps-theme] .frappe-card .btn-default {
 	background-color: var(--control-bg);
 }
 
-html[data-fps-theme="pearl"] .frappe-card .btn-default:hover {
+html[data-fps-theme] .frappe-card .btn-default:hover {
 	background-color: var(--fg-hover-color);
 }
 
 /* Form tabs: sticky, so the opaque card colour; the active tab gets a 2px
    Electric Blue underline instead of Frappe's 1px line in the ink. */
-html[data-fps-theme="pearl"] .form-tabs-list {
+html[data-fps-theme] .form-tabs-list {
 	background-color: var(--fps-surface-solid);
 	border-bottom-color: var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] .form-tabs-list .form-tabs .nav-item .nav-link {
+html[data-fps-theme] .form-tabs-list .form-tabs .nav-item .nav-link {
 	background-color: var(--fps-surface-solid);
 }
 
-html[data-fps-theme="pearl"] .form-tabs-list .form-tabs .nav-item .nav-link:hover {
+html[data-fps-theme] .form-tabs-list .form-tabs .nav-item .nav-link:hover {
 	color: var(--fps-text);
 }
 
-html[data-fps-theme="pearl"] .form-tabs-list .form-tabs .nav-item .nav-link.active {
+html[data-fps-theme] .form-tabs-list .form-tabs .nav-item .nav-link.active {
 	color: var(--fps-text);
 	border-bottom: 2px solid var(--fps-electric);
 	padding-bottom: 8px;
 }
 
-html[data-fps-theme="pearl"] .grid-row-open .form-in-grid .form-tabs-list .form-tabs .nav-item .nav-link.active {
+html[data-fps-theme] .grid-row-open .form-in-grid .form-tabs-list .form-tabs .nav-item .nav-link.active {
 	color: var(--fps-electric-ui);
 	border-bottom-color: var(--fps-electric);
 }
 
 /* Bootstrap .nav-tabs (settings dialogs, a few reports) are hard-coded. */
-html[data-fps-theme="pearl"] .nav-tabs {
+html[data-fps-theme] .nav-tabs {
 	border-bottom-color: var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] .nav-tabs .nav-link.active,
-html[data-fps-theme="pearl"] .nav-tabs .nav-item.show .nav-link {
+html[data-fps-theme] .nav-tabs .nav-link.active,
+html[data-fps-theme] .nav-tabs .nav-item.show .nav-link {
 	color: var(--fps-text);
 	background-color: var(--fps-surface-solid);
 	border-color: var(--fps-border) var(--fps-border) var(--fps-surface-solid);
 }
 
-html[data-fps-theme="pearl"] .nav-tabs .nav-link:hover,
-html[data-fps-theme="pearl"] .nav-tabs .nav-link:focus {
+html[data-fps-theme] .nav-tabs .nav-link:hover,
+html[data-fps-theme] .nav-tabs .nav-link:focus {
 	border-color: var(--fps-border) var(--fps-border) var(--fps-border);
 }
 
@@ -774,31 +794,31 @@ html[data-fps-theme="pearl"] .nav-tabs .nav-link:focus {
    1px tinted hairline keeps the edge. Links inside keep --fps-electric-ui
    from the content-links rule above: 5.57:1 or better on every one of these
    fills. */
-html[data-fps-theme="pearl"] .form-message.blue {
+html[data-fps-theme] .form-message.blue {
 	border: 1px solid rgba(29, 111, 216, 0.3);
 	color: var(--alert-text-info);
 	background: var(--alert-bg-info);
 }
 
-html[data-fps-theme="pearl"] .form-message.green {
+html[data-fps-theme] .form-message.green {
 	border: 1px solid rgba(13, 110, 72, 0.3);
 	color: var(--alert-text-success);
 	background: var(--alert-bg-success);
 }
 
-html[data-fps-theme="pearl"] .form-message.yellow {
+html[data-fps-theme] .form-message.yellow {
 	border: 1px solid rgba(138, 80, 7, 0.3);
 	color: var(--alert-text-warning);
 	background: var(--alert-bg-warning);
 }
 
-html[data-fps-theme="pearl"] .form-message.orange {
+html[data-fps-theme] .form-message.orange {
 	border: 1px solid rgba(143, 68, 6, 0.3);
 	color: var(--text-on-orange);
 	background: var(--bg-orange);
 }
 
-html[data-fps-theme="pearl"] .form-message.red {
+html[data-fps-theme] .form-message.red {
 	border: 1px solid rgba(179, 36, 62, 0.3);
 	color: var(--alert-text-danger);
 	background: var(--alert-bg-danger);
@@ -807,23 +827,23 @@ html[data-fps-theme="pearl"] .form-message.red {
 /* The close (x) follows the message text colour: 5.78:1 or better on every
    fill (the root --icon-stroke already clears 7.45:1 here; this keeps the icon
    tied to the ink if a fill ever changes). */
-html[data-fps-theme="pearl"] .form-message .close-message {
+html[data-fps-theme] .form-message .close-message {
 	--icon-stroke: currentColor;
 }
 
-html[data-fps-theme="pearl"] .tag-pill {
+html[data-fps-theme] .tag-pill {
 	background-color: var(--fps-hover);
 	color: var(--text-muted);
 }
 
-html[data-fps-theme="pearl"] .version-info .danger,
-html[data-fps-theme="pearl"] .version-info .success,
-html[data-fps-theme="pearl"] .version-info .danger td,
-html[data-fps-theme="pearl"] .version-info .success td {
+html[data-fps-theme] .version-info .danger,
+html[data-fps-theme] .version-info .success,
+html[data-fps-theme] .version-info .danger td,
+html[data-fps-theme] .version-info .success td {
 	color: #171717;
 }
 
-html[data-fps-theme="pearl"] .progress {
+html[data-fps-theme] .progress {
 	background-color: var(--fps-grid);
 	box-shadow: none;
 }
@@ -835,60 +855,60 @@ html[data-fps-theme="pearl"] .progress {
 /* A lifted surface plus a 1px hairline. Drawn as an inset shadow, not a
    border: Frappe's controls are border:none at a fixed height, and a real
    border would change their box. */
-html[data-fps-theme="pearl"] .form-control {
+html[data-fps-theme] .form-control {
 	color: var(--fps-text);
 	background-color: var(--control-bg);
 	box-shadow: inset 0 0 0 1px var(--fps-border);
 }
 
 /* :not(:focus) so hovering a focused field keeps the electric ring. */
-html[data-fps-theme="pearl"] .form-control:hover:not(:focus):not(:disabled):not([readonly]) {
+html[data-fps-theme] .form-control:hover:not(:focus):not(:disabled):not([readonly]) {
 	box-shadow: inset 0 0 0 1px var(--fps-border-strong);
 }
 
-html[data-fps-theme="pearl"] .form-control:focus {
+html[data-fps-theme] .form-control:focus {
 	color: var(--fps-text);
 	background-color: var(--control-bg);
 	border-color: transparent;
 	box-shadow: inset 0 0 0 1px var(--fps-electric), 0 0 0 3px rgba(29, 111, 216, 0.22);
 }
 
-html[data-fps-theme="pearl"] .form-control::placeholder {
+html[data-fps-theme] .form-control::placeholder {
 	color: var(--fps-text-light);
 }
 
-html[data-fps-theme="pearl"] .form-control:disabled,
-html[data-fps-theme="pearl"] .form-control[readonly] {
+html[data-fps-theme] .form-control:disabled,
+html[data-fps-theme] .form-control[readonly] {
 	color: var(--disabled-text-color);
 	box-shadow: inset 0 0 0 1px var(--fps-border);
 }
 
 /* The editable grid row draws its own 2px inset ring in grey. */
-html[data-fps-theme="pearl"] .grid-body .editable-row .form-control:focus {
+html[data-fps-theme] .grid-body .editable-row .form-control:focus {
 	box-shadow: inset 0 0 0 2px rgba(29, 111, 216, 0.5);
 }
 
 /* Inside the datatable filter row Frappe removes the ring; keep it removed. */
-html[data-fps-theme="pearl"] .datatable .form-control,
-html[data-fps-theme="pearl"] .datatable .form-control:focus {
+html[data-fps-theme] .datatable .form-control,
+html[data-fps-theme] .datatable .form-control:focus {
 	box-shadow: none;
 }
 
-html[data-fps-theme="pearl"] .datatable .dt-row-filter .dt-filter.dt-input:focus {
+html[data-fps-theme] .datatable .dt-row-filter .dt-filter.dt-input:focus {
 	box-shadow: var(--fps-focus-ring);
 }
 
-html[data-fps-theme="pearl"] .like-disabled-input {
+html[data-fps-theme] .like-disabled-input {
 	box-shadow: inset 0 0 0 1px var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] .input-group-text {
+html[data-fps-theme] .input-group-text {
 	color: var(--fps-text-secondary);
 	background-color: var(--fps-subtle-solid);
 	border-color: var(--fps-border-solid);
 }
 
-html[data-fps-theme="pearl"] .custom-select {
+html[data-fps-theme] .custom-select {
 	color: var(--fps-text);
 	background-color: var(--control-bg);
 	border-color: var(--fps-border-solid);
@@ -897,54 +917,54 @@ html[data-fps-theme="pearl"] .custom-select {
 /* Checkbox: electric fill with a white tick (4.86:1, the primary-button pair).
    Frappe draws the tick as an inline SVG inside its own rule, so the image is
    restated here with the fill the theme wants under either user theme. */
-html[data-fps-theme="pearl"] input[type="checkbox"] {
+html[data-fps-theme] input[type="checkbox"] {
 	border-color: var(--fps-control-border);
 }
 
-html[data-fps-theme="pearl"] input[type="checkbox"]:checked {
+html[data-fps-theme] input[type="checkbox"]:checked {
 	background-color: var(--fps-electric);
 	background-image: url("data:image/svg+xml, <svg viewBox='0 0 8 7' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M1 4.00001L2.66667 5.80001L7 1.20001' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"), var(--checkbox-gradient);
 }
 
-html[data-fps-theme="pearl"] input[type="checkbox"].disabled-selected,
-html[data-fps-theme="pearl"] input[type="checkbox"]:disabled:checked {
+html[data-fps-theme] input[type="checkbox"].disabled-selected,
+html[data-fps-theme] input[type="checkbox"]:disabled:checked {
 	background-color: var(--fps-disabled-fill);
 	background-image: url("data:image/svg+xml, <svg viewBox='0 0 8 7' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M1 4.00001L2.66667 5.80001L7 1.20001' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"), var(--checkbox-disabled-gradient);
 }
 
-html[data-fps-theme="pearl"] input[type="checkbox"].disabled-deselected,
-html[data-fps-theme="pearl"] input[type="checkbox"]:disabled {
+html[data-fps-theme] input[type="checkbox"].disabled-deselected,
+html[data-fps-theme] input[type="checkbox"]:disabled {
 	background-color: var(--fps-disabled);
 	border-color: var(--fps-border-solid-strong);
 	box-shadow: none;
 }
 
-html[data-fps-theme="pearl"] input[type="radio"]::before {
+html[data-fps-theme] input[type="radio"]::before {
 	border-color: var(--fps-control-border);
 }
 
 /* Switch: electric track when on (Frappe paints it --invert-neutral, slate
    here, which reads as a disabled control) and a white knob in both states
    (Frappe's knob is --neutral; the token keeps it white regardless). */
-html[data-fps-theme="pearl"] .slider::before {
+html[data-fps-theme] .slider::before {
 	background-color: var(--fps-switch-knob);
 }
 
-html[data-fps-theme="pearl"] input:checked + .slider {
+html[data-fps-theme] input:checked + .slider {
 	background-color: var(--fps-electric);
 }
 
-html[data-fps-theme="pearl"] input:checked + .slider::before {
+html[data-fps-theme] input:checked + .slider::before {
 	background-color: var(--fps-on-electric);
 }
 
-html[data-fps-theme="pearl"] .custom-control.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+html[data-fps-theme] .custom-control.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
 	background: var(--fps-electric);
 	border-color: var(--fps-electric);
 }
 
 /* Primary: Electric Blue with white ink (4.86:1; 5.70:1 on hover, 6.69:1 pressed). */
-html[data-fps-theme="pearl"] .btn.btn-primary {
+html[data-fps-theme] .btn.btn-primary {
 	background-color: var(--fps-electric);
 	border-color: transparent;
 	color: var(--fps-on-electric);
@@ -954,74 +974,74 @@ html[data-fps-theme="pearl"] .btn.btn-primary {
 	--icon-fill-bg: var(--fps-electric);
 }
 
-html[data-fps-theme="pearl"] .btn.btn-primary:hover,
-html[data-fps-theme="pearl"] .btn.btn-primary:focus {
+html[data-fps-theme] .btn.btn-primary:hover,
+html[data-fps-theme] .btn.btn-primary:focus {
 	background-color: var(--fps-electric-hover);
 	color: var(--fps-on-electric);
 }
 
-html[data-fps-theme="pearl"] .btn.btn-primary:focus-visible {
+html[data-fps-theme] .btn.btn-primary:focus-visible {
 	box-shadow: var(--fps-focus-ring);
 }
 
 /* Frappe forces an --invert-neutral fill (slate here) on :active with
    !important; matching !important at higher specificity keeps it electric. */
-html[data-fps-theme="pearl"] .btn.btn-primary:active {
+html[data-fps-theme] .btn.btn-primary:active {
 	color: var(--fps-on-electric) !important;
 	background-color: var(--fps-electric-press) !important;
 }
 
-html[data-fps-theme="pearl"] .btn.btn-primary:disabled,
-html[data-fps-theme="pearl"] .btn.btn-primary.disabled {
+html[data-fps-theme] .btn.btn-primary:disabled,
+html[data-fps-theme] .btn.btn-primary.disabled {
 	color: var(--fps-on-electric);
 	background-color: var(--fps-electric);
 }
 
-html[data-fps-theme="pearl"] .btn-primary-light {
+html[data-fps-theme] .btn-primary-light {
 	color: var(--fps-electric-ui);
 	background-color: var(--fps-selected);
 	border-color: transparent;
 	box-shadow: none;
 }
 
-html[data-fps-theme="pearl"] .btn-primary-light:hover,
-html[data-fps-theme="pearl"] .btn-primary-light:active {
+html[data-fps-theme] .btn-primary-light:hover,
+html[data-fps-theme] .btn-primary-light:active {
 	color: var(--fps-electric-ui);
 	background-color: var(--fps-selected-hover);
 }
 
-html[data-fps-theme="pearl"] .btn.btn-default,
-html[data-fps-theme="pearl"] .btn.btn-secondary {
+html[data-fps-theme] .btn.btn-default,
+html[data-fps-theme] .btn.btn-secondary {
 	background-color: var(--control-bg);
 	color: var(--fps-text);
 	box-shadow: inset 0 0 0 1px var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] .btn.btn-default:hover,
-html[data-fps-theme="pearl"] .btn.btn-secondary:hover {
+html[data-fps-theme] .btn.btn-default:hover,
+html[data-fps-theme] .btn.btn-secondary:hover {
 	background-color: var(--btn-default-hover-bg);
 	color: var(--fps-text);
 	box-shadow: inset 0 0 0 1px var(--fps-border-strong);
 }
 
-html[data-fps-theme="pearl"] .btn.btn-default:focus-visible,
-html[data-fps-theme="pearl"] .btn.btn-secondary:focus-visible,
-html[data-fps-theme="pearl"] .btn.btn-ghost:focus-visible {
+html[data-fps-theme] .btn.btn-default:focus-visible,
+html[data-fps-theme] .btn.btn-secondary:focus-visible,
+html[data-fps-theme] .btn.btn-ghost:focus-visible {
 	box-shadow: var(--fps-focus-ring) !important;
 }
 
 /* Rose fill with white ink (6.48:1). */
-html[data-fps-theme="pearl"] .btn.btn-danger {
+html[data-fps-theme] .btn.btn-danger {
 	background-color: var(--fps-rose);
 	color: var(--fps-on-rose);
 }
 
-html[data-fps-theme="pearl"] .btn.btn-danger:hover {
+html[data-fps-theme] .btn.btn-danger:hover {
 	background-color: var(--fps-rose-hover);
 	color: var(--fps-on-rose);
 }
 
-html[data-fps-theme="pearl"] .btn-link {
+html[data-fps-theme] .btn-link {
 	color: var(--fps-electric-ui);
 }
 
@@ -1029,36 +1049,36 @@ html[data-fps-theme="pearl"] .btn-link {
    6. Popups: dropdowns, awesomplete, datepicker, modals, toasts, tooltips
    ========================================================================== */
 
-html[data-fps-theme="pearl"] .dropdown-menu {
+html[data-fps-theme] .dropdown-menu {
 	background-color: var(--fps-raised-solid);
 	border: 1px solid var(--fps-border-strong);
 	box-shadow: var(--fps-shadow-pop);
 }
 
-html[data-fps-theme="pearl"] .dropdown-item:hover,
-html[data-fps-theme="pearl"] .dropdown-item:focus {
+html[data-fps-theme] .dropdown-item:hover,
+html[data-fps-theme] .dropdown-item:focus {
 	color: var(--fps-text);
 	background-color: var(--fps-hover-raised);
 }
 
-html[data-fps-theme="pearl"] .dropdown-item.active,
-html[data-fps-theme="pearl"] .dropdown-item:active {
+html[data-fps-theme] .dropdown-item.active,
+html[data-fps-theme] .dropdown-item:active {
 	color: var(--fps-text);
 	background-color: var(--fps-selected);
 }
 
-html[data-fps-theme="pearl"] .dropdown-item.disabled,
-html[data-fps-theme="pearl"] .dropdown-item:disabled {
+html[data-fps-theme] .dropdown-item.disabled,
+html[data-fps-theme] .dropdown-item:disabled {
 	color: var(--fps-text-faint);
 }
 
-html[data-fps-theme="pearl"] .dropdown-header {
+html[data-fps-theme] .dropdown-header {
 	color: var(--fps-text-light);
 }
 
 /* Link-field suggestions sit on --bg-color (the plane) by default; a popup
    reads as a popup on the raised surface. */
-html[data-fps-theme="pearl"] .awesomplete > [role="listbox"] {
+html[data-fps-theme] .awesomplete > [role="listbox"] {
 	background-color: var(--fps-raised-solid);
 	border: 1px solid var(--fps-border-strong);
 	box-shadow: var(--fps-shadow-pop);
@@ -1067,96 +1087,96 @@ html[data-fps-theme="pearl"] .awesomplete > [role="listbox"] {
 /* The navbar search modal (awesome_bar.js, .navbar-modal-wrapper) shows its
    results flush inside the modal; Frappe's navbar.scss flattens the list there.
    (0,4,1) beats the popup rule above at (0,3,1). */
-html[data-fps-theme="pearl"] .navbar-modal-wrapper .awesomplete > [role="listbox"] {
+html[data-fps-theme] .navbar-modal-wrapper .awesomplete > [role="listbox"] {
 	background-color: transparent;
 	border: none;
 	box-shadow: none;
 }
 
 /* air-datepicker: Frappe themes most of it, these are its hard-coded rest. */
-html[data-fps-theme="pearl"] .datepicker {
+html[data-fps-theme] .datepicker {
 	background: var(--fps-raised-solid);
 	border-color: var(--fps-border-strong);
 	box-shadow: var(--fps-shadow-pop);
 }
 
-html[data-fps-theme="pearl"] .datepicker--pointer {
+html[data-fps-theme] .datepicker--pointer {
 	background: var(--fps-raised-solid);
 	border-color: var(--fps-border-strong);
 }
 
-html[data-fps-theme="pearl"] .datepicker--day-name {
+html[data-fps-theme] .datepicker--day-name {
 	color: var(--fps-text-light);
 }
 
-html[data-fps-theme="pearl"] .datepicker--cell.-current-:not(.-selected-) {
+html[data-fps-theme] .datepicker--cell.-current-:not(.-selected-) {
 	color: var(--fps-electric-ui);
 }
 
-html[data-fps-theme="pearl"] .datepicker--cell-day.-other-month-,
-html[data-fps-theme="pearl"] .datepicker--cell-year.-other-decade-,
-html[data-fps-theme="pearl"] .-disabled-.-focus-.datepicker--cell-day.-other-month-,
-html[data-fps-theme="pearl"] .-disabled-.-focus-.datepicker--cell-year.-other-decade-,
-html[data-fps-theme="pearl"] .-in-range-.datepicker--cell-day.-other-month-,
-html[data-fps-theme="pearl"] .-in-range-.datepicker--cell-year.-other-decade- {
+html[data-fps-theme] .datepicker--cell-day.-other-month-,
+html[data-fps-theme] .datepicker--cell-year.-other-decade-,
+html[data-fps-theme] .-disabled-.-focus-.datepicker--cell-day.-other-month-,
+html[data-fps-theme] .-disabled-.-focus-.datepicker--cell-year.-other-decade-,
+html[data-fps-theme] .-in-range-.datepicker--cell-day.-other-month-,
+html[data-fps-theme] .-in-range-.datepicker--cell-year.-other-decade- {
 	color: var(--fps-text-light);
 }
 
-html[data-fps-theme="pearl"] .datepicker--cell-day.-other-month-:hover,
-html[data-fps-theme="pearl"] .datepicker--cell-year.-other-decade-:hover {
+html[data-fps-theme] .datepicker--cell-day.-other-month-:hover,
+html[data-fps-theme] .datepicker--cell-year.-other-decade-:hover {
 	color: var(--fps-text-secondary);
 }
 
-html[data-fps-theme="pearl"] .datepicker--cell.-disabled-,
-html[data-fps-theme="pearl"] .datepicker--cell.-disabled-.-focus-,
-html[data-fps-theme="pearl"] .datepicker--cell.-disabled-.-in-range-,
-html[data-fps-theme="pearl"] .datepicker--cell.-disabled-.-current-.-focus- {
+html[data-fps-theme] .datepicker--cell.-disabled-,
+html[data-fps-theme] .datepicker--cell.-disabled-.-focus-,
+html[data-fps-theme] .datepicker--cell.-disabled-.-in-range-,
+html[data-fps-theme] .datepicker--cell.-disabled-.-current-.-focus- {
 	color: var(--fps-text-faint);
 }
 
-html[data-fps-theme="pearl"] .-selected-.datepicker--cell-day.-other-month-,
-html[data-fps-theme="pearl"] .-selected-.datepicker--cell-year.-other-decade-,
-html[data-fps-theme="pearl"] .-selected-.-focus-.datepicker--cell-day.-other-month-,
-html[data-fps-theme="pearl"] .-selected-.-focus-.datepicker--cell-year.-other-decade- {
+html[data-fps-theme] .-selected-.datepicker--cell-day.-other-month-,
+html[data-fps-theme] .-selected-.datepicker--cell-year.-other-decade-,
+html[data-fps-theme] .-selected-.-focus-.datepicker--cell-day.-other-month-,
+html[data-fps-theme] .-selected-.-focus-.datepicker--cell-year.-other-decade- {
 	color: var(--fps-on-electric);
 	background: var(--fps-electric-hover);
 }
 
-html[data-fps-theme="pearl"] .datepicker--nav-action path {
+html[data-fps-theme] .datepicker--nav-action path {
 	stroke: var(--fps-text-secondary);
 }
 
-html[data-fps-theme="pearl"] .datepicker--nav-title i,
-html[data-fps-theme="pearl"] .datepicker--time-current-ampm,
-html[data-fps-theme="pearl"] .datepicker--time-icon {
+html[data-fps-theme] .datepicker--nav-title i,
+html[data-fps-theme] .datepicker--time-current-ampm,
+html[data-fps-theme] .datepicker--time-icon {
 	color: var(--fps-text-light);
 }
 
-html[data-fps-theme="pearl"] .datepicker--time-row {
+html[data-fps-theme] .datepicker--time-row {
 	background-image: linear-gradient(to right, var(--fps-border-solid-strong), var(--fps-border-solid-strong));
 }
 
-html[data-fps-theme="pearl"] .datepicker--time-row input[type="range"]::-webkit-slider-thumb {
+html[data-fps-theme] .datepicker--time-row input[type="range"]::-webkit-slider-thumb {
 	background: var(--fps-text);
 	border-color: var(--fps-border-solid-strong);
 }
 
-html[data-fps-theme="pearl"] .datepicker--time-row input[type="range"]::-moz-range-thumb {
+html[data-fps-theme] .datepicker--time-row input[type="range"]::-moz-range-thumb {
 	background: var(--fps-text);
 	border-color: var(--fps-border-solid-strong);
 }
 
-html[data-fps-theme="pearl"] .datepicker--time-row input[type="range"]:focus::-webkit-slider-thumb {
+html[data-fps-theme] .datepicker--time-row input[type="range"]:focus::-webkit-slider-thumb {
 	background: var(--fps-electric);
 	border-color: var(--fps-electric);
 }
 
-html[data-fps-theme="pearl"] .datepicker--time-row input[type="range"]:focus::-moz-range-thumb {
+html[data-fps-theme] .datepicker--time-row input[type="range"]:focus::-moz-range-thumb {
 	background: var(--fps-electric);
 	border-color: var(--fps-electric);
 }
 
-html[data-fps-theme="pearl"] .modal-content {
+html[data-fps-theme] .modal-content {
 	border: 1px solid var(--fps-border-strong);
 	box-shadow: var(--fps-shadow-pop);
 }
@@ -1166,70 +1186,70 @@ html[data-fps-theme="pearl"] .modal-content {
    The modal is white here whatever the user's theme, so the inversion is
    switched off: a Frappe-dark user would otherwise get a white wordmark on a
    white modal. */
-html[data-fps-theme="pearl"] .about-frappe-wordmark {
+html[data-fps-theme] .about-frappe-wordmark {
 	filter: none;
 }
 
-html[data-fps-theme="pearl"] .modal-backdrop {
+html[data-fps-theme] .modal-backdrop {
 	background-color: var(--fps-backdrop);
 }
 
-html[data-fps-theme="pearl"] .close,
-html[data-fps-theme="pearl"] .close:hover {
+html[data-fps-theme] .close,
+html[data-fps-theme] .close:hover {
 	color: var(--fps-text);
 }
 
-html[data-fps-theme="pearl"] .desk-alert {
+html[data-fps-theme] .desk-alert {
 	border: 1px solid var(--fps-border-strong);
 }
 
 /* Bootstrap .toast (rare in the desk; desk-alert is the usual toast). */
-html[data-fps-theme="pearl"] .toast,
-html[data-fps-theme="pearl"] .toast-header {
+html[data-fps-theme] .toast,
+html[data-fps-theme] .toast-header {
 	color: var(--fps-text-secondary);
 	background-color: var(--fps-raised-solid);
 	border-color: var(--fps-border-strong);
 }
 
-html[data-fps-theme="pearl"] .tooltip-inner {
+html[data-fps-theme] .tooltip-inner {
 	color: var(--fps-tooltip-ink);
 	background-color: var(--fps-tooltip-bg);
 	box-shadow: 0 0 0 1px var(--fps-border-strong), var(--shadow-md);
 }
 
-html[data-fps-theme="pearl"] .bs-tooltip-top .arrow::before,
-html[data-fps-theme="pearl"] .bs-tooltip-auto[x-placement^="top"] .arrow::before {
+html[data-fps-theme] .bs-tooltip-top .arrow::before,
+html[data-fps-theme] .bs-tooltip-auto[x-placement^="top"] .arrow::before {
 	border-top-color: var(--fps-tooltip-bg);
 }
 
-html[data-fps-theme="pearl"] .bs-tooltip-right .arrow::before,
-html[data-fps-theme="pearl"] .bs-tooltip-auto[x-placement^="right"] .arrow::before {
+html[data-fps-theme] .bs-tooltip-right .arrow::before,
+html[data-fps-theme] .bs-tooltip-auto[x-placement^="right"] .arrow::before {
 	border-right-color: var(--fps-tooltip-bg);
 }
 
-html[data-fps-theme="pearl"] .bs-tooltip-bottom .arrow::before,
-html[data-fps-theme="pearl"] .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
+html[data-fps-theme] .bs-tooltip-bottom .arrow::before,
+html[data-fps-theme] .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
 	border-bottom-color: var(--fps-tooltip-bg);
 }
 
-html[data-fps-theme="pearl"] .bs-tooltip-left .arrow::before,
-html[data-fps-theme="pearl"] .bs-tooltip-auto[x-placement^="left"] .arrow::before {
+html[data-fps-theme] .bs-tooltip-left .arrow::before,
+html[data-fps-theme] .bs-tooltip-auto[x-placement^="left"] .arrow::before {
 	border-left-color: var(--fps-tooltip-bg);
 }
 
-html[data-fps-theme="pearl"] .popover {
+html[data-fps-theme] .popover {
 	background-color: var(--fps-raised-solid);
 	border-color: var(--fps-border-strong);
 	box-shadow: var(--fps-shadow-pop);
 }
 
-html[data-fps-theme="pearl"] .popover-header {
+html[data-fps-theme] .popover-header {
 	color: var(--fps-text);
 	background-color: var(--fps-subtle-solid);
 	border-bottom-color: var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] .popover-body {
+html[data-fps-theme] .popover-body {
 	color: var(--fps-text-secondary);
 }
 
@@ -1240,38 +1260,38 @@ html[data-fps-theme="pearl"] .popover-body {
 /* The sticky right-hand cell of a list row is painted --bg-color, which Frappe
    assumes equals the surface behind the list. Here the list sits on the card
    (section 4), which is a step lighter than the plane. */
-html[data-fps-theme="pearl"] .frappe-list .list-row .level-right {
+html[data-fps-theme] .frappe-list .list-row .level-right {
 	background-color: var(--fps-surface-solid);
 }
 
-html[data-fps-theme="pearl"] .frappe-list .list-row-container:hover .level-right {
+html[data-fps-theme] .frappe-list .list-row-container:hover .level-right {
 	background-color: var(--highlight-color);
 }
 
-html[data-fps-theme="pearl"] .frappe-list .list-row-head .level-right {
+html[data-fps-theme] .frappe-list .list-row-head .level-right {
 	background-color: var(--subtle-fg);
 }
 
-html[data-fps-theme="pearl"] .list-paging-area .btn-group .btn-paging.btn-info {
+html[data-fps-theme] .list-paging-area .btn-group .btn-paging.btn-info {
 	background-color: var(--fps-selected);
 	color: var(--fps-text);
 }
 
 /* frappe-datatable leftovers not driven by --dt-* */
-html[data-fps-theme="pearl"] .datatable .dt-cell--focus .dt-cell__content {
+html[data-fps-theme] .datatable .dt-cell--focus .dt-cell__content {
 	border-color: var(--fps-electric);
 }
 
-html[data-fps-theme="pearl"] .dt-cell--sticky-last::after {
+html[data-fps-theme] .dt-cell--sticky-last::after {
 	box-shadow: 4px 0 6px -4px rgba(28, 34, 48, 0.18);
 }
 
-html[data-fps-theme="pearl"] .dt-dropdown__list {
+html[data-fps-theme] .dt-dropdown__list {
 	border: 1px solid var(--fps-border-strong);
 	box-shadow: var(--fps-shadow-pop);
 }
 
-html[data-fps-theme="pearl"] .dt-toast__message {
+html[data-fps-theme] .dt-toast__message {
 	color: var(--fps-text);
 	background-color: var(--fps-raised-solid);
 	border: 1px solid var(--fps-border-strong);
@@ -1279,32 +1299,32 @@ html[data-fps-theme="pearl"] .dt-toast__message {
 
 /* Child-table grid. The sticky index column already uses --fg-color
    (opaque); the header ink is a raw --gray-600 (#7c7c7c, 3.93:1 on the card). */
-html[data-fps-theme="pearl"] .grid-heading-row {
+html[data-fps-theme] .grid-heading-row {
 	color: var(--fps-text-secondary);
 }
 
-html[data-fps-theme="pearl"] .form-grid {
+html[data-fps-theme] .form-grid {
 	border-color: var(--fps-border-solid);
 }
 
-html[data-fps-theme="pearl"] .grid-static-col:focus-visible,
-html[data-fps-theme="pearl"] .column-limit-reached .form-grid:focus-visible {
+html[data-fps-theme] .grid-static-col:focus-visible,
+html[data-fps-theme] .column-limit-reached .form-grid:focus-visible {
 	border-color: var(--fps-electric) !important;
 }
 
-html[data-fps-theme="pearl"] .kanban .kanban-card {
+html[data-fps-theme] .kanban .kanban-card {
 	border: 1px solid var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] .kanban .kanban-column.add-new-column .kanban-column-title.compose-column {
+html[data-fps-theme] .kanban .kanban-column.add-new-column .kanban-column-title.compose-column {
 	border-color: var(--fps-border-solid-strong);
 }
 
-html[data-fps-theme="pearl"] .heatmap-chart g > rect[fill="#ebedf0"] {
+html[data-fps-theme] .heatmap-chart g > rect[fill="#ebedf0"] {
 	fill: var(--fps-grid);
 }
 
-html[data-fps-theme="pearl"] .widget.dashboard-widget-box.heatmap-chart .widget-body .heatmap-legend .legend-label {
+html[data-fps-theme] .widget.dashboard-widget-box.heatmap-chart .widget-body .heatmap-legend .legend-label {
 	color: var(--fps-text-light);
 }
 
@@ -1312,90 +1332,90 @@ html[data-fps-theme="pearl"] .widget.dashboard-widget-box.heatmap-chart .widget-
    8. Timeline, comments, Quill editor
    ========================================================================== */
 
-html[data-fps-theme="pearl"] .new-timeline .timeline-item .timeline-content.frappe-card {
+html[data-fps-theme] .new-timeline .timeline-item .timeline-content.frappe-card {
 	background-color: var(--fps-sunken-solid);
 	border-color: var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] .ql-toolbar.ql-snow {
+html[data-fps-theme] .ql-toolbar.ql-snow {
 	background-color: var(--fps-subtle-solid);
 	border-color: var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] .ql-container.ql-snow {
+html[data-fps-theme] .ql-container.ql-snow {
 	background-color: var(--control-bg);
 	border-color: var(--fps-border);
 }
 
-html[data-fps-theme="pearl"] .ql-editor {
+html[data-fps-theme] .ql-editor {
 	color: var(--fps-text);
 }
 
-html[data-fps-theme="pearl"] .ql-editor.ql-blank::before,
-html[data-fps-theme="pearl"] .comment-input-wrapper .ql-editor.ql-blank::before {
+html[data-fps-theme] .ql-editor.ql-blank::before,
+html[data-fps-theme] .comment-input-wrapper .ql-editor.ql-blank::before {
 	color: var(--fps-text-light);
 }
 
 /* Read mode inherits whatever colours pasted content carried in (black or
    white ink, white or coloured fills from mail clients and spreadsheets).
    Same fix as dark.scss: content takes the theme's ink and surface. */
-html[data-fps-theme="pearl"] .ql-editor.read-mode span:not(.mention),
-html[data-fps-theme="pearl"] .ql-editor.read-mode p,
-html[data-fps-theme="pearl"] .ql-editor.read-mode u,
-html[data-fps-theme="pearl"] .ql-editor.read-mode strong {
+html[data-fps-theme] .ql-editor.read-mode span:not(.mention),
+html[data-fps-theme] .ql-editor.read-mode p,
+html[data-fps-theme] .ql-editor.read-mode u,
+html[data-fps-theme] .ql-editor.read-mode strong {
 	background-color: inherit !important;
 	color: inherit !important;
 }
 
-html[data-fps-theme="pearl"] .ql-editor blockquote {
+html[data-fps-theme] .ql-editor blockquote {
 	border-left-color: var(--fps-border-solid-strong);
 }
 
-html[data-fps-theme="pearl"] .ql-editor td {
+html[data-fps-theme] .ql-editor td {
 	border-color: var(--fps-border-solid-strong);
 }
 
-html[data-fps-theme="pearl"] .ql-snow .ql-picker-options {
+html[data-fps-theme] .ql-snow .ql-picker-options {
 	background-color: var(--fps-raised-solid);
 	border-color: var(--fps-border-strong) !important;
 	box-shadow: var(--fps-shadow-pop);
 }
 
-html[data-fps-theme="pearl"] .ql-snow .ql-picker-label,
-html[data-fps-theme="pearl"] .ql-snow .ql-picker-item {
+html[data-fps-theme] .ql-snow .ql-picker-label,
+html[data-fps-theme] .ql-snow .ql-picker-item {
 	color: var(--fps-text-secondary);
 }
 
-html[data-fps-theme="pearl"] .ql-snow.ql-toolbar button:hover,
-html[data-fps-theme="pearl"] .ql-snow .ql-toolbar button:hover,
-html[data-fps-theme="pearl"] .ql-snow.ql-toolbar button:focus,
-html[data-fps-theme="pearl"] .ql-snow .ql-toolbar button:focus,
-html[data-fps-theme="pearl"] .ql-snow.ql-toolbar button.ql-active,
-html[data-fps-theme="pearl"] .ql-snow .ql-toolbar button.ql-active,
-html[data-fps-theme="pearl"] .ql-snow .ql-picker-label:hover,
-html[data-fps-theme="pearl"] .ql-snow .ql-picker-label.ql-active,
-html[data-fps-theme="pearl"] .ql-snow .ql-picker-item:hover,
-html[data-fps-theme="pearl"] .ql-snow .ql-picker-item.ql-selected {
+html[data-fps-theme] .ql-snow.ql-toolbar button:hover,
+html[data-fps-theme] .ql-snow .ql-toolbar button:hover,
+html[data-fps-theme] .ql-snow.ql-toolbar button:focus,
+html[data-fps-theme] .ql-snow .ql-toolbar button:focus,
+html[data-fps-theme] .ql-snow.ql-toolbar button.ql-active,
+html[data-fps-theme] .ql-snow .ql-toolbar button.ql-active,
+html[data-fps-theme] .ql-snow .ql-picker-label:hover,
+html[data-fps-theme] .ql-snow .ql-picker-label.ql-active,
+html[data-fps-theme] .ql-snow .ql-picker-item:hover,
+html[data-fps-theme] .ql-snow .ql-picker-item.ql-selected {
 	color: var(--fps-electric-ui);
 }
 
-html[data-fps-theme="pearl"] .ql-snow.ql-toolbar button:hover .ql-stroke,
-html[data-fps-theme="pearl"] .ql-snow .ql-toolbar button:hover .ql-stroke,
-html[data-fps-theme="pearl"] .ql-snow.ql-toolbar button:focus .ql-stroke,
-html[data-fps-theme="pearl"] .ql-snow .ql-toolbar button:focus .ql-stroke,
-html[data-fps-theme="pearl"] .ql-snow.ql-toolbar button.ql-active .ql-stroke,
-html[data-fps-theme="pearl"] .ql-snow .ql-toolbar button.ql-active .ql-stroke,
-html[data-fps-theme="pearl"] .ql-snow .ql-picker-label:hover .ql-stroke,
-html[data-fps-theme="pearl"] .ql-snow .ql-picker-label.ql-active .ql-stroke {
+html[data-fps-theme] .ql-snow.ql-toolbar button:hover .ql-stroke,
+html[data-fps-theme] .ql-snow .ql-toolbar button:hover .ql-stroke,
+html[data-fps-theme] .ql-snow.ql-toolbar button:focus .ql-stroke,
+html[data-fps-theme] .ql-snow .ql-toolbar button:focus .ql-stroke,
+html[data-fps-theme] .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+html[data-fps-theme] .ql-snow .ql-toolbar button.ql-active .ql-stroke,
+html[data-fps-theme] .ql-snow .ql-picker-label:hover .ql-stroke,
+html[data-fps-theme] .ql-snow .ql-picker-label.ql-active .ql-stroke {
 	stroke: var(--fps-electric-ui);
 }
 
-html[data-fps-theme="pearl"] .ql-snow.ql-toolbar button:hover .ql-fill,
-html[data-fps-theme="pearl"] .ql-snow .ql-toolbar button:hover .ql-fill,
-html[data-fps-theme="pearl"] .ql-snow.ql-toolbar button:focus .ql-fill,
-html[data-fps-theme="pearl"] .ql-snow .ql-toolbar button:focus .ql-fill,
-html[data-fps-theme="pearl"] .ql-snow.ql-toolbar button.ql-active .ql-fill,
-html[data-fps-theme="pearl"] .ql-snow .ql-toolbar button.ql-active .ql-fill {
+html[data-fps-theme] .ql-snow.ql-toolbar button:hover .ql-fill,
+html[data-fps-theme] .ql-snow .ql-toolbar button:hover .ql-fill,
+html[data-fps-theme] .ql-snow.ql-toolbar button:focus .ql-fill,
+html[data-fps-theme] .ql-snow .ql-toolbar button:focus .ql-fill,
+html[data-fps-theme] .ql-snow.ql-toolbar button.ql-active .ql-fill,
+html[data-fps-theme] .ql-snow .ql-toolbar button.ql-active .ql-fill {
 	fill: var(--fps-electric-ui);
 }
 
@@ -1403,7 +1423,7 @@ html[data-fps-theme="pearl"] .ql-snow .ql-toolbar button.ql-active .ql-fill {
    9. Charts (frappe-charts)
    ========================================================================== */
 
-html[data-fps-theme="pearl"] .graph-svg-tip {
+html[data-fps-theme] .graph-svg-tip {
 	border: 1px solid var(--fps-border-strong);
 	box-shadow: var(--fps-shadow-pop);
 }
@@ -1416,7 +1436,7 @@ html[data-fps-theme="pearl"] .graph-svg-tip {
 
 /* Full width. Replaces the never-committed "WIDE LAYOUT" snippet. Beats
    body:not(.full-width) [data-page-route=Workspaces] .layout-main (0,3,1). */
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .layout-main {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .layout-main {
 	max-width: none;
 }
 
@@ -1425,7 +1445,7 @@ html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^
    thing the glass below has to blur. On the light plane the two tints read as
    a soft blue wash that deepens the top of the page to #c8d7e9; the ink steps
    above are checked against that surface too. */
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] {
 	background-color: var(--fps-bg);
 	background-image:
 		radial-gradient(56rem 36rem at 0% -8%, rgba(50, 147, 252, 0.1), rgba(50, 147, 252, 0) 62%),
@@ -1436,26 +1456,26 @@ html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^
 
 /* Let the light through the page's own fills. (Edit mode keeps Frappe's
    !important --subtle-fg, which is what an editor wants.) */
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .layout-main-section {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .layout-main-section {
 	background-color: transparent;
 }
 
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .ce-block__content .widget.header {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .ce-block__content .widget.header {
 	background-color: transparent;
 }
 
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .ce-block__content .ce-header .h4 {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .ce-block__content .ce-header .h4 {
 	color: var(--fps-text);
 }
 
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .ce-block__content .widget.ce-paragraph {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .ce-block__content .widget.ce-paragraph {
 	color: var(--fps-text-secondary);
 }
 
 /* Glass page head. Its menus are position:absolute inside position:relative
    .dropdown wrappers, so the containing block backdrop-filter creates does not
    move them; it is already its own stacking context (sticky, z-index 6). */
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .page-head {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .page-head {
 	background: var(--fps-glass-head);
 	backdrop-filter: var(--fps-glass-filter);
 	border-bottom-color: var(--fps-border);
@@ -1464,7 +1484,7 @@ html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^
 /* Glass widgets (DESIGN.md §2): number cards, shortcuts, link cards, quick
    lists, charts and the custom-block boxes. A number card's colours come
    from its record (inline style) and win over these on purpose. */
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:is(.number-widget-box, .shortcut-widget-box, .links-widget-box, .quick-list-widget-box, .dashboard-widget-box, .custom-block-widget-box) {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:is(.number-widget-box, .shortcut-widget-box, .links-widget-box, .quick-list-widget-box, .dashboard-widget-box, .custom-block-widget-box) {
 	background-color: var(--fps-surface-1);
 	backdrop-filter: var(--fps-glass-filter);
 	border: 1px solid var(--fps-border);
@@ -1473,36 +1493,36 @@ html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^
 	transition: border-color 150ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:is(.number-widget-box, .links-widget-box, .quick-list-widget-box, .dashboard-widget-box):hover {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:is(.number-widget-box, .links-widget-box, .quick-list-widget-box, .dashboard-widget-box):hover {
 	border-color: var(--fps-border-strong);
 }
 
 /* Frappe turns a hovered shortcut's border and title --invert-neutral (slate
    here): a heavy edge on glass, so the hover takes the electric edge instead. */
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.shortcut-widget-box:hover {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.shortcut-widget-box:hover {
 	border-color: rgba(29, 111, 216, 0.5);
 	--icon-stroke: var(--fps-electric-ui);
 }
 
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.shortcut-widget-box:hover .widget-label .widget-title {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.shortcut-widget-box:hover .widget-label .widget-title {
 	color: var(--fps-text);
 }
 
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.links-widget-box .link-item .link-content:hover {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.links-widget-box .link-item .link-content:hover {
 	color: var(--fps-electric-ui);
 }
 
 /* Frappe's own stat colours (not record data): red-500 (#e03636) is 3.81:1
    and green-500 (#59ba8b) 2.05:1 on the glass card. */
-html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-content .red-stat {
+html[data-fps-theme] .widget.number-widget-box .widget-body .widget-content .red-stat {
 	color: var(--fps-rose);
 }
 
-html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-content .green-stat {
+html[data-fps-theme] .widget.number-widget-box .widget-body .widget-content .green-stat {
 	color: var(--fps-mint);
 }
 
-html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-content .grey-stat {
+html[data-fps-theme] .widget.number-widget-box .widget-body .widget-content .grey-stat {
 	color: var(--fps-text-light);
 }
 
@@ -1522,27 +1542,27 @@ html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-cont
      #B86E00 3.43 -> #8a5007 5.60  (DESIGN amber)
    Matched on the inline style text, case-insensitively (a card saved as
    #0b4fe0 matches too). A card given a new colour falls back to its own. */
-html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-content .number[style*="#0b4fe0" i] {
+html[data-fps-theme] .widget.number-widget-box .widget-body .widget-content .number[style*="#0b4fe0" i] {
 	color: var(--fps-electric-ui) !important;
 }
 
-html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-content .number[style*="#cb2929" i] {
+html[data-fps-theme] .widget.number-widget-box .widget-body .widget-content .number[style*="#cb2929" i] {
 	color: #b92626 !important;
 }
 
-html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-content .number[style*="#c93a3a" i] {
+html[data-fps-theme] .widget.number-widget-box .widget-body .widget-content .number[style*="#c93a3a" i] {
 	color: #b42f2f !important;
 }
 
-html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-content .number[style*="#8f4cff" i] {
+html[data-fps-theme] .widget.number-widget-box .widget-body .widget-content .number[style*="#8f4cff" i] {
 	color: var(--fps-violet) !important;
 }
 
-html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-content .number[style*="#ff0000" i] {
+html[data-fps-theme] .widget.number-widget-box .widget-body .widget-content .number[style*="#ff0000" i] {
 	color: #c81616 !important;
 }
 
-html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-content .number[style*="#b86e00" i] {
+html[data-fps-theme] .widget.number-widget-box .widget-body .widget-content .number[style*="#b86e00" i] {
 	color: var(--fps-amber) !important;
 }
 
@@ -1554,7 +1574,7 @@ html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-cont
      #F59E0B 1.85 -> #8a5007 5.60  (DESIGN amber)
      #29CD42 1.83 -> #1d7a2d 4.67
      #22D3EE 1.56 -> #0e6b76 5.35  (cyan UI step) */
-html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-content .number[style*="#ef4444" i] {
+html[data-fps-theme] .widget.number-widget-box .widget-body .widget-content .number[style*="#ef4444" i] {
 	color: #bb2c2c !important;
 }
 
@@ -1581,7 +1601,7 @@ html[data-fps-theme="pearl"] .widget.number-widget-box .widget-body .widget-cont
 /* Job Tracker / Customs Tracker blocks: the glass box IS the card, so the
    block (shadow DOM) is told -- through inherited bridge tokens -- to drop its
    own fill and border and to take the card radius. */
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.custom-block-widget-box {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.custom-block-widget-box {
 	padding: 0;
 	--fps-block-bg: transparent;
 	--fps-block-border: transparent;
@@ -1592,7 +1612,7 @@ html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^
    backdrop-filter ancestor becomes the containing block of the dashboard's
    position:fixed drawer and would trap it inside the card. The dashboard
    draws its own glass cards inside the shadow root. */
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] [custom_block_name="FPS Overview"] > .widget.custom-block-widget-box {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] [custom_block_name="FPS Overview"] > .widget.custom-block-widget-box {
 	background-color: transparent;
 	backdrop-filter: none;
 	border-color: transparent;
@@ -1603,27 +1623,26 @@ html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^
 /* backdrop-filter also makes each widget a stacking context, so an open
    dropdown would paint under the next card. Lift the card (and its editor
    block) while one of its menus is open. */
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .ce-block:has(.dropdown-menu.show),
-html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:has(.dropdown-menu.show) {
+html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .ce-block:has(.dropdown-menu.show), html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:has(.dropdown-menu.show) {
 	position: relative;
 	z-index: 20;
 }
 
 /* Edit mode helpers drawn in raw greys. */
-html[data-fps-theme="pearl"] [data-page-route="Workspaces"] .widget.new-widget {
+html[data-fps-theme] [data-page-route="Workspaces"] .widget.new-widget {
 	border-color: var(--fps-border-solid-strong);
 }
 
-html[data-fps-theme="pearl"] [data-page-route="Workspaces"] .widget.sortable-ghost {
+html[data-fps-theme] [data-page-route="Workspaces"] .widget.sortable-ghost {
 	background-color: var(--fps-hover);
 	border-color: var(--fps-hover);
 }
 
-html[data-fps-theme="pearl"] [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .divider {
+html[data-fps-theme] [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .divider {
 	border-right-color: var(--fps-border-solid-strong);
 }
 
-html[data-fps-theme="pearl"] [data-page-route="Workspaces"] .codex-editor .ce-toolbar .ce-settings .cdx-settings-sidebar {
+html[data-fps-theme] [data-page-route="Workspaces"] .codex-editor .ce-toolbar .ce-settings .cdx-settings-sidebar {
 	background: var(--fps-raised-solid);
 	box-shadow: var(--fps-shadow-pop);
 }
@@ -1635,7 +1654,7 @@ html[data-fps-theme="pearl"] [data-page-route="Workspaces"] .codex-editor .ce-to
 /* No backdrop-filter: the glass fills turn solid. Done on the tokens so the
    Custom HTML Blocks (which read them through the shadow boundary) follow. */
 @supports not (backdrop-filter: blur(1px)) {
-	html[data-fps-theme="pearl"] {
+	html[data-fps-theme] {
 		--fps-surface-1: var(--fps-surface-solid);
 		--fps-surface-2: var(--fps-raised-solid);
 		--fps-glass-head: var(--fps-bg);
@@ -1645,37 +1664,37 @@ html[data-fps-theme="pearl"] [data-page-route="Workspaces"] .codex-editor .ce-to
 /* Reduced transparency: solid fills, no blur, no ambient light. The token
    changes also reach the Custom HTML Blocks through inheritance. */
 @media (prefers-reduced-transparency: reduce) {
-	html[data-fps-theme="pearl"] {
+	html[data-fps-theme] {
 		--fps-surface-1: var(--fps-surface-solid);
 		--fps-surface-2: var(--fps-raised-solid);
 		--fps-glass-head: var(--fps-bg);
 		--fps-glass-filter: none;
 	}
 
-	html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] {
+	html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] {
 		background-image: none;
 	}
 }
 
 /* Forced colours: the system draws borders and fills; drop decoration. */
 @media (forced-colors: active) {
-	html[data-fps-theme="pearl"] {
+	html[data-fps-theme] {
 		--fps-glass-filter: none;
 		--fps-shadow-card: none;
 		--fps-shadow-pop: none;
 	}
 
-	html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] {
+	html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] {
 		background-image: none;
 	}
 
-	html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:is(.number-widget-box, .shortcut-widget-box, .links-widget-box, .quick-list-widget-box, .dashboard-widget-box, .custom-block-widget-box) {
+	html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:is(.number-widget-box, .shortcut-widget-box, .links-widget-box, .quick-list-widget-box, .dashboard-widget-box, .custom-block-widget-box) {
 		border-color: CanvasText;
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	html[data-fps-theme="pearl"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget {
+	html[data-fps-theme] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget {
 		transition: none;
 	}
 }
@@ -1690,9 +1709,9 @@ html[data-fps-theme="pearl"] [data-page-route="Workspaces"] .codex-editor .ce-to
    user's re-pointed --gray-700/800 cannot leak in. The values are Frappe's
    light-theme values (css_variables.scss), as literals for the same reason. */
 
-html[data-fps-theme="pearl"] .print-format,
-html[data-fps-theme="pearl"] .print-preview,
-html[data-fps-theme="pearl"] .print-preview-wrapper {
+html[data-fps-theme] .print-format,
+html[data-fps-theme] .print-preview,
+html[data-fps-theme] .print-preview-wrapper {
 	color-scheme: light;
 	--neutral: #ffffff;
 	--invert-neutral: #000000;
@@ -1747,12 +1766,12 @@ html[data-fps-theme="pearl"] .print-preview-wrapper {
 }
 
 /* The grey backdrop around the paper (#ededed in light Frappe). */
-html[data-fps-theme="pearl"] .print-preview-wrapper {
+html[data-fps-theme] .print-preview-wrapper {
 	background-color: #ededed;
 }
 
-html[data-fps-theme="pearl"] .print-format,
-html[data-fps-theme="pearl"] .print-preview {
+html[data-fps-theme] .print-format,
+html[data-fps-theme] .print-preview {
 	color: var(--text-color);
 }
 
@@ -1760,7 +1779,7 @@ html[data-fps-theme="pearl"] .print-preview {
    white paper. Browsers drop backgrounds by default, so ink is what matters;
    where they are kept, the pearl plane would print as a grey wash. */
 @media print {
-	html[data-fps-theme="pearl"] {
+	html[data-fps-theme] {
 		color-scheme: light;
 		background-color: #ffffff;
 		--fps-text: #171717;
@@ -1778,7 +1797,421 @@ html[data-fps-theme="pearl"] .print-preview {
 		--table-border-color: #ededed;
 	}
 
-	html[data-fps-theme="pearl"] body {
+	html[data-fps-theme] body {
 		background-color: #ffffff;
 	}
+}
+
+/* 
+ * ======================================================================
+ * MATTE BLACK -- the dark palette (html[data-fps-theme="black"]).
+ *
+ * Everything above is shared by both palettes (prefix html[data-fps-theme])
+ * and carries the Pearl values as the base. This section re-states only the
+ * rules whose values differ for Matte Black; equal specificity, later in the
+ * file, so they win. Generated from the validated Matte Black token set --
+ * change a value here and in dashboard/src/styles/theme.css together, then
+ * re-run the contrast report (DESIGN.md §4-§5).
+ * ======================================================================
+ */
+
+html[data-fps-theme="black"] {
+	color-scheme: dark;
+	background-color: #131416;
+	scrollbar-color: #3e4042 #161719;
+	--fps-bg: #131416;
+	--fps-surface-1: rgba(27, 28, 30, 0.9);
+	--fps-surface-2: rgba(32, 34, 36, 0.92);
+	--fps-surface-solid: #1b1c1e;
+	--fps-border: rgba(255, 255, 255, 0.09);
+	--fps-border-strong: rgba(255, 255, 255, 0.15);
+	--fps-highlight: rgba(255, 255, 255, 0.04);
+	--fps-electric: #3c8dea;
+	--fps-electric-ui: #559ff7;
+	--fps-mint: #4dc99b;
+	--fps-violet: #b49cf2;
+	--fps-rose: #f17a8c;
+	--fps-amber: #e8b548;
+	--fps-text: #e8e8e6;
+	--fps-text-secondary: #b6b7ba;
+	--fps-text-muted: #95979a;
+	--fps-grid: #28292b;
+	--fps-axis: #37383b;
+	--fps-menu-solid: #0f1013;
+	--fps-sunken-solid: #161719;
+	--fps-raised-solid: #202224;
+	--fps-subtle-solid: #222325;
+	--fps-control: #232427;
+	--fps-control-raised: #292a2d;
+	--fps-disabled: #1d1e20;
+	--fps-hover: #26272a;
+	--fps-hover-raised: #2b2d2f;
+	--fps-selected: #232c38;
+	--fps-border-solid: #2d2e30;
+	--fps-border-solid-strong: #3e4042;
+	--fps-text-light: #9c9ea1;
+	--fps-text-faint: #616366;
+	--fps-disabled-fill: #4b4d50;
+	--fps-control-border: #75777a;
+	--fps-selected-hover: #253243;
+	--fps-tooltip-bg: #2e2f32;
+	--fps-backdrop: #030304;
+	--fps-switch-knob: #f4f3f1;
+	--fps-cyan-ui: #65d0dc;
+	--fps-rose-hover: #f78495;
+	--fps-on-rose: #1d0c0e;
+	--fps-electric-hover: #4997f2;
+	--fps-electric-press: #3284e0;
+	--fps-on-electric: #091018;
+	--fps-focus-ring: 0 0 0 1px #3c8dea, 0 0 0 3px rgba(60, 141, 234, 0.28);
+	--fps-shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 4px 12px rgba(0, 0, 0, 0.35);
+	--fps-shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.35);
+	--fps-radius-card: 16px;
+	--fps-glass-filter: blur(12px) saturate(100%);
+	--fps-glass-head: rgba(19, 20, 22, 0.9);
+	--fps-color-scheme: dark;
+	--fps-tone-blue-bg: rgba(60, 141, 234, 0.16);
+	--fps-tone-blue-fg: #93c9ff;
+	--fps-tone-orange-bg: rgba(251, 146, 60, 0.15);
+	--fps-tone-orange-fg: #fcbc7b;
+	--fps-tone-amber-bg: rgba(232, 181, 72, 0.14);
+	--fps-tone-amber-fg: #f3d268;
+	--fps-tone-violet-bg: rgba(180, 156, 242, 0.15);
+	--fps-tone-violet-fg: #cdc0ff;
+	--fps-tone-green-bg: rgba(77, 201, 155, 0.14);
+	--fps-tone-green-fg: #7ae7ba;
+	--fps-tone-purple-bg: rgba(232, 121, 249, 0.14);
+	--fps-tone-purple-fg: #eeb0fa;
+	--fps-tone-red-bg: rgba(241, 122, 140, 0.15);
+	--fps-tone-red-fg: #ffacb6;
+	--fps-tone-gray-bg: rgba(148, 163, 184, 0.14);
+	--fps-tone-gray-fg: #ccd1d8;
+	--fps-cust-1: #6ca7f5;
+	--fps-cust-2: #52cae0;
+	--fps-cust-3: #ae9dea;
+	--fps-cust-4: #5ebae8;
+	--fps-cust-5: #57cebd;
+	--fps-cust-6: #eca342;
+	--fps-cust-7: #e887b6;
+	--fps-cust-8: #a9b2be;
+	--fps-cust-9: #bf94ec;
+	--fps-cust-10: #39b3cc;
+	--fps-cust-11: #d2ab64;
+	--fps-cust-12: #e87997;
+	--fps-row-hover: rgba(255, 255, 255, 0.04);
+	--fps-block-sticky-bg: #1b1c1e;
+	--neutral: #131416;
+	--invert-neutral: #efeeec;
+
+	--bg-color: var(--fps-bg);
+	--fg-color: var(--fps-surface-solid);
+	--card-bg: var(--fps-surface-solid);
+	--modal-bg: var(--fps-raised-solid);
+	--popover-bg: var(--fps-raised-solid);
+	--toast-bg: var(--fps-raised-solid);
+	--navbar-bg: var(--fps-bg);
+	--subtle-accent: var(--fps-sunken-solid);
+	--subtle-fg: var(--fps-subtle-solid);
+	--fg-hover-color: var(--fps-hover);
+	--highlight-color: var(--fps-hover);
+	--yellow-highlight-color: #372d11;
+	--placeholder-color: var(--fps-hover);
+	--skeleton-bg: var(--fps-hover);
+
+	--control-bg: var(--fps-control);
+	--control-bg-on-gray: var(--fps-control-raised);
+	--disabled-control-bg: var(--fps-disabled);
+	--input-disabled-bg: var(--fps-disabled);
+	--disabled-text-color: var(--fps-text-secondary);
+	--awesomebar-focus-bg: var(--fps-control);
+	--awesomplete-hover-bg: var(--fps-selected);
+
+	--text-color: var(--fps-text);
+	--heading-color: var(--fps-text);
+	--text-neutral: var(--fps-text);
+	--text-muted: var(--fps-text-secondary);
+	--text-light: var(--fps-text-light);
+	--text-dark: var(--fps-bg);
+	--icon-stroke: var(--fps-text-secondary);
+	--icon-fill: transparent;
+	--icon-fill-bg: var(--fps-surface-solid);
+
+	--primary: var(--fps-electric);
+	--primary-color: var(--fps-electric);
+	--brand-color: var(--fps-electric);
+	--btn-primary: var(--fps-electric);
+	--btn-default-bg: var(--fps-control);
+	--btn-default-hover-bg: var(--fps-hover-raised);
+	--btn-ghost-hover-bg: var(--fps-hover);
+	--border-primary: var(--fps-electric-ui);
+
+	--border-color: var(--fps-border);
+	--dark-border-color: var(--fps-border-strong);
+	--table-border-color: var(--fps-border-solid);
+	--btn-group-border-color: var(--fps-border-solid-strong);
+	--shadow-inset: inset 0 -1px 0 var(--fps-border-solid);
+
+	--sidebar-select-color: var(--fps-hover);
+	--sidebar-hover-color: var(--fps-hover);
+	--sidebar-active-color: rgba(60, 141, 234, 0.14);
+	--sidebar-border-color: var(--fps-subtle-solid);
+	--divider-color: var(--fps-border-solid);
+
+	--scrollbar-thumb-color: var(--fps-border-solid-strong);
+	--scrollbar-track-color: var(--fps-sunken-solid);
+
+	--error-bg: #3f2224;
+	--error-border: var(--fps-rose);
+	--progress-bar-bg: var(--fps-electric);
+
+	--checkbox-color: var(--fps-text);
+	--checkbox-gradient: linear-gradient(180deg, var(--fps-electric) 0%, var(--fps-electric) 100%);
+	--checkbox-disabled-gradient: linear-gradient(180deg, var(--fps-disabled-fill) 0%, var(--fps-disabled-fill) 100%);
+	--checkbox-focus-shadow: var(--fps-focus-ring);
+	--switch-bg: #6b6d70;
+
+	--date-active-text: var(--fps-on-electric);
+	--date-active-bg: var(--fps-electric);
+	--date-range-bg: var(--fps-selected);
+
+	--timeline-badge-color: var(--fps-text-secondary);
+	--timeline-badge-bg: var(--fps-subtle-solid);
+	--user-mention-bg-color: var(--fps-hover);
+
+	--diff-added: #153528;
+	--diff-removed: #422426;
+	--diff-changed: #1b2f46;
+	--appreciation-color: var(--fps-mint);
+	--appreciation-bg: #0d2d21;
+	--criticism-color: var(--fps-rose);
+	--criticism-bg: #391d1f;
+	--highlight-shadow: 0 0 0 2px rgba(60, 141, 234, 0.35);
+
+	--focus-default: var(--fps-focus-ring);
+	--focus-blue: 0 0 0 2px rgba(85, 159, 247, 0.6);
+	--shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.30);
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.36);
+	--shadow-base: 0 2px 6px rgba(0, 0, 0, 0.34);
+	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.36);
+	--shadow-lg: 0 6px 18px rgba(0, 0, 0, 0.40);
+	--shadow-xl: 0 10px 28px rgba(0, 0, 0, 0.44);
+	--shadow-2xl: var(--fps-shadow-pop);
+	--card-shadow: none;
+	--modal-shadow: var(--fps-shadow-pop);
+	--btn-shadow: none;
+	--drop-shadow: 0 2px 6px rgba(0, 0, 0, 0.30);
+	--custom-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.34);
+	--right-arrow-svg: url("data: image/svg+xml;utf8, <svg width='6' height='8' viewBox='0 0 6 8' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M1.25 7.5L4.75 4L1.25 0.5' stroke='%23B6B7BA' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+	--left-arrow-svg: url("data: image/svg+xml;utf8, <svg width='6' height='8' viewBox='0 0 6 8' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M7.5 9.5L4 6l3.5-3.5' stroke='%23B6B7BA' stroke-linecap='round' stroke-linejoin='round'></path></svg>");
+	--bg-blue: #1b2f46;
+	--text-on-blue: #93c9ff;
+	--bg-light-blue: #122f3e;
+	--text-on-light-blue: #8fd5fd;
+	--bg-dark-blue: #223b5f;
+	--text-on-dark-blue: #bbdaff;
+	--bg-green: #123226;
+	--text-on-green: #67dfad;
+	--bg-yellow: #372d11;
+	--text-on-yellow: #f3d268;
+	--bg-orange: #3e2815;
+	--text-on-orange: #fcbc7b;
+	--bg-red: #3f2224;
+	--text-on-red: #ffacb6;
+	--bg-gray: #2f3033;
+	--text-on-gray: #c0c4cb;
+	--bg-grey: #2f3033;
+	--text-on-grey: #c0c4cb;
+	--bg-light-gray: #2a2b2e;
+	--text-on-light-gray: #d4d8dd;
+	--bg-dark-gray: #3e4043;
+	--text-on-dark-gray: #e2e5e9;
+	--bg-darkgrey: #3e4043;
+	--text-on-darkgrey: #e2e5e9;
+	--bg-purple: #322843;
+	--text-on-purple: #cdc0ff;
+	--bg-pink: #3e2433;
+	--text-on-pink: #fbb0d8;
+	--bg-cyan: #143034;
+	--text-on-cyan: var(--fps-cyan-ui);
+	--group-mention-bg-color: var(--bg-purple);
+
+	--alert-bg-danger: #3f2224;
+	--alert-text-danger: #ffacb6;
+	--alert-bg-warning: #372d11;
+	--alert-text-warning: #f3d268;
+	--alert-bg-info: #1b2f46;
+	--alert-text-info: #93c9ff;
+	--alert-bg-success: #123226;
+	--alert-text-success: #67dfad;
+	--surface-menu-bar: var(--fps-menu-solid);
+	--surface-modal: var(--fps-raised-solid);
+	--surface-white: var(--fps-surface-solid);
+	--surface-cards: var(--fps-surface-solid);
+	--surface-selected: var(--fps-selected);
+	--surface-gray-1: #1c1d1f;
+	--surface-gray-2: #232427;
+	--surface-gray-3: #2d2e30;
+	--surface-gray-4: #393a3d;
+	--surface-gray-5: #95979a;
+	--surface-gray-6: #bcbec0;
+	--surface-gray-7: #e8e8e6;
+	--outline-gray-1: #2d2e30;
+	--outline-gray-2: #393a3d;
+	--outline-gray-3: #494a4d;
+	--outline-gray-4: #656669;
+	--outline-gray-5: #2d2e30;
+	--outline-gray-modals: #393a3d;
+	--outline-white: #2d2e30;
+	--ink-gray-1: #2d2e30;
+	--ink-gray-2: #393a3d;
+	--ink-gray-3: #616366;
+	--ink-gray-4: var(--fps-text-light);
+	--ink-gray-5: #9c9ea1;
+	--ink-gray-6: #b6b7ba;
+	--ink-gray-7: #c6c7ca;
+	--ink-gray-8: #d7d7d5;
+	--ink-gray-9: #e8e8e6;
+	--ink-white: #131416;
+	--ink-blue-link: var(--fps-electric-ui);
+	--frappe-card-button-outline: var(--fps-electric);
+	--frappe-card-button-bg-color: var(--fps-selected);
+	--frappe-card-button-color: var(--fps-electric-ui);
+	--kanban-column-bg: var(--fps-subtle-solid);
+	--kanban-card-bg: var(--fps-control-raised);
+	--kanban-card-hover-bg: var(--fps-hover-raised);
+	--kanban-new-card-bg: var(--fps-hover);
+	--kanban-new-card-hover-bg: var(--fps-hover-raised);
+
+	--avatar-frame-color: #b6b7ba;
+	--avatar-frame-bg: #2d2e30;
+	--avatar-frame-border: #393a3d;
+	--charts-label-color: var(--fps-text-secondary);
+	--charts-axis-line-color: var(--fps-axis);
+	--charts-stroke-width: 2px;
+	--charts-dataset-circle-stroke: var(--fps-surface-solid);
+	--charts-dataset-circle-stroke-width: 2px;
+	--charts-tooltip-title: var(--fps-text-secondary);
+	--charts-tooltip-label: var(--fps-text-secondary);
+	--charts-tooltip-value: var(--fps-text);
+	--charts-tooltip-bg: var(--fps-raised-solid);
+	--charts-legend-label: var(--fps-text-secondary);
+	--charts-legend-value: var(--fps-text);
+}
+
+html[data-fps-theme="black"] ::selection {
+	color: var(--fps-text);
+	background: rgba(60, 141, 234, 0.35);
+}
+
+html[data-fps-theme="black"] .body-sidebar .active-sidebar {
+	background: var(--sidebar-active-color);
+	box-shadow: inset 0 0 0 1px rgba(85, 159, 247, 0.26);
+}
+
+html[data-fps-theme="black"] .body-sidebar .sidebar-toggle-btn {
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+html[data-fps-theme="black"] .form-message.blue {
+	border: 1px solid rgba(85, 159, 247, 0.35);
+	color: var(--alert-text-info);
+	background: var(--alert-bg-info);
+}
+
+html[data-fps-theme="black"] .form-message.green {
+	border: 1px solid rgba(77, 201, 155, 0.35);
+	color: var(--alert-text-success);
+	background: var(--alert-bg-success);
+}
+
+html[data-fps-theme="black"] .form-message.yellow {
+	border: 1px solid rgba(232, 181, 72, 0.35);
+	color: var(--alert-text-warning);
+	background: var(--alert-bg-warning);
+}
+
+html[data-fps-theme="black"] .form-message.orange {
+	border: 1px solid rgba(252, 188, 123, 0.35);
+	color: var(--text-on-orange);
+	background: var(--bg-orange);
+}
+
+html[data-fps-theme="black"] .form-message.red {
+	border: 1px solid rgba(241, 122, 140, 0.35);
+	color: var(--alert-text-danger);
+	background: var(--alert-bg-danger);
+}
+
+html[data-fps-theme="black"] .form-control:focus {
+	color: var(--fps-text);
+	background-color: var(--control-bg);
+	border-color: transparent;
+	box-shadow: inset 0 0 0 1px var(--fps-electric), 0 0 0 3px rgba(60, 141, 234, 0.26);
+}
+html[data-fps-theme="black"] .grid-body .editable-row .form-control:focus {
+	box-shadow: inset 0 0 0 2px rgba(60, 141, 234, 0.6);
+}
+
+html[data-fps-theme="black"] input[type="checkbox"]:checked {
+	background-color: var(--fps-electric);
+	background-image: url("data:image/svg+xml, <svg viewBox='0 0 8 7' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M1 4.00001L2.66667 5.80001L7 1.20001' stroke='%23091018' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"), var(--checkbox-gradient);
+}
+
+html[data-fps-theme="black"] input[type="checkbox"].disabled-selected,
+html[data-fps-theme="black"] input[type="checkbox"]:disabled:checked {
+	background-color: var(--fps-disabled-fill);
+	background-image: url("data:image/svg+xml, <svg viewBox='0 0 8 7' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M1 4.00001L2.66667 5.80001L7 1.20001' stroke='%23E8E8E6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"), var(--checkbox-disabled-gradient);
+}
+html[data-fps-theme="black"] .btn.btn-primary {
+	background-color: var(--fps-electric);
+	border-color: transparent;
+	color: var(--fps-on-electric);
+	font-weight: 500;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+	--icon-stroke: currentColor;
+	--icon-fill-bg: var(--fps-electric);
+}
+html[data-fps-theme="black"] .about-frappe-wordmark {
+	filter: invert(1);
+}
+
+html[data-fps-theme="black"] .tooltip-inner {
+	color: var(--fps-text);
+	background-color: var(--fps-tooltip-bg);
+	box-shadow: 0 0 0 1px var(--fps-border-strong), var(--shadow-md);
+}
+
+html[data-fps-theme="black"] .dt-cell--sticky-last::after {
+	box-shadow: 4px 0 6px -4px rgba(0, 0, 0, 0.6);
+}
+html[data-fps-theme="black"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] {
+	background-color: var(--fps-bg);
+	background-image:
+		radial-gradient(56rem 36rem at 0% -8%, rgba(60, 141, 234, 0.04), rgba(60, 141, 234, 0) 62%),
+		radial-gradient(50rem 34rem at 100% -8%, rgba(180, 156, 242, 0.03), rgba(180, 156, 242, 0) 62%);
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+}
+html[data-fps-theme="black"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.shortcut-widget-box:hover {
+	border-color: rgba(85, 159, 247, 0.5);
+	--icon-stroke: var(--fps-electric-ui);
+}
+
+html[data-fps-theme="black"] .widget.number-widget-box .widget-body .widget-content .number[style*="#cb2929" i] {
+	color: #f66d64 !important;
+}
+
+html[data-fps-theme="black"] .widget.number-widget-box .widget-body .widget-content .number[style*="#c93a3a" i] {
+	color: #f2716a !important;
+}
+
+html[data-fps-theme="black"] .widget.number-widget-box .widget-body .widget-content .number[style*="#ff0000" i] {
+	color: #ff6053 !important;
+}
+
+html[data-fps-theme="black"] .widget.number-widget-box .widget-body .widget-content .number[style*="#b86e00" i] {
+	color: #e39849 !important;
+}
+
+html[data-fps-theme="black"] .widget.number-widget-box .widget-body .widget-content .number[style*="#ef4444" i] {
+	color: #f66d67 !important;
 }

@@ -36,10 +36,12 @@
  * drawer, or open a blank form the user saves themselves.
  */
 import * as React from "react";
-import { CircleAlert, RefreshCw } from "lucide-react";
+import { CircleAlert, Moon, RefreshCw, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatLongDate, formatTime } from "@/lib/format";
-import { hasRole } from "@/lib/frappe";
+import { hasRole, openThemeSwitcher } from "@/lib/frappe";
+import { usePalette } from "@/lib/palette";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useHostVisible } from "@/lib/shadow";
 import { POLL_INTERVAL_MS, useDashboard } from "@/hooks/useDashboard";
 import { Button } from "@/components/ui/button";
@@ -105,15 +107,54 @@ function AmbientGlow() {
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-[inherit] forced-colors:hidden [@media(prefers-reduced-transparency:reduce)]:hidden"
     >
+      {/* Strength is a palette token: 10% / 8% on Pearl, 4% / 3% on Matte Black. */}
       <div
         className="absolute -top-48 -left-40 size-[640px] rounded-full"
-        style={{ background: "radial-gradient(closest-side, color-mix(in oklab, var(--fps-electric) 10%, transparent), transparent)" }}
+        style={{
+          background:
+            "radial-gradient(closest-side, color-mix(in oklab, var(--fps-electric) var(--fps-glow-electric, 10%), transparent), transparent)",
+        }}
       />
       <div
         className="absolute -top-48 -right-40 size-[560px] rounded-full"
-        style={{ background: "radial-gradient(closest-side, color-mix(in oklab, var(--fps-violet) 8%, transparent), transparent)" }}
+        style={{
+          background:
+            "radial-gradient(closest-side, color-mix(in oklab, var(--fps-violet) var(--fps-glow-violet, 8%), transparent), transparent)",
+        }}
       />
     </div>
+  );
+}
+
+/**
+ * Sun / moon: opens Frappe's own Toggle Theme dialog. Light = Pearl, Dark =
+ * Matte Black, Automatic = follows the computer. The choice is Frappe's to
+ * save (on the user's own profile, as from the avatar menu); this button only
+ * opens the dialog. Hidden where the desk has no theme dialog (dev harness
+ * without a mock).
+ */
+function AppearanceButton() {
+  const palette = usePalette();
+  const [available] = React.useState(() => typeof window.frappe?.ui?.ThemeSwitcher === "function");
+  if (!available) return null;
+  const name = palette === "black" ? "Matte Black" : "Pearl";
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`Appearance: ${name}. Change theme`}
+          onClick={() => openThemeSwitcher()}
+          className="text-ink-secondary hover:text-ink focus-visible:ring-2 focus-visible:ring-electric"
+        >
+          {palette === "black" ? <Moon aria-hidden="true" /> : <Sun aria-hidden="true" />}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">
+        {name} · Light = Pearl, Dark = Matte Black
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -186,6 +227,7 @@ function DashboardHeader({
         >
           <RefreshCw aria-hidden="true" className={cn(busy && "animate-spin motion-reduce:animate-none")} />
         </Button>
+        <AppearanceButton />
       </div>
     </header>
   );

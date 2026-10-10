@@ -26,25 +26,38 @@ never sends mail or messages.
 
 ## Switching palettes
 
-The theme is palette-neutral: the `data-fps-theme` attribute stays, its
-**value** names the palette (`pearl` today), and the files keep their names
-(`fps_theme.css` / `fps_theme.js`). The tokens live in **two** files that must
-carry the same `--fps-*` names and values, because the dashboard's shadow roots
-and the desk around them cannot see each other's CSS:
+There are two palettes and **each user picks one for themselves** with
+Frappe's own Toggle Theme dialog (avatar menu, Ctrl+Shift+G, or the sun/moon
+button in the Command Center header): Light → **Pearl**, Dark → **Matte
+Black**, Automatic → follows the computer. Frappe saves the choice on the
+user's own profile (`User.desk_theme`); our code never writes it.
 
-- `src/styles/theme.css` — the `:host, .fps-cc` block, compiled into the
-  bundle and adopted by `<fps-command-center>` and `<fps-cc-portal>`;
-- `../fps_erpnext/public/css/fps_theme.css` — the `html[data-fps-theme="pearl"]`
-  token rule for every page under the FPS tile.
+How the choice travels: `fps_theme.js` reads Frappe's resolved
+`html[data-theme]` and stamps `html[data-fps-theme="pearl" | "black"]` (only
+under the FPS tile); `src/lib/palette.ts` copies that value onto the
+dashboard's app and portal roots as `data-palette`. Both follow a switch live.
 
-To change the palette: edit both token blocks in one commit, re-run the chart
-slots through the dataviz validator against the new effective card colour
-(surface-1 over the plane; `--mode light` or `dark` to match
-`color-scheme`), update `../DESIGN.md` §1, §2, §4, §5 with the new numbers,
-rebuild (`npm run build` stamps a new `?v=` into the block loader) and bump
-`?v=` on `fps_theme.css` and `fps_theme.js` in `hooks.py` — `/assets` is cached
-for a year. The previous palette, Midnight (plane `#0B0F19`), is in git history
-(commit 896a324) and comes back by swapping the two token blocks.
+The tokens live in **two** files that must carry the same `--fps-*` names and
+values, because the dashboard's shadow roots and the desk around them cannot
+see each other's CSS:
+
+- `src/styles/theme.css` — Pearl on `:host, .fps-cc`, Matte Black on
+  `.fps-cc[data-palette="black"]`; compiled into the bundle and adopted by
+  `<fps-command-center>` and `<fps-cc-portal>`;
+- `../fps_erpnext/public/css/fps_theme.css` — the 205 rules both palettes
+  share under `html[data-fps-theme]` (Pearl values), 5 Pearl-only rules, and a
+  Matte Black section at the end with the 24 rules whose values differ.
+
+To change a palette value: edit it in both files in one commit, re-run the
+chart slots through the dataviz validator against that palette's effective
+card colour (`--mode light` for Pearl, `dark` for Matte Black), re-run the
+contrast report, update `../DESIGN.md`, rebuild (`npm run build` stamps a new
+`?v=` into the block loader) and bump `?v=` on `fps_theme.css` and
+`fps_theme.js` in `hooks.py` — `/assets` is cached for a year. To add a third
+palette: a new `data-fps-theme` value, a new section at the end of
+`fps_theme.css`, a new `.fps-cc[data-palette=…]` block, and the mapping in
+`fps_theme.js` / `lib/palette.ts`. The first palette, Midnight (plane
+`#0B0F19`), is in git history (commit 896a324).
 
 ## Architecture
 
@@ -319,7 +332,9 @@ off at any width.
 - The harness loads the app's real host-page theme,
   `fps_erpnext/public/css/fps_theme.css`, and switches it on the way
   `public/js/fps_theme.js` does on the live desk
-  (`html[data-fps-theme="pearl"]`); if the file is missing it emulates it.
+  (`html[data-fps-theme="pearl"]`; `?palette=black` starts in Matte Black);
+  if the file is missing it emulates it. The dashboard's sun/moon button flips
+  the palette through a mock `frappe.ui.ThemeSwitcher` (nothing is saved).
 - Toolbar (outside the shadow root): viewer finance/ops, **Leave FPS route** /
   Return (hides the page and fires router `change`, then reports whether the
   drawer and any tooltip closed), remount (re-runs the block script on a new
