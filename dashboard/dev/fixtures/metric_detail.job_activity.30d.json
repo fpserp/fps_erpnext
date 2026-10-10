@@ -1,0 +1,301 @@
+{
+  "key": "job_activity",
+  "label": "Job updates",
+  "unit": "count",
+  "period": "30d",
+  "period_label": "Last 30 days",
+  "compare_label": "vs previous 30 days",
+  "granularity": "day",
+  "value": 85,
+  "previous": null,
+  "delta_pct": null,
+  "good_direction": "none",
+  "series": [
+    {
+      "date": "2026-09-11",
+      "value": 4
+    },
+    {
+      "date": "2026-09-12",
+      "value": 2
+    },
+    {
+      "date": "2026-09-13",
+      "value": 0
+    },
+    {
+      "date": "2026-09-14",
+      "value": 7
+    },
+    {
+      "date": "2026-09-15",
+      "value": 2
+    },
+    {
+      "date": "2026-09-16",
+      "value": 7
+    },
+    {
+      "date": "2026-09-17",
+      "value": 1
+    },
+    {
+      "date": "2026-09-18",
+      "value": 4
+    },
+    {
+      "date": "2026-09-19",
+      "value": 6
+    },
+    {
+      "date": "2026-09-20",
+      "value": 0
+    },
+    {
+      "date": "2026-09-21",
+      "value": 5
+    },
+    {
+      "date": "2026-09-22",
+      "value": 2
+    },
+    {
+      "date": "2026-09-23",
+      "value": 2
+    },
+    {
+      "date": "2026-09-24",
+      "value": 5
+    },
+    {
+      "date": "2026-09-25",
+      "value": 4
+    },
+    {
+      "date": "2026-09-26",
+      "value": 5
+    },
+    {
+      "date": "2026-09-27",
+      "value": 0
+    },
+    {
+      "date": "2026-09-28",
+      "value": 0
+    },
+    {
+      "date": "2026-09-29",
+      "value": 0
+    },
+    {
+      "date": "2026-09-30",
+      "value": 2
+    },
+    {
+      "date": "2026-10-01",
+      "value": 9
+    },
+    {
+      "date": "2026-10-02",
+      "value": 0
+    },
+    {
+      "date": "2026-10-03",
+      "value": 3
+    },
+    {
+      "date": "2026-10-04",
+      "value": 0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 4
+    },
+    {
+      "date": "2026-10-06",
+      "value": 1
+    },
+    {
+      "date": "2026-10-07",
+      "value": 1
+    },
+    {
+      "date": "2026-10-08",
+      "value": 4
+    },
+    {
+      "date": "2026-10-09",
+      "value": 5
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Milestone",
+  "dimension_options": [
+    {
+      "key": "__not_set__",
+      "label": "No milestone"
+    },
+    {
+      "key": "DELIVERED",
+      "label": "Delivered"
+    },
+    {
+      "key": "BOE",
+      "label": "BOE"
+    },
+    {
+      "key": "PICKED_UP",
+      "label": "Picked up"
+    },
+    {
+      "key": "DO",
+      "label": "DO"
+    },
+    {
+      "key": "DOCS_IN",
+      "label": "Docs in"
+    },
+    {
+      "key": "OPENED",
+      "label": "Opened"
+    },
+    {
+      "key": "SUBMITTED",
+      "label": "Submitted"
+    },
+    {
+      "key": "VEHICLE",
+      "label": "Vehicle"
+    },
+    {
+      "key": "DOCS",
+      "label": "Docs"
+    },
+    {
+      "key": "DUTY",
+      "label": "Duty"
+    },
+    {
+      "key": "INVOICED",
+      "label": "Invoiced"
+    },
+    {
+      "key": "CLEARED",
+      "label": "Cleared"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By milestone",
+    "rows": [
+      {
+        "key": "__not_set__",
+        "label": "No milestone",
+        "value": 29
+      },
+      {
+        "key": "DELIVERED",
+        "label": "Delivered",
+        "value": 7
+      },
+      {
+        "key": "BOE",
+        "label": "BOE",
+        "value": 6
+      },
+      {
+        "key": "PICKED_UP",
+        "label": "Picked up",
+        "value": 6
+      },
+      {
+        "key": "DO",
+        "label": "DO",
+        "value": 5
+      },
+      {
+        "key": "__other__",
+        "label": "Other",
+        "value": 32
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/JO/2608/059",
+      "title": "Customer E",
+      "date": "2026-10-09",
+      "route": "/app/job-order/FPS%2FJO%2F2608%2F059",
+      "subtitle": "Called the client for the commercial invoice",
+      "status": "Cleared - Ready"
+    },
+    {
+      "name": "FPS/JO/2607/050",
+      "title": "Key account (sample)",
+      "date": "2026-10-09",
+      "route": "/app/job-order/FPS%2FJO%2F2607%2F050",
+      "subtitle": "Picked up · Cargo picked up at the port",
+      "status": "Invoiced"
+    },
+    {
+      "name": "FPS/JO/2609/090",
+      "title": "Key account (sample)",
+      "date": "2026-10-09",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F090",
+      "subtitle": "Docs · Shipping documents received",
+      "status": "Docs received"
+    },
+    {
+      "name": "FPS/JO/2608/075",
+      "title": "Key account (sample)",
+      "date": "2026-10-09",
+      "route": "/app/job-order/FPS%2FJO%2F2608%2F075",
+      "subtitle": "Cleared · Cleared by customs",
+      "status": "New"
+    },
+    {
+      "name": "FPS/JO/2609/092",
+      "title": "Customer G",
+      "date": "2026-10-09",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F092",
+      "subtitle": "Docs in · Original documents handed to customs",
+      "status": "Delivered"
+    },
+    {
+      "name": "FPS/JO/2609/085",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F085",
+      "subtitle": "Duty · Duty paid via deposit account",
+      "status": "Cleared - Ready"
+    },
+    {
+      "name": "FPS/JO/2608/072",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/job-order/FPS%2FJO%2F2608%2F072",
+      "subtitle": "Docs in · Original documents handed to customs",
+      "status": "In Progress"
+    },
+    {
+      "name": "FPS/JO/2608/071",
+      "title": "Customer C",
+      "date": "2026-10-08",
+      "route": "/app/job-order/FPS%2FJO%2F2608%2F071",
+      "subtitle": "Called the client for the commercial invoice",
+      "status": "New"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/job-order"
+    }
+  ]
+}

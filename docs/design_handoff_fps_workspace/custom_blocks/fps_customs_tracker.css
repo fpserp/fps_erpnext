@@ -1,18 +1,28 @@
 /* Customs board -- a spreadsheet-style filter view over every customs entry.
    One dropdown per column, sitting in the header where the column is, so the
-   control and the data it narrows are never separated. */
+   control and the data it narrows are never separated.
+
+   THEME. Shadow DOM: only inherited custom properties reach this stylesheet.
+   Every colour reads a desk variable (var(--card-bg), var(--text-color) ...)
+   or an FPS Midnight bridge token (--fps-*, set by fps_midnight.css), each
+   with this block's original light value as the fallback. On the FPS
+   workspace the glass widget box is the card, so --fps-block-bg/-border turn
+   this block's own fill and border off. */
 
 .fps-ct {
-	border: 1px solid var(--border-color, #e2e8f0);
-	border-radius: 10px;
-	background: var(--card-bg, #fff);
+	border: 1px solid var(--fps-block-border, var(--border-color, #e2e8f0));
+	border-radius: var(--fps-block-radius, 10px);
+	background: var(--fps-block-bg, var(--card-bg, #fff));
 	overflow: hidden;
+	/* Native <select> popups and the search clear button follow this.
+	   Inherits "dark" from the midnight theme; unset (so inherited) elsewhere. */
+	color-scheme: var(--fps-color-scheme);
 }
 
 .fps-ct-head {
 	display: flex;
 	align-items: center;
-	gap: 10px;
+	gap: 8px 12px;
 	padding: 12px 16px;
 	flex-wrap: wrap;
 }
@@ -31,26 +41,42 @@
 .fps-ct-search {
 	margin-left: auto;
 	min-width: 190px;
+	height: 32px;
 	font-size: 12px;
-	padding: 4px 9px;
+	padding: 4px 8px;
 	border: 1px solid var(--border-color, #e2e8f0);
-	border-radius: 6px;
+	border-radius: 8px;
 	background: var(--control-bg, #fff);
 	color: var(--text-color, #1f272e);
 }
 
+.fps-ct-search::placeholder {
+	color: var(--text-light, #7c7c7c);
+}
+
 .fps-ct-clear {
-	font-size: 11.5px;
-	padding: 4px 10px;
+	height: 32px;
+	font-size: 12px;
+	padding: 4px 12px;
 	border: 1px solid var(--border-color, #e2e8f0);
-	border-radius: 6px;
+	border-radius: 8px;
 	background: var(--control-bg, #fff);
 	color: var(--text-muted, #55606b);
 	cursor: pointer;
 }
 
 .fps-ct-clear:hover {
-	background: var(--bg-light-gray, #f7f9fa);
+	background: var(--fg-hover-color, var(--bg-light-gray, #f7f9fa));
+	color: var(--text-color, #1f272e);
+}
+
+/* One focus treatment for the three controls: the electric ring of the
+   theme, the old brand blue elsewhere. */
+.fps-ct-search:focus-visible,
+.fps-ct-clear:focus-visible,
+.fps-ct-select:focus-visible {
+	outline: 2px solid var(--fps-electric, #0b4fe0);
+	outline-offset: 1px;
 }
 
 /* Hidden rather than removed: a control that appears and disappears makes the
@@ -62,7 +88,7 @@
 
 .fps-ct-meta {
 	width: 100%;
-	font-size: 11.5px;
+	font-size: 12px;
 	color: var(--text-muted, #7c7c7c);
 	font-variant-numeric: tabular-nums;
 }
@@ -82,6 +108,7 @@
 	table-layout: fixed;
 	border-collapse: collapse;
 	font-size: 12.5px;
+	color: var(--text-color, #1f272e);
 }
 
 /* Widths in source order, matching the operations workbook with each deadline
@@ -111,7 +138,10 @@
      warn  amber: 15 days for doc submission, 9 for MOFA
      late  red:   25 days for doc submission, 12 for MOFA
      done  the status beside it says Completed / Not Applicable
-     none  no clearance date, so no clock to run */
+     none  no clearance date, so no clock to run
+
+   warn/late use the same tones as the status pills: a tinted fill with light
+   ink under the midnight theme (>= 6.5:1), the old light pairs elsewhere. */
 .fps-ct-due {
 	font-family: var(--font-stack-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
 	font-size: 11.5px;
@@ -123,14 +153,14 @@
 }
 
 .fps-ct-due-warn {
-	background: #FEF3C7;
-	color: #92400E;
+	background: var(--fps-tone-amber-bg, #FEF3C7);
+	color: var(--fps-tone-amber-fg, #92400E);
 	font-weight: 600;
 }
 
 .fps-ct-due-late {
-	background: #FEE2E2;
-	color: #B91C1C;
+	background: var(--fps-tone-red-bg, #FEE2E2);
+	color: var(--fps-tone-red-fg, #B91C1C);
 	font-weight: 700;
 }
 
@@ -141,12 +171,14 @@
 }
 
 .fps-ct-due-none {
-	color: var(--text-muted, #b9c3d6);
+	color: var(--text-light, #b9c3d6);
 }
 
+/* Sticky header: the fill MUST be opaque. A translucent (glass) fill would let
+   the rows scrolling underneath show through the header. */
 .fps-ct-table thead th {
 	position: sticky;
-	background: var(--card-bg, #fff);
+	background: var(--fps-block-sticky-bg, var(--card-bg, #fff));
 	text-align: left;
 	padding: 8px 10px;
 	white-space: nowrap;
@@ -176,7 +208,7 @@
 	font-size: 11.5px;
 	padding: 3px 4px;
 	border: 1px solid var(--border-color, #e2e8f0);
-	border-radius: 5px;
+	border-radius: 6px;
 	background: var(--control-bg, #fff);
 	color: var(--text-color, #1f272e);
 }
@@ -184,13 +216,13 @@
 /* An active filter has to be obvious at a glance, or you spend ten minutes
    wondering why a row you know exists is missing. */
 .fps-ct-select.is-active {
-	border-color: #0B4FE0;
-	box-shadow: inset 0 0 0 1px #0B4FE0;
+	border-color: var(--fps-electric, #0B4FE0);
+	box-shadow: inset 0 0 0 1px var(--fps-electric, #0B4FE0);
 	font-weight: 600;
 }
 
 .fps-ct-table td {
-	padding: 7px 10px;
+	padding: 8px 10px;
 	border-bottom: 1px solid var(--border-color, #f1f5f9);
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -199,21 +231,49 @@
 
 .fps-ct-table tbody tr {
 	cursor: pointer;
+	transition: background-color 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .fps-ct-table tbody tr:hover {
-	background: var(--bg-light-gray, #f7f9fa);
+	background: var(--fps-row-hover, var(--bg-light-gray, #f7f9fa));
 }
 
 .fps-ct-pill {
 	display: inline-block;
 	padding: 2px 8px;
-	border-radius: 20px;
+	border-radius: 8px;
 	font-size: 11px;
 	font-weight: 600;
 	white-space: nowrap;
-	background: var(--fps-ct-bg, #f1f5f9);
-	color: var(--fps-ct-fg, #475569);
+	background: var(--fps-pill-bg, #f1f5f9);
+	color: var(--fps-pill-fg, #475569);
+}
+
+/* Status tones (same set as the Job Tracker). Midnight: a tinted translucent
+   fill with light ink. Fallbacks: the original light pairs. */
+.fps-tone-orange {
+	--fps-pill-bg: var(--fps-tone-orange-bg, #fff7ed);
+	--fps-pill-fg: var(--fps-tone-orange-fg, #b45309);
+}
+
+.fps-tone-amber {
+	--fps-pill-bg: var(--fps-tone-amber-bg, #fef3c7);
+	--fps-pill-fg: var(--fps-tone-amber-fg, #92400e);
+}
+
+.fps-tone-green {
+	--fps-pill-bg: var(--fps-tone-green-bg, #dcfce7);
+	--fps-pill-fg: var(--fps-tone-green-fg, #15803d);
+}
+
+.fps-tone-red {
+	--fps-pill-bg: var(--fps-tone-red-bg, #fee2e2);
+	--fps-pill-fg: var(--fps-tone-red-fg, #b91c1c);
+}
+
+.fps-tone-gray {
+	--fps-pill-bg: var(--fps-tone-gray-bg, #f1f5f9);
+	--fps-pill-fg: var(--fps-tone-gray-fg, #475569);
 }
 
 .fps-ct-cust {
@@ -230,8 +290,14 @@
 }
 
 .fps-ct-msg {
-	padding: 18px 16px;
+	padding: 16px;
 	font-size: 12.5px;
 	color: var(--text-muted, #7c7c7c);
 	white-space: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.fps-ct-table tbody tr {
+		transition: none;
+	}
 }

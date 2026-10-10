@@ -1,0 +1,236 @@
+{
+  "key": "jobs",
+  "label": "New jobs",
+  "unit": "count",
+  "period": "30d",
+  "period_label": "Last 30 days",
+  "compare_label": "vs previous 30 days",
+  "granularity": "day",
+  "value": 6,
+  "previous": 15,
+  "delta_pct": -60.0,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-09-11",
+      "value": 1
+    },
+    {
+      "date": "2026-09-12",
+      "value": 0
+    },
+    {
+      "date": "2026-09-13",
+      "value": 0
+    },
+    {
+      "date": "2026-09-14",
+      "value": 0
+    },
+    {
+      "date": "2026-09-15",
+      "value": 0
+    },
+    {
+      "date": "2026-09-16",
+      "value": 1
+    },
+    {
+      "date": "2026-09-17",
+      "value": 0
+    },
+    {
+      "date": "2026-09-18",
+      "value": 1
+    },
+    {
+      "date": "2026-09-19",
+      "value": 0
+    },
+    {
+      "date": "2026-09-20",
+      "value": 0
+    },
+    {
+      "date": "2026-09-21",
+      "value": 0
+    },
+    {
+      "date": "2026-09-22",
+      "value": 0
+    },
+    {
+      "date": "2026-09-23",
+      "value": 0
+    },
+    {
+      "date": "2026-09-24",
+      "value": 0
+    },
+    {
+      "date": "2026-09-25",
+      "value": 2
+    },
+    {
+      "date": "2026-09-26",
+      "value": 0
+    },
+    {
+      "date": "2026-09-27",
+      "value": 0
+    },
+    {
+      "date": "2026-09-28",
+      "value": 0
+    },
+    {
+      "date": "2026-09-29",
+      "value": 0
+    },
+    {
+      "date": "2026-09-30",
+      "value": 0
+    },
+    {
+      "date": "2026-10-01",
+      "value": 0
+    },
+    {
+      "date": "2026-10-02",
+      "value": 0
+    },
+    {
+      "date": "2026-10-03",
+      "value": 0
+    },
+    {
+      "date": "2026-10-04",
+      "value": 0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 0
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 0
+    },
+    {
+      "date": "2026-10-08",
+      "value": 1
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Service line",
+  "dimension_options": [
+    {
+      "key": "CC - Customs Clearance",
+      "label": "Customs clearance"
+    },
+    {
+      "key": "XB - Cross-Border Land Transport",
+      "label": "Cross-border"
+    },
+    {
+      "key": "FF - Freight Forwarding",
+      "label": "Freight forwarding"
+    }
+  ],
+  "dimension": "CC - Customs Clearance",
+  "breakdown": {
+    "title": "By service line",
+    "rows": [
+      {
+        "key": "CC - Customs Clearance",
+        "label": "Customs clearance",
+        "value": 6
+      },
+      {
+        "key": "XB - Cross-Border Land Transport",
+        "label": "Cross-border",
+        "value": 2
+      },
+      {
+        "key": "FF - Freight Forwarding",
+        "label": "Freight forwarding",
+        "value": 1
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/JO/2610/097",
+      "title": "Customer B",
+      "date": "2026-10-08",
+      "route": "/app/job-order/FPS%2FJO%2F2610%2F097",
+      "subtitle": "Customs clearance · REF-7404",
+      "status": "In Progress"
+    },
+    {
+      "name": "FPS/JO/2609/095",
+      "title": "Key account (sample)",
+      "date": "2026-09-25",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F095",
+      "subtitle": "Customs clearance · PO# 11486",
+      "status": "Cleared - Ready"
+    },
+    {
+      "name": "FPS/JO/2609/094",
+      "title": "Customer A",
+      "date": "2026-09-25",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F094",
+      "subtitle": "Customs clearance · REF-0643",
+      "status": "Cleared - Ready"
+    },
+    {
+      "name": "FPS/JO/2609/093",
+      "title": "Key account (sample)",
+      "date": "2026-09-18",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F093",
+      "subtitle": "Customs clearance · PO# 18959",
+      "status": "Invoiced"
+    },
+    {
+      "name": "FPS/JO/2609/092",
+      "title": "Customer G",
+      "date": "2026-09-16",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F092",
+      "subtitle": "Customs clearance · REF-6277",
+      "status": "Delivered"
+    },
+    {
+      "name": "FPS/JO/2609/090",
+      "title": "Key account (sample)",
+      "date": "2026-09-11",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F090",
+      "subtitle": "Customs clearance · PO# 11464",
+      "status": "Docs received"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/job-order"
+    },
+    {
+      "key": "new",
+      "label": "New Job Order",
+      "kind": "new_doc",
+      "doctype": "Job Order"
+    }
+  ]
+}

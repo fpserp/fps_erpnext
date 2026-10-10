@@ -1,0 +1,59 @@
+{
+  "key": "collected",
+  "label": "Collected",
+  "unit": "currency",
+  "currency": "AED",
+  "period": "7d",
+  "period_label": "Last 7 days",
+  "compare_label": "vs previous 7 days",
+  "granularity": "day",
+  "value": 0.0,
+  "previous": 12051.11,
+  "delta_pct": -100.0,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-10-04",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-08",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0.0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Mode of payment",
+  "dimension_options": [],
+  "dimension": null,
+  "breakdown": null,
+  "records": [],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/payment-entry?payment_type=Receive&docstatus=1"
+    }
+  ],
+  "caveat": "Receipts are booked a median of 28 days after the payment date, so recent weeks fill in later."
+}

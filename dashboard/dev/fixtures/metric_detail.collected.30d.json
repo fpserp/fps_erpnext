@@ -1,0 +1,182 @@
+{
+  "key": "collected",
+  "label": "Collected",
+  "unit": "currency",
+  "currency": "AED",
+  "period": "30d",
+  "period_label": "Last 30 days",
+  "compare_label": "vs previous 30 days",
+  "granularity": "day",
+  "value": 71115.57,
+  "previous": 680473.02,
+  "delta_pct": -89.5,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-09-11",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-12",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-13",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-14",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-15",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-16",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-17",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-18",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-19",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-20",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-21",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-22",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-23",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-24",
+      "value": 59064.46
+    },
+    {
+      "date": "2026-09-25",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-26",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-27",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-28",
+      "value": 12051.11
+    },
+    {
+      "date": "2026-09-29",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-30",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-01",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-02",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-03",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-04",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-08",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0.0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Mode of payment",
+  "dimension_options": [
+    {
+      "key": "Bank Transfer",
+      "label": "Bank Transfer"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "Top customers",
+    "rows": [
+      {
+        "key": "Key account (sample)",
+        "label": "Key account (sample)",
+        "value": 71115.57
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/PR/2609/039",
+      "title": "Key account (sample)",
+      "date": "2026-09-28",
+      "route": "/app/payment-entry/FPS%2FPR%2F2609%2F039",
+      "subtitle": "Bank Transfer · Ref SAMPLE-828818",
+      "value": 12051.11
+    },
+    {
+      "name": "FPS/PR/2609/038",
+      "title": "Key account (sample)",
+      "date": "2026-09-24",
+      "route": "/app/payment-entry/FPS%2FPR%2F2609%2F038",
+      "subtitle": "Bank Transfer · Ref SAMPLE-507611",
+      "value": 59064.46
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/payment-entry?payment_type=Receive&docstatus=1"
+    }
+  ],
+  "caveat": "Receipts are booked a median of 28 days after the payment date, so recent weeks fill in later."
+}

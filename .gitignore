@@ -43,3 +43,7 @@ ENV/
 # Frappe-specific
 node_modules/
 locale/
+
+# The dashboard frontend keeps shadcn helpers in dashboard/src/lib (the generic
+# lib/ rule above is for Python packaging output).
+!dashboard/src/lib/

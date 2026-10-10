@@ -43,7 +43,7 @@ TILES = [
 
     ("job_order", "Job Order", "open", "Job Order",
      OPEN_JOB,
-     "/app/job-order?fps_stage=%5B%22not%20in%22%2C%5B%22Closed%22%2C%22Completed%22%2C%22Invoiced%22%5D%5D"),
+     "/app/job-order?fps_stage=%5B%22not%20in%22%2C%5B%22Closed%22%2C%22Completed%22%2C%22Invoiced%22%5D%5D&docstatus=%5B%22%3C%22%2C2%5D"),
 
     # WAS an 8th tile, "Job Tracker (in motion)" -- dropped 2026-09-11 as a
     # near-duplicate of the Job Order tile right above it (both counted open
@@ -51,19 +51,22 @@ TILES = [
     # and Delivered tiles below already answer "what's moving" without a
     # fourth tile restating the same Job Order rows under another name.
 
+    # The route carries the same status filter as the count: a bare
+    # /app/customs-tracker leaves frappe.route_options empty, so the list view
+    # skips filter_area.clear() and reapplies whatever filters were last saved.
     ("customs", "Customs Tracker", "not cleared", "Customs Tracker",
      [["Customs Tracker", "status", "not in", ["Cleared"]]],
-     "/app/customs-tracker"),
+     "/app/customs-tracker?status=%5B%22not%20in%22%2C%5B%22Cleared%22%5D%5D"),
 
     ("in_progress", "In Progress", "jobs", "Job Order",
      [["Job Order", "fps_stage", "=", "In Progress"], ["Job Order", "docstatus", "<", 2]],
-     "/app/job-order?fps_stage=In%20Progress"),
+     "/app/job-order?fps_stage=In%20Progress&docstatus=%5B%22%3C%22%2C2%5D"),
 
     # Delivered but not yet invoiced. Once it moves to Invoiced it leaves here
     # and appears under Invoices instead.
     ("delivered", "Delivered", "awaiting invoice", "Job Order",
      [["Job Order", "fps_stage", "=", "Delivered"], ["Job Order", "docstatus", "<", 2]],
-     "/app/job-order?fps_stage=Delivered"),
+     "/app/job-order?fps_stage=Delivered&docstatus=%5B%22%3C%22%2C2%5D"),
 
     ("invoices", "Invoices", "open", "Sales Invoice",
      [["Sales Invoice", "status", "in", ["Unpaid", "Overdue", "Partly Paid"]],

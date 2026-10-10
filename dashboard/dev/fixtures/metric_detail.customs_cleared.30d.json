@@ -1,0 +1,255 @@
+{
+  "key": "customs_cleared",
+  "label": "Customs cleared",
+  "unit": "count",
+  "period": "30d",
+  "period_label": "Last 30 days",
+  "compare_label": "vs previous 30 days",
+  "granularity": "day",
+  "value": 12,
+  "previous": 9,
+  "delta_pct": 33.3,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-09-11",
+      "value": 0
+    },
+    {
+      "date": "2026-09-12",
+      "value": 1
+    },
+    {
+      "date": "2026-09-13",
+      "value": 0
+    },
+    {
+      "date": "2026-09-14",
+      "value": 2
+    },
+    {
+      "date": "2026-09-15",
+      "value": 0
+    },
+    {
+      "date": "2026-09-16",
+      "value": 0
+    },
+    {
+      "date": "2026-09-17",
+      "value": 1
+    },
+    {
+      "date": "2026-09-18",
+      "value": 1
+    },
+    {
+      "date": "2026-09-19",
+      "value": 0
+    },
+    {
+      "date": "2026-09-20",
+      "value": 1
+    },
+    {
+      "date": "2026-09-21",
+      "value": 0
+    },
+    {
+      "date": "2026-09-22",
+      "value": 0
+    },
+    {
+      "date": "2026-09-23",
+      "value": 0
+    },
+    {
+      "date": "2026-09-24",
+      "value": 0
+    },
+    {
+      "date": "2026-09-25",
+      "value": 0
+    },
+    {
+      "date": "2026-09-26",
+      "value": 0
+    },
+    {
+      "date": "2026-09-27",
+      "value": 0
+    },
+    {
+      "date": "2026-09-28",
+      "value": 2
+    },
+    {
+      "date": "2026-09-29",
+      "value": 0
+    },
+    {
+      "date": "2026-09-30",
+      "value": 1
+    },
+    {
+      "date": "2026-10-01",
+      "value": 0
+    },
+    {
+      "date": "2026-10-02",
+      "value": 0
+    },
+    {
+      "date": "2026-10-03",
+      "value": 0
+    },
+    {
+      "date": "2026-10-04",
+      "value": 0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 2
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 0
+    },
+    {
+      "date": "2026-10-08",
+      "value": 1
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Clearance type",
+  "dimension_options": [
+    {
+      "key": "Import to Local from ROW",
+      "label": "Import to Local from ROW"
+    },
+    {
+      "key": "Export",
+      "label": "Export"
+    },
+    {
+      "key": "FZ Transit",
+      "label": "FZ Transit"
+    },
+    {
+      "key": "Import to Local from FZ",
+      "label": "Import to Local from FZ"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By clearance type",
+    "rows": [
+      {
+        "key": "Import to Local from ROW",
+        "label": "Import to Local from ROW",
+        "value": 8
+      },
+      {
+        "key": "Export",
+        "label": "Export",
+        "value": 2
+      },
+      {
+        "key": "FZ Transit",
+        "label": "FZ Transit",
+        "value": 1
+      },
+      {
+        "key": "Import to Local from FZ",
+        "label": "Import to Local from FZ",
+        "value": 1
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/CT/2610/056",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2610%2F056",
+      "subtitle": "FZ Transit · BOE 103-01223328-26",
+      "status": "Cleared"
+    },
+    {
+      "name": "FPS/CT/2609/046",
+      "title": "Key account (sample)",
+      "date": "2026-10-05",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2609%2F046",
+      "subtitle": "Import to Local from ROW · BOE 101-01946053-26",
+      "status": "Cleared"
+    },
+    {
+      "name": "FPS/CT/2607/018",
+      "title": "Customer D",
+      "date": "2026-10-05",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2607%2F018",
+      "subtitle": "Import to Local from ROW · BOE 103-01723669-26",
+      "status": "Cleared"
+    },
+    {
+      "name": "FPS/CT/2609/054",
+      "title": "Key account (sample)",
+      "date": "2026-09-30",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2609%2F054",
+      "subtitle": "Import to Local from ROW · BOE 101-01023969-26",
+      "status": "Cleared"
+    },
+    {
+      "name": "FPS/CT/2609/053",
+      "title": "Key account (sample)",
+      "date": "2026-09-28",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2609%2F053",
+      "subtitle": "Import to Local from ROW · BOE 103-01747717-26",
+      "status": "Cleared"
+    },
+    {
+      "name": "FPS/CT/2609/052",
+      "title": "Key account (sample)",
+      "date": "2026-09-28",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2609%2F052",
+      "subtitle": "Export · BOE 102-01710447-26",
+      "status": "Cleared"
+    },
+    {
+      "name": "FPS/CT/2609/047",
+      "title": "Customer A",
+      "date": "2026-09-20",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2609%2F047",
+      "subtitle": "Import to Local from ROW · BOE 103-01950551-26",
+      "status": "Cleared"
+    },
+    {
+      "name": "FPS/CT/2609/045",
+      "title": "Customer A",
+      "date": "2026-09-18",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2609%2F045",
+      "subtitle": "Export · BOE 102-01214825-26",
+      "status": "Cleared"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/customs-tracker?status=Cleared"
+    }
+  ]
+}

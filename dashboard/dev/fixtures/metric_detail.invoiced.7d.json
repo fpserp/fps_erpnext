@@ -1,0 +1,70 @@
+{
+  "key": "invoiced",
+  "label": "Invoiced (net)",
+  "unit": "currency",
+  "currency": "AED",
+  "period": "7d",
+  "period_label": "Last 7 days",
+  "compare_label": "vs previous 7 days",
+  "granularity": "day",
+  "value": 0.0,
+  "previous": 0.0,
+  "delta_pct": null,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-10-04",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-08",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0.0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Status",
+  "dimension_options": [],
+  "dimension": null,
+  "breakdown": null,
+  "records": [],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/sales-invoice?docstatus=1"
+    },
+    {
+      "key": "new",
+      "label": "New Sales Invoice",
+      "kind": "new_doc",
+      "doctype": "Sales Invoice"
+    },
+    {
+      "key": "open_report",
+      "label": "Open report",
+      "kind": "route",
+      "route": "/app/query-report/Accounts%20Receivable"
+    }
+  ]
+}

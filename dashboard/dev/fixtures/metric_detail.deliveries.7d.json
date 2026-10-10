@@ -1,0 +1,63 @@
+{
+  "key": "deliveries",
+  "label": "Deliveries",
+  "unit": "count",
+  "period": "7d",
+  "period_label": "Last 7 days",
+  "compare_label": "vs previous 7 days",
+  "granularity": "day",
+  "value": 0,
+  "previous": 3,
+  "delta_pct": -100.0,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-10-04",
+      "value": 0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 0
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 0
+    },
+    {
+      "date": "2026-10-08",
+      "value": 0
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Movement",
+  "dimension_options": [],
+  "dimension": null,
+  "breakdown": null,
+  "records": [],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/proof-of-delivery?delivery_status=Delivered"
+    },
+    {
+      "key": "new",
+      "label": "New Proof of Delivery",
+      "kind": "new_doc",
+      "doctype": "Proof of Delivery"
+    }
+  ]
+}

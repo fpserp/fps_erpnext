@@ -1,0 +1,21 @@
+<!doctype html>
+<!--
+  DEV HARNESS ONLY (npm run dev -> http://localhost:5199). Never shipped: the
+  production build is a library bundle with src/main.tsx as its entry.
+  The document mimics the ERPNext desk around the FPS Overview block: Frappe's
+  own desk.bundle.css at document level (when dev-vendor/ has a copy), the
+  route attributes the host-page CSS keys on, and a fake sidebar/navbar/page
+  head from dev/desk-shell.css. dev/main.dev.tsx builds the rest.
+-->
+<html lang="en" data-theme="light" data-theme-mode="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FPS Command Center (dev harness)</title>
+    <link rel="stylesheet" href="/dev-vendor/desk.bundle.css" />
+  </head>
+  <body data-route="Workspaces/FPS">
+    <div id="fps-harness"></div>
+    <script type="module" src="/dev/main.dev.tsx"></script>
+  </body>
+</html>

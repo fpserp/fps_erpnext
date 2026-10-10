@@ -9,6 +9,12 @@
 // A column's own selection is never removed from its own list, so you can always
 // undo a choice that has narrowed everything else to nothing.
 //
+// THEME. This block renders in a shadow root, which the desk stylesheets
+// cannot reach -- only inherited CSS custom properties cross into it. The
+// colours live in fps_customs_tracker.css as var(--fps-*, <light colour>):
+// the FPS Midnight theme (public/css/fps_midnight.css) supplies dark-safe
+// values; anywhere else the fallback is the block's original light colour.
+//
 // LIVE REFRESH. Polls every 30s for new/changed rows -- see fps_overview.js
 // for why the interval checks the block's own node is still attached before
 // each tick. Only the ROWS are re-fetched and re-rendered; the header (and
@@ -31,12 +37,14 @@
 
 	var REFRESH_MS = 30000;
 
+	// Status -> tone. The tone classes (fps_customs_tracker.css) hold the
+	// colours, so a theme can restyle them without touching this map.
 	var STATUS = {
-		Pending: ["#fff7ed", "#b45309"],
-		"In Process": ["#fef3c7", "#92400e"],
-		Cleared: ["#dcfce7", "#15803d"],
-		"On Hold": ["#fee2e2", "#b91c1c"],
-		Delayed: ["#fee2e2", "#b91c1c"],
+		Pending: "orange",
+		"In Process": "amber",
+		Cleared: "green",
+		"On Hold": "red",
+		Delayed: "red",
 	};
 
 	var columns = [];
@@ -142,10 +150,10 @@
 			);
 		}
 		if (c.key === "status") {
-			var pill = STATUS[row.status] || ["#f1f5f9", "#475569"];
+			var tone = STATUS[row.status] || "gray";
 			return (
-				'<td><span class="fps-ct-pill" style="--fps-ct-bg: ' + pill[0] +
-				"; --fps-ct-fg: " + pill[1] + '">' + esc(row.status || "—") + "</span></td>"
+				'<td><span class="fps-ct-pill fps-tone-' + tone + '">' +
+				esc(row.status || "—") + "</span></td>"
 			);
 		}
 		var cls = { customer: "fps-ct-cust", job_order: "fps-ct-jo",
@@ -258,6 +266,7 @@
 
 	load();
 	var timer = setInterval(function () {
+		// KNOWN ISSUE (fix separately, needs its own OK): body is in a shadow root, so this contains() is always false and the refresh stops after one tick.
 		if (!document.body.contains(body)) {
 			clearInterval(timer);
 			return;

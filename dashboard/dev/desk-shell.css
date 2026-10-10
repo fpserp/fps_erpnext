@@ -1,0 +1,335 @@
+/*
+ * DEV HARNESS ONLY — the fake desk chrome around the FPS Overview block.
+ *
+ * Frappe's real desk.bundle.css is loaded at document level (index.html) so the
+ * workspace wrappers (.layout-main, .widget.custom-block-widget-box …) behave
+ * as on the live site, including the 900px workspace cap unless the body has
+ * .full-width. This file adds what the harness fakes: the FPS dark plane, a
+ * 220px sidebar (z-index 1020, like the desk's), a sticky navbar holding the
+ * harness toolbar (z-index 1019), the page head, the toast and a stand-in for
+ * a Frappe modal (backdrop 1040, dialog 1050). Class names prefixed fps-dev-
+ * are harness-only; the rest are the real desk class names.
+ *
+ * The document itself scrolls (like the desk: the window scrolls, the navbar is
+ * sticky), so nothing is cut off at any viewport size. Under 768px the fake
+ * sidebar is hidden (the desk collapses its sidebar there too), so the block
+ * gets the whole width and the dashboard can be checked at phone widths. The
+ * dashboard's drawer and tooltips render in the body-level <fps-cc-portal>
+ * (z-index 1030), above this sidebar and navbar and below the modal stand-in.
+ */
+
+:root {
+  --fps-dev-plane: #0b0f19;
+  --fps-dev-chrome: #0f1422;
+  --fps-dev-raised: #151b2b;
+  --fps-dev-border: rgba(255, 255, 255, 0.08);
+  --fps-dev-border-strong: rgba(255, 255, 255, 0.14);
+  --fps-dev-text: #e8ecf4;
+  --fps-dev-muted: #a9b2c6;
+  --fps-dev-accent: #3293fc;
+  --fps-dev-sidebar-width: 220px;
+  --fps-dev-navbar-height: 48px;
+}
+
+/* desk.bundle.css paints html/body with var(--bg-color); the FPS route is dark. */
+html,
+body {
+  background-color: var(--fps-dev-plane) !important;
+}
+
+/* The page scrolls as a whole (the desk CSS sets html/body height:100%). */
+html,
+body {
+  height: auto !important;
+  min-height: 100%;
+  overflow: visible !important;
+}
+
+body {
+  margin: 0;
+  color: var(--fps-dev-text);
+}
+
+/* ---- sidebar ------------------------------------------------------------ */
+
+.fps-dev-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 1020;
+  width: var(--fps-dev-sidebar-width);
+  padding: 16px 12px;
+  box-sizing: border-box;
+  background: var(--fps-dev-chrome);
+  border-right: 1px solid var(--fps-dev-border);
+  font-size: 13px;
+  overflow-y: auto;
+}
+
+.fps-dev-sidebar h2 {
+  margin: 0 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fps-dev-text);
+}
+
+.fps-dev-sidebar a {
+  display: block;
+  padding: 6px 8px;
+  border-radius: 8px;
+  color: var(--fps-dev-muted);
+  text-decoration: none;
+}
+
+.fps-dev-sidebar a[aria-current="page"] {
+  background: rgba(90, 168, 255, 0.12);
+  color: var(--fps-dev-text);
+}
+
+.fps-dev-sidebar .fps-dev-section {
+  margin: 16px 8px 4px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #7c869c;
+}
+
+/* ---- main column -------------------------------------------------------- */
+
+.fps-dev-main {
+  margin-left: var(--fps-dev-sidebar-width);
+  min-width: 0;
+}
+
+/* Phone and small tablet widths: no fake sidebar, full-width page. */
+@media (max-width: 767.98px) {
+  .fps-dev-sidebar {
+    display: none;
+  }
+
+  .fps-dev-main {
+    margin-left: 0;
+  }
+
+  .fps-dev-status {
+    margin-left: 0;
+    white-space: normal;
+  }
+}
+
+.fps-dev-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1019;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--fps-dev-navbar-height);
+  padding: 6px 16px;
+  box-sizing: border-box;
+  background: rgba(11, 15, 25, 0.88);
+  border-bottom: 1px solid var(--fps-dev-border);
+  flex-wrap: wrap;
+}
+
+.fps-dev-brand {
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.fps-dev-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.fps-dev-toolbar button {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--fps-dev-border-strong);
+  background: var(--fps-dev-raised);
+  color: var(--fps-dev-text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.fps-dev-toolbar button:hover {
+  border-color: var(--fps-dev-accent);
+}
+
+.fps-dev-toolbar button[aria-pressed="true"] {
+  background: rgba(50, 147, 252, 0.22);
+  border-color: var(--fps-dev-accent);
+}
+
+.fps-dev-toolbar .fps-dev-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--fps-dev-border-strong);
+}
+
+.fps-dev-status {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--fps-dev-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- page head and the simulated "away" page --------------------------- */
+
+.fps-dev-pagehead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 16px 24px 8px;
+}
+
+.fps-dev-pagehead .fps-dev-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--fps-dev-text);
+}
+
+.fps-dev-pagehead .fps-dev-crumb {
+  font-size: 12px;
+  color: var(--fps-dev-muted);
+}
+
+.fps-dev-hidden {
+  display: none !important;
+}
+
+.fps-dev-away {
+  padding: 48px 24px;
+  color: var(--fps-dev-muted);
+}
+
+.fps-dev-below {
+  margin: 16px 7px;
+  padding: 16px;
+  border: 1px dashed var(--fps-dev-border-strong);
+  border-radius: 12px;
+  color: var(--fps-dev-muted);
+  font-size: 13px;
+}
+
+/*
+ * Only when the app's host theme (fps_erpnext/public/css/fps_midnight.css) is
+ * missing: mimic what it does around the block -- no white card frame, no
+ * extra padding. main.dev.tsx adds this class only in that case.
+ */
+body.fps-dev-emulate-host [custom_block_name="FPS Overview"] > .widget {
+  background: transparent;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+body.fps-dev-emulate-host .layout-main-section {
+  background: transparent;
+}
+
+/* ---- edit mode stand-in (EditorJS block controls, top-right) ----------- */
+
+.fps-dev-edit-controls {
+  display: none;
+  gap: 4px;
+}
+
+.edit-mode .fps-dev-edit-controls {
+  display: inline-flex;
+}
+
+.fps-dev-edit-controls span {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #fff;
+  color: #1f272e;
+  font-size: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* ---- toast ---------------------------------------------------------------- */
+
+.fps-dev-toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2000;
+  max-width: min(480px, calc(100vw - 32px));
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #e8ecf4;
+  color: #0b0f19;
+  font-size: 12px;
+  line-height: 1.4;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+  pointer-events: none;
+  word-break: break-word;
+}
+
+.fps-dev-toast[data-show="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- a stand-in for a Frappe/Bootstrap modal (Quick Entry) --------------- */
+
+.fps-dev-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1040;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.fps-dev-modal {
+  position: fixed;
+  top: 15vh;
+  left: 50%;
+  z-index: 1050;
+  width: min(440px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: #fff;
+  color: #1f272e;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  font-size: 13px;
+}
+
+.fps-dev-modal h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+.fps-dev-modal input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 32px;
+  margin: 8px 0 16px;
+  padding: 0 8px;
+  border: 1px solid #d1d8dd;
+  border-radius: 6px;
+}
+
+.fps-dev-modal button {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d8dd;
+  background: #f4f5f6;
+  cursor: pointer;
+}

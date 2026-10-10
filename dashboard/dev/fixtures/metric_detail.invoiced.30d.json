@@ -1,0 +1,268 @@
+{
+  "key": "invoiced",
+  "label": "Invoiced (net)",
+  "unit": "currency",
+  "currency": "AED",
+  "period": "30d",
+  "period_label": "Last 30 days",
+  "compare_label": "vs previous 30 days",
+  "granularity": "day",
+  "value": 55049.24,
+  "previous": 64571.31,
+  "delta_pct": -14.7,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-09-11",
+      "value": 9625.98
+    },
+    {
+      "date": "2026-09-12",
+      "value": 10968.04
+    },
+    {
+      "date": "2026-09-13",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-14",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-15",
+      "value": 6386.15
+    },
+    {
+      "date": "2026-09-16",
+      "value": 2244.2
+    },
+    {
+      "date": "2026-09-17",
+      "value": 3226.56
+    },
+    {
+      "date": "2026-09-18",
+      "value": 5670.42
+    },
+    {
+      "date": "2026-09-19",
+      "value": 4876.78
+    },
+    {
+      "date": "2026-09-20",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-21",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-22",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-23",
+      "value": 12051.11
+    },
+    {
+      "date": "2026-09-24",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-25",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-26",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-27",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-28",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-29",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-30",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-01",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-02",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-03",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-04",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-08",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0.0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Status",
+  "dimension_options": [
+    {
+      "key": "Paid",
+      "label": "Paid"
+    },
+    {
+      "key": "Unpaid",
+      "label": "Unpaid"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "Top customers",
+    "rows": [
+      {
+        "key": "Key account (sample)",
+        "label": "Key account (sample)",
+        "value": 35977.86
+      },
+      {
+        "key": "Customer B",
+        "label": "Customer B",
+        "value": 10968.04
+      },
+      {
+        "key": "Customer C",
+        "label": "Customer C",
+        "value": 4876.78
+      },
+      {
+        "key": "Customer D",
+        "label": "Customer D",
+        "value": 3226.56
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/INV/2609/142",
+      "title": "Key account (sample)",
+      "date": "2026-09-23",
+      "route": "/app/sales-invoice/FPS%2FINV%2F2609%2F142",
+      "subtitle": "FPS/JO/2608/083 · Due 22 Nov",
+      "value": 12051.11,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/INV/2609/137",
+      "title": "Customer C",
+      "date": "2026-09-19",
+      "route": "/app/sales-invoice/FPS%2FINV%2F2609%2F137",
+      "subtitle": "FPS/JO/2607/036 · Due 19 Oct",
+      "value": 4876.78,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/INV/2609/136",
+      "title": "Key account (sample)",
+      "date": "2026-09-18",
+      "route": "/app/sales-invoice/FPS%2FINV%2F2609%2F136",
+      "subtitle": "FPS/JO/2607/045 · Due 17 Nov",
+      "value": 5670.42,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/INV/2609/134",
+      "title": "Customer D",
+      "date": "2026-09-17",
+      "route": "/app/sales-invoice/FPS%2FINV%2F2609%2F134",
+      "subtitle": "FPS/JO/2606/014 · Due 17 Oct",
+      "value": 3226.56,
+      "status": "Unpaid"
+    },
+    {
+      "name": "FPS/INV/2609/131",
+      "title": "Key account (sample)",
+      "date": "2026-09-16",
+      "route": "/app/sales-invoice/FPS%2FINV%2F2609%2F131",
+      "subtitle": "FPS/JO/2608/075 · Due 15 Nov",
+      "value": 2244.2,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/INV/2609/130",
+      "title": "Key account (sample)",
+      "date": "2026-09-15",
+      "route": "/app/sales-invoice/FPS%2FINV%2F2609%2F130",
+      "subtitle": "FPS/JO/2606/025 · Due 14 Nov",
+      "value": 6386.15,
+      "status": "Unpaid"
+    },
+    {
+      "name": "FPS/INV/2609/126",
+      "title": "Customer B",
+      "date": "2026-09-12",
+      "route": "/app/sales-invoice/FPS%2FINV%2F2609%2F126",
+      "subtitle": "FPS/JO/2605/009 · Due 12 Oct",
+      "value": 10968.04,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/INV/2609/124",
+      "title": "Key account (sample)",
+      "date": "2026-09-11",
+      "route": "/app/sales-invoice/FPS%2FINV%2F2609%2F124",
+      "subtitle": "FPS/JO/2608/078 · Due 10 Nov",
+      "value": 9625.98,
+      "status": "Paid"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/sales-invoice?docstatus=1"
+    },
+    {
+      "key": "new",
+      "label": "New Sales Invoice",
+      "kind": "new_doc",
+      "doctype": "Sales Invoice"
+    },
+    {
+      "key": "open_report",
+      "label": "Open report",
+      "kind": "route",
+      "route": "/app/query-report/Accounts%20Receivable"
+    }
+  ]
+}

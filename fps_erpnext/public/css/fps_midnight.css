@@ -1,0 +1,1706 @@
+/* FPS Midnight -- the dark "AI-look" desk theme for everything under the FPS
+ * app tile. Design source: DESIGN.md (tokens, glass rules, 8px grid, palette).
+ *
+ * HOW IT IS SWITCHED ON. public/js/fps_midnight.js puts
+ * html[data-fps-theme="midnight"] on the document while the ACTIVE sidebar is
+ * the FPS one (or the route is one of the FPS workspaces) and takes it off
+ * everywhere else. It only toggles that attribute -- no server calls, no
+ * writes. Without the attribute nothing in this file matches, so every other
+ * app keeps the user's own Light/Dark/Automatic theme.
+ *
+ * SCOPING RULE (checked by a script, see the report): EVERY selector here
+ * starts with html[data-fps-theme="midnight"]. Specificity (0,1,1) beats
+ * Frappe's :root, [data-theme="light"] and [data-theme="dark"] (0,1,0), so
+ * the tokens below win in both of the user's own themes. Frappe also defines
+ * some variables LOWER in the tree (.modal, .form-in-grid, .grid-body
+ * .editable-row, .chart-container, .indicator, .datatable, .print-format);
+ * those get their own prefixed rules because a value set on <html> loses to a
+ * value set on the element itself.
+ *
+ * WHY MOSTLY TOKENS. The desk paints almost everything from CSS variables, so
+ * re-pointing the variables re-themes forms, lists, grids and popups without
+ * fighting individual rules. Explicit rules below cover only what Frappe
+ * hard-codes (Bootstrap literals, the air-datepicker, Quill, a few raw
+ * --gray-* uses) or what DESIGN.md adds (glass, glows, hairlines).
+ *
+ * OPAQUE vs GLASS. Anything sticky or layered (page head on forms/lists, form
+ * tabs, grid index column, datatable header, dropdowns, awesomplete,
+ * datepicker, modals, toasts) uses an OPAQUE surface: a translucent token
+ * would let the content scrolling underneath bleed through. Real glass
+ * (backdrop-filter) is used ONLY on the FPS workspace pages, on the widget
+ * cards and the page head there. backdrop-filter makes the element the
+ * containing block for position:fixed descendants, which breaks the
+ * datatable column menus (.dt-dropdown__list is position:fixed), link-field
+ * suggestion lists and the Command Center drawer -- so forms, grids, list and
+ * report views and the FPS Overview block never get it.
+ *
+ * CUSTOM HTML BLOCKS render in shadow roots that this file cannot reach.
+ * Only inherited custom properties cross that boundary, which is why the
+ * "bridge" tokens (--fps-tone-*, --fps-cust-*, --fps-block-*) exist: the
+ * block sources read them with their old light colours as fallbacks.
+ *
+ * PRINT. Print iframes and PDFs never load app_include_css, so they cannot
+ * change. In-desk previews (.print-format, .print-preview,
+ * .print-preview-wrapper) restore the light tokens at the end of this file.
+ *
+ * CACHE. /assets is served "max-age=31536000, immutable": bump the ?v= on
+ * this file's entry in hooks.py app_include_css on EVERY change.
+ */
+
+/* ==========================================================================
+   1. Tokens
+   ========================================================================== */
+
+html[data-fps-theme="midnight"] {
+	color-scheme: dark;
+	background-color: #0b0f19;
+	scrollbar-color: #2e374b #0f1422;
+
+	/* --- DESIGN.md tokens. Same names and values as the Command Center's
+	   dashboard/src/styles/theme.css, so the shadow-root dashboard and the desk
+	   around it are one material. --- */
+	--fps-bg: #0b0f19;
+	--fps-surface-1: rgba(17, 23, 38, 0.62);
+	--fps-surface-2: rgba(24, 31, 50, 0.72);
+	--fps-surface-solid: #111726;
+	--fps-border: rgba(255, 255, 255, 0.08);
+	--fps-border-strong: rgba(255, 255, 255, 0.14);
+	--fps-highlight: rgba(255, 255, 255, 0.06);
+	--fps-electric: #3293fc;
+	--fps-electric-ui: #5aa8ff;
+	--fps-mint: #34d399;
+	--fps-violet: #a78bfa;
+	--fps-rose: #fb7185;
+	--fps-amber: #fbbf24;
+	--fps-text: #e8ecf4;
+	--fps-text-secondary: #a9b2c6;
+	--fps-text-muted: #7c869c;
+	--fps-grid: #1e2638;
+	--fps-axis: #2a3347;
+
+	/* --- Desk-only extras. All OPAQUE: they back sticky and layered UI. --- */
+	--fps-menu-solid: #0d1220;       /* sidebar, a half-step off the plane */
+	--fps-sunken-solid: #0f1422;     /* = surface-1 over the plane, opaque */
+	--fps-raised-solid: #151b2b;     /* = surface-2 over the plane, opaque: popups */
+	--fps-subtle-solid: #161d2e;     /* header cells, list head */
+	--fps-control: #182033;          /* inputs: lifted off the card */
+	--fps-control-raised: #1c2438;   /* inputs inside a raised surface (modal) */
+	--fps-disabled: #141a29;
+	--fps-hover: #1a2236;
+	--fps-hover-raised: #1f283d;
+	--fps-selected: #1e2a44;         /* electric-tinted selection */
+	/* Opaque hairlines for places where a translucent one would stack
+	   (table cells, grid rows, datatable). */
+	--fps-border-solid: #232b3c;
+	--fps-border-solid-strong: #2e374b;
+	/* #7c869c (DESIGN "muted") drops to 4.33-4.44:1 on the control and hover
+	   surfaces, so desk "light" text uses this lifted step (>= 4.69:1 on every
+	   surface, see the contrast report). */
+	--fps-text-light: #8a94aa;
+	--fps-text-faint: #5a6378;       /* disabled and decorative only, never content */
+	--fps-disabled-fill: #3a4358;    /* disabled checked boxes, idle stars */
+	/* Unchecked checkbox / radio outline: 3.82:1 on the card, 3.47:1 on a
+	   control (WCAG 1.4.11 asks 3:1 for the boundary of a control). */
+	--fps-control-border: #6b7489;
+	--fps-selected-hover: #24345a;
+	--fps-tooltip-bg: #1e2638;
+	--fps-backdrop: #03050a;         /* modal backdrop, shown at Frappe's 0.8 opacity */
+	--fps-cyan-ui: #67e8f9;
+	--fps-rose-hover: #fc8b9b;
+	--fps-on-rose: #1a0509;          /* 7.30:1 on rose; Frappe's white on #e03636 is 4.0:1 */
+	--fps-electric-hover: #4fa3ff;
+	--fps-electric-press: #2a8af5;
+	/* Text ON electric. White on #3293fc is only 3.13:1; this is 6.11:1. */
+	--fps-on-electric: #04101f;
+	--fps-focus-ring: 0 0 0 1px #3293fc, 0 0 0 3px rgba(50, 147, 252, 0.32);
+	--fps-shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 24px rgba(0, 0, 0, 0.32);
+	--fps-shadow-pop: 0 16px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.32);
+	--fps-radius-card: 16px;
+	--fps-glass-filter: blur(12px) saturate(140%);
+	--fps-glass-head: rgba(11, 15, 25, 0.62); /* the plane, as glass, for the sticky page head */
+	--fps-color-scheme: dark;
+
+	/* --- Bridge tokens for the Custom HTML Blocks (shadow DOM). Status tones:
+	   tinted translucent fill + light ink, >= 6.3:1 on every card and hover
+	   surface. --- */
+	--fps-tone-blue-bg: rgba(50, 147, 252, 0.16);
+	--fps-tone-blue-fg: #9ccbff;
+	--fps-tone-orange-bg: rgba(251, 146, 60, 0.16);
+	--fps-tone-orange-fg: #fdba74;
+	--fps-tone-amber-bg: rgba(251, 191, 36, 0.14);
+	--fps-tone-amber-fg: #fcd34d;
+	--fps-tone-violet-bg: rgba(167, 139, 250, 0.18);
+	--fps-tone-violet-fg: #c4b5fd;
+	--fps-tone-green-bg: rgba(52, 211, 153, 0.14);
+	--fps-tone-green-fg: #6ee7b7;
+	--fps-tone-purple-bg: rgba(232, 121, 249, 0.16);
+	--fps-tone-purple-fg: #f0abfc;
+	--fps-tone-red-bg: rgba(251, 113, 133, 0.16);
+	--fps-tone-red-fg: #fda4af;
+	--fps-tone-gray-bg: rgba(148, 163, 184, 0.16);
+	--fps-tone-gray-fg: #cbd5e1;
+	/* Job Tracker customer identity, slot for slot with the block's old light
+	   palette (same hue family, same order, so a customer keeps "its" colour).
+	   Every slot >= 5.8:1 on #111726. */
+	--fps-cust-1: #4c9aff;
+	--fps-cust-2: #22d3ee;
+	--fps-cust-3: #a78bfa;
+	--fps-cust-4: #38bdf8;
+	--fps-cust-5: #2dd4bf;
+	--fps-cust-6: #f59e0b;
+	--fps-cust-7: #f472b6;
+	--fps-cust-8: #94a3b8;
+	--fps-cust-9: #c084fc;
+	--fps-cust-10: #06b6d4;
+	--fps-cust-11: #d4a54a;
+	--fps-cust-12: #f0628e;
+	--fps-row-hover: rgba(255, 255, 255, 0.04);
+	--fps-block-sticky-bg: #111726;
+
+	/* --- Frappe semantic tokens, re-pointed --- */
+	--neutral: #0b0f19;
+	--invert-neutral: #f4f7fb;
+
+	--bg-color: var(--fps-bg);
+	--fg-color: var(--fps-surface-solid);
+	--card-bg: var(--fps-surface-solid);
+	--modal-bg: var(--fps-raised-solid);
+	--popover-bg: var(--fps-raised-solid);
+	--toast-bg: var(--fps-raised-solid);
+	--navbar-bg: var(--fps-bg);
+	--subtle-accent: var(--fps-sunken-solid);
+	--subtle-fg: var(--fps-subtle-solid);
+	--fg-hover-color: var(--fps-hover);
+	--highlight-color: var(--fps-hover);
+	--yellow-highlight-color: #2e2712;
+	--placeholder-color: var(--fps-hover);
+	--skeleton-bg: var(--fps-hover);
+
+	--control-bg: var(--fps-control);
+	--control-bg-on-gray: var(--fps-control-raised);
+	--disabled-control-bg: var(--fps-disabled);
+	--input-disabled-bg: var(--fps-disabled);
+	/* Read-only field VALUES are content (submitted documents are mostly
+	   read-only), so they keep secondary ink rather than a "disabled" grey. */
+	--disabled-text-color: var(--fps-text-secondary);
+	--awesomebar-focus-bg: var(--fps-control);
+	--awesomplete-hover-bg: var(--fps-selected);
+
+	--text-color: var(--fps-text);
+	--heading-color: var(--fps-text);
+	--text-neutral: var(--fps-text);
+	--text-muted: var(--fps-text-secondary);
+	--text-light: var(--fps-text-light);
+	--text-dark: var(--fps-bg);
+	--icon-stroke: var(--fps-text-secondary);
+	--icon-fill: transparent;
+	--icon-fill-bg: var(--fps-surface-solid);
+
+	--primary: var(--fps-electric);
+	--primary-color: var(--fps-electric);
+	--brand-color: var(--fps-electric);
+	--btn-primary: var(--fps-electric);
+	--btn-default-bg: var(--fps-control);
+	--btn-default-hover-bg: var(--fps-hover-raised);
+	--btn-ghost-hover-bg: var(--fps-hover);
+	--border-primary: var(--fps-electric-ui);
+
+	--border-color: var(--fps-border);
+	--dark-border-color: var(--fps-border-strong);
+	--table-border-color: var(--fps-border-solid);
+	--btn-group-border-color: var(--fps-border-solid-strong);
+	--shadow-inset: inset 0 -1px 0 var(--fps-border-solid);
+
+	--sidebar-select-color: var(--fps-hover);
+	--sidebar-hover-color: var(--fps-hover);
+	--sidebar-active-color: rgba(50, 147, 252, 0.14);
+	--sidebar-border-color: var(--fps-subtle-solid);
+	--divider-color: var(--fps-border-solid);
+
+	--scrollbar-thumb-color: var(--fps-border-solid-strong);
+	--scrollbar-track-color: var(--fps-sunken-solid);
+
+	--error-bg: #3a1520;
+	--error-border: var(--fps-rose);
+	--progress-bar-bg: var(--fps-electric);
+
+	--checkbox-color: var(--fps-text);
+	--checkbox-gradient: linear-gradient(180deg, var(--fps-electric) 0%, var(--fps-electric) 100%);
+	--checkbox-disabled-gradient: linear-gradient(180deg, var(--fps-disabled-fill) 0%, var(--fps-disabled-fill) 100%);
+	--checkbox-focus-shadow: var(--fps-focus-ring);
+	--switch-bg: #626b80; /* 3.35:1 on the card (WCAG 1.4.11), knob 4.51:1 on it */
+
+	--date-active-text: var(--fps-on-electric);
+	--date-active-bg: var(--fps-electric);
+	--date-range-bg: var(--fps-selected);
+
+	--timeline-badge-color: var(--fps-text-secondary);
+	--timeline-badge-bg: var(--fps-subtle-solid);
+	--user-mention-bg-color: var(--fps-hover);
+
+	--diff-added: #123a2c;
+	--diff-removed: #3f1a24;
+	--diff-changed: #142c4d;
+	--appreciation-color: var(--fps-mint);
+	--appreciation-bg: #0e2a22;
+	--criticism-color: var(--fps-rose);
+	--criticism-bg: #2e1520;
+	--highlight-shadow: 1px 1px 10px rgba(50, 147, 252, 0.25), 0 0 4px var(--fps-electric);
+
+	--focus-default: var(--fps-focus-ring);
+	--focus-blue: 0 0 0 2px rgba(90, 168, 255, 0.6);
+	--shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.32);
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+	--shadow-base: 0 2px 8px rgba(0, 0, 0, 0.36);
+	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+	--shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.44);
+	--shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.48);
+	--shadow-2xl: var(--fps-shadow-pop);
+	--card-shadow: none;
+	--modal-shadow: var(--fps-shadow-pop);
+	--btn-shadow: none;
+	--drop-shadow: 0 2px 6px rgba(0, 0, 0, 0.32);
+	--custom-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.36);
+
+	/* Light-mode arrows are drawn in #1F272E -- invisible on the plane. */
+	--right-arrow-svg: url("data: image/svg+xml;utf8, <svg width='6' height='8' viewBox='0 0 6 8' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M1.25 7.5L4.75 4L1.25 0.5' stroke='%23A9B2C6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+	--left-arrow-svg: url("data: image/svg+xml;utf8, <svg width='6' height='8' viewBox='0 0 6 8' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M7.5 9.5L4 6l3.5-3.5' stroke='%23A9B2C6' stroke-linecap='round' stroke-linejoin='round'></path></svg>");
+
+	/* Badge / indicator pairs: dark-tinted fill + light ink, each >= 8.5:1. */
+	--bg-blue: #10233f;
+	--text-on-blue: #8cc3ff;
+	--bg-light-blue: #0f2236;
+	--text-on-light-blue: #9ad0ff;
+	--bg-dark-blue: #1a2f5a;
+	--text-on-dark-blue: #b5d3ff;
+	--bg-green: #0e2a22;
+	--text-on-green: #5ee3ae;
+	--bg-yellow: #2b2410;
+	--text-on-yellow: #fcd34d;
+	--bg-orange: #2e1d10;
+	--text-on-orange: #fdba74;
+	--bg-red: #2e1520;
+	--text-on-red: #fda4af;
+	--bg-gray: #1c2335;
+	--text-on-gray: #bcc4d4;
+	--bg-grey: #1c2335;
+	--text-on-grey: #bcc4d4;
+	--bg-light-gray: #1a2133;
+	--text-on-light-gray: #d3d9e4;
+	--bg-dark-gray: #2a3347;
+	--text-on-dark-gray: #e1e6ef;
+	--bg-darkgrey: #2a3347;
+	--text-on-darkgrey: #e1e6ef;
+	--bg-purple: #241a3f;
+	--text-on-purple: #c4b5fd;
+	--bg-pink: #2e1530;
+	--text-on-pink: #f9a8d4;
+	--bg-cyan: #0c2830;
+	--text-on-cyan: var(--fps-cyan-ui);
+	--group-mention-bg-color: var(--bg-purple);
+
+	--alert-bg-danger: #2e1520;
+	--alert-text-danger: #fda4af;
+	--alert-bg-warning: #2b2410;
+	--alert-text-warning: #fcd34d;
+	--alert-bg-info: #10233f;
+	--alert-text-info: #9ccbff;
+	--alert-bg-success: #0e2a22;
+	--alert-text-success: #6ee7b7;
+
+	/* frappe-ui semantic scales (sidebar, breadcrumbs, newer v16 widgets). */
+	--surface-menu-bar: var(--fps-menu-solid);
+	--surface-modal: var(--fps-raised-solid);
+	--surface-white: var(--fps-surface-solid);
+	--surface-cards: var(--fps-surface-solid);
+	--surface-selected: var(--fps-selected);
+	--surface-gray-1: #141a2a;
+	--surface-gray-2: #182033;
+	--surface-gray-3: #1e2638;
+	--surface-gray-4: #2a3347;
+	--surface-gray-5: #7c869c;
+	--surface-gray-6: #bcc4d4;
+	--surface-gray-7: #e8ecf4;
+	--outline-gray-1: #1e2638;
+	--outline-gray-2: #2a3347;
+	--outline-gray-3: #364056;
+	--outline-gray-4: #4b5468;
+	--outline-gray-5: #1e2638;
+	--outline-gray-modals: #2a3347;
+	--outline-white: #1e2638;
+	--ink-gray-1: #1e2638;
+	--ink-gray-2: #2a3347;
+	--ink-gray-3: #5a6378;
+	--ink-gray-4: var(--fps-text-light); /* #8a94aa: shortcut hints sit on hover rows; #7c869c is 4.02:1 on #1f283d */
+	--ink-gray-5: #8a94aa;
+	--ink-gray-6: #a9b2c6;
+	--ink-gray-7: #bcc4d4;
+	--ink-gray-8: #d3d9e4;
+	--ink-gray-9: #e8ecf4;
+	--ink-white: #0b0f19;
+	--ink-blue-link: var(--fps-electric-ui);
+	--frappe-card-button-outline: var(--fps-electric);
+	--frappe-card-button-bg-color: var(--fps-selected);
+	--frappe-card-button-color: var(--fps-electric-ui);
+
+	/* Kanban boards sit inside the list card (#111726): columns one step up,
+	   cards one more. */
+	--kanban-column-bg: var(--fps-subtle-solid);
+	--kanban-card-bg: var(--fps-control-raised);
+	--kanban-card-hover-bg: var(--fps-hover-raised);
+	--kanban-new-card-bg: var(--fps-hover);
+	--kanban-new-card-hover-bg: var(--fps-hover-raised);
+
+	--avatar-frame-color: #a9b2c6;
+	--avatar-frame-bg: #1e2638;
+	--avatar-frame-border: #2a3347;
+
+	/* frappe-charts. Also set here (not only on .chart-container) because the
+	   tooltip can be appended outside the chart's container. */
+	--charts-label-color: var(--fps-text-secondary);
+	--charts-axis-line-color: var(--fps-axis);
+	--charts-stroke-width: 2px;
+	--charts-dataset-circle-stroke: var(--fps-surface-solid);
+	--charts-dataset-circle-stroke-width: 2px;
+	--charts-tooltip-title: var(--fps-text-secondary);
+	--charts-tooltip-label: var(--fps-text-secondary);
+	--charts-tooltip-value: var(--fps-text);
+	--charts-tooltip-bg: var(--fps-raised-solid);
+	--charts-legend-label: var(--fps-text-secondary);
+	--charts-legend-value: var(--fps-text);
+}
+
+/* --- Variables Frappe sets lower in the tree --------------------------- */
+
+/* dark.scss sets these on .modal/.form-in-grid; light leaves them white-ish.
+   Inside a raised surface the control lifts one more step. */
+html[data-fps-theme="midnight"] .modal,
+html[data-fps-theme="midnight"] .form-in-grid {
+	--control-bg: var(--fps-control-raised);
+	--border-color: var(--fps-border);
+}
+
+/* Light theme points editable grid inputs at var(--neutral) -- white. */
+html[data-fps-theme="midnight"] .grid-body .editable-row {
+	--control-bg: var(--fps-surface-solid);
+	--input-disabled-bg: var(--fps-disabled);
+}
+
+html[data-fps-theme="midnight"] .chart-container {
+	--charts-label-color: var(--fps-text-secondary);
+	--charts-axis-line-color: var(--fps-axis);
+	--charts-stroke-width: 2px;
+	--charts-dataset-circle-stroke: var(--fps-surface-solid);
+	--charts-dataset-circle-stroke-width: 2px;
+	--charts-tooltip-title: var(--fps-text-secondary);
+	--charts-tooltip-label: var(--fps-text-secondary);
+	--charts-tooltip-value: var(--fps-text);
+	--charts-tooltip-bg: var(--fps-raised-solid);
+	--charts-legend-label: var(--fps-text-secondary);
+	--charts-legend-value: var(--fps-text);
+}
+
+/* Dark Frappe paints indicator DOTS in the pill's dark background colour;
+   light paints them in the ink colour. The ink is the right one here. */
+html[data-fps-theme="midnight"] .indicator {
+	--indicator-dot-green: var(--text-on-green);
+	--indicator-dot-cyan: var(--text-on-cyan);
+	--indicator-dot-blue: var(--text-on-blue);
+	--indicator-dot-orange: var(--text-on-orange);
+	--indicator-dot-yellow: var(--text-on-yellow);
+	--indicator-dot-gray: var(--text-on-gray);
+	--indicator-dot-grey: var(--text-on-grey);
+	--indicator-dot-red: var(--text-on-red);
+	--indicator-dot-pink: var(--text-on-pink);
+	--indicator-dot-darkgrey: var(--text-on-darkgrey);
+	--indicator-dot-purple: var(--text-on-purple);
+	--indicator-dot-light-blue: var(--text-on-light-blue);
+}
+
+/* frappe-datatable (report view, query reports). Cells and the header are
+   sticky / layered, so every surface is opaque; borders are the opaque hairline
+   because neighbouring cells draw their own borders. */
+html[data-fps-theme="midnight"] .datatable {
+	--dt-border-color: var(--fps-border-solid);
+	--dt-primary-color: var(--fps-electric);
+	--dt-light-bg: var(--fps-hover);
+	--dt-light-red: var(--error-bg);
+	--dt-light-yellow: var(--yellow-highlight-color);
+	--dt-orange: var(--fps-amber);
+	--dt-text-color: var(--fps-text);
+	--dt-text-light: var(--fps-text);
+	--dt-cell-bg: var(--fps-surface-solid);
+	--dt-header-cell-bg: var(--fps-subtle-solid);
+	--dt-selection-highlight-color: var(--fps-selected);
+}
+
+html[data-fps-theme="midnight"] .rating {
+	--star-fill: var(--fps-disabled-fill);
+}
+
+html[data-fps-theme="midnight"] .rating .star-hover {
+	--star-fill: var(--fps-text-faint);
+}
+
+/* ==========================================================================
+   2. Base
+   ========================================================================== */
+
+html[data-fps-theme="midnight"] body {
+	background-color: var(--fps-bg);
+	color: var(--text-muted);
+}
+
+html[data-fps-theme="midnight"] ::selection {
+	color: var(--fps-text);
+	background: rgba(50, 147, 252, 0.38);
+}
+
+/* Bootstrap colours headings with var(--gray-900) (#171717): invisible here.
+   Re-pointing the variable ON the heading keeps every more specific heading
+   rule (section heads, modal titles, workspace headers) in charge, and the
+   :not() keeps print previews on paper colours. */
+html[data-fps-theme="midnight"] :is(h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6):not(:is(.print-format, .print-preview, .print-preview-wrapper) *) {
+	--gray-900: var(--fps-text);
+}
+
+/* Links in CONTENT (rich text, read-only values, messages). Navigation anchors
+   (sidebar, list titles, breadcrumbs) keep their own ink on purpose. */
+html[data-fps-theme="midnight"] .ql-editor a,
+html[data-fps-theme="midnight"] .frappe-control .control-value a,
+html[data-fps-theme="midnight"] .like-disabled-input a,
+html[data-fps-theme="midnight"] .form-message a,
+html[data-fps-theme="midnight"] .msgprint a,
+html[data-fps-theme="midnight"] .help-box a,
+html[data-fps-theme="midnight"] .frappe-control .help a,
+html[data-fps-theme="midnight"] .timeline-content .content a,
+html[data-fps-theme="midnight"] .comment-content a {
+	color: var(--fps-electric-ui);
+}
+
+/* Bootstrap utilities that are hard-coded for a white page. */
+html[data-fps-theme="midnight"] .text-primary {
+	color: var(--fps-electric-ui) !important;
+}
+
+html[data-fps-theme="midnight"] .text-secondary {
+	color: var(--fps-text-secondary) !important;
+}
+
+html[data-fps-theme="midnight"] .text-success {
+	color: var(--fps-mint) !important;
+}
+
+html[data-fps-theme="midnight"] .text-info {
+	color: var(--fps-cyan-ui) !important;
+}
+
+html[data-fps-theme="midnight"] .text-warning {
+	color: var(--fps-amber) !important;
+}
+
+html[data-fps-theme="midnight"] .text-danger {
+	color: var(--fps-rose) !important;
+}
+
+html[data-fps-theme="midnight"] .text-dark {
+	color: var(--fps-text) !important;
+}
+
+/* Alt+hover fieldname pill (desk/form.scss .tooltip-content paints
+   color: var(--text-dark) on --bg-dark-gray). --text-dark stays the plane
+   colour because FormBuilder.vue uses it for the "Drop it here" pill on
+   --gray-500, so only the pill is re-inked here: (0,2,1) beats Frappe's (0,1,0). */
+html[data-fps-theme="midnight"] .tooltip-content {
+	color: var(--text-on-dark-gray); /* #e1e6ef on --bg-dark-gray #2a3347 = 10.08:1 (was 1.52:1) */
+}
+
+html[data-fps-theme="midnight"] .text-extra-muted {
+	color: var(--fps-text-light) !important;
+}
+
+html[data-fps-theme="midnight"] .bg-white {
+	background-color: var(--fps-surface-solid) !important;
+}
+
+html[data-fps-theme="midnight"] .bg-light {
+	background-color: var(--fps-subtle-solid) !important;
+}
+
+html[data-fps-theme="midnight"] .bg-primary {
+	background-color: var(--fps-electric) !important;
+}
+
+html[data-fps-theme="midnight"] hr {
+	border-top-color: var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] kbd {
+	color: var(--fps-text);
+	background-color: var(--fps-hover-raised);
+	box-shadow: inset 0 -1px 0 var(--fps-border-solid-strong);
+}
+
+html[data-fps-theme="midnight"] pre {
+	color: var(--fps-text);
+}
+
+/* Inline <code>: Frappe paints it var(--purple-600) (#8642c2) = 3.04:1 on the
+   card, 2.92:1 in a modal. Frappe's own exceptions are EXCLUDED, not
+   out-ranked: .hljs help-box chips (white, #4d4d4c), pre code and a > code
+   (inherit), Quill chips (#f0f0f0) and print previews. Screen only, because
+   violet is 2.72:1 on paper. */
+@media screen {
+	html[data-fps-theme="midnight"] code:not(.hljs, pre code, a > code, :is(.ql-editor, .print-format, .print-preview, .print-preview-wrapper) code) {
+		color: var(--fps-violet); /* 6.57:1 card, 6.31:1 modal, 5.97:1 control */
+	}
+}
+
+/* Ace code fields are hard-wired to the light "tomorrow" theme
+   (form/controls/code.js). Framed so the light panel reads as intentional. */
+html[data-fps-theme="midnight"] .frappe-control .ace-editor-target {
+	border: 1px solid var(--fps-border-strong);
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+/* ==========================================================================
+   3. Desk chrome: navbar, sidebar, page head, breadcrumbs
+   ========================================================================== */
+
+html[data-fps-theme="midnight"] .navbar {
+	background: var(--fps-bg);
+	border-bottom-color: var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] .body-sidebar {
+	background: var(--fps-menu-solid);
+	border-right-color: var(--fps-subtle-solid);
+}
+
+/* Frappe draws this with a raw var(--gray-300): a white line on the plane. */
+html[data-fps-theme="midnight"] .body-sidebar .divider {
+	border-top-color: var(--fps-border-solid);
+}
+
+html[data-fps-theme="midnight"] .body-sidebar .active-sidebar {
+	background: var(--sidebar-active-color);
+	box-shadow: inset 0 0 0 1px rgba(90, 168, 255, 0.28);
+}
+
+html[data-fps-theme="midnight"] .body-sidebar .active-sidebar .item-anchor {
+	color: var(--fps-text);
+	--icon-stroke: var(--fps-electric-ui);
+}
+
+html[data-fps-theme="midnight"] .body-sidebar .sidebar-toggle-btn {
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Phone/tablet menu button in the page head (shown below 992px). Frappe sets
+   --icon-stroke: var(--gray-700) ON the button (page.scss), so the html-level
+   token cannot reach it; dark.scss re-points it for Dark users only. */
+html[data-fps-theme="midnight"] .page-title .sidebar-toggle-btn {
+	--icon-stroke: var(--fps-text-secondary); /* 9.00:1 on #0b0f19 (was #525252, 2.45:1) */
+}
+
+/* Default page head: OPAQUE (it is sticky over scrolling forms and lists).
+   The FPS workspace pages swap it for glass in section 10. */
+html[data-fps-theme="midnight"] .page-head {
+	background: var(--fps-bg);
+	border-bottom-color: var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] .navbar-breadcrumbs li:last-child > a {
+	color: var(--fps-text) !important;
+}
+
+/* Bootstrap .breadcrumb (used by a few older pages) is hard-coded white. */
+html[data-fps-theme="midnight"] .breadcrumb {
+	background-color: transparent;
+}
+
+html[data-fps-theme="midnight"] .breadcrumb-item + .breadcrumb-item::before,
+html[data-fps-theme="midnight"] .breadcrumb-item.active {
+	color: var(--fps-text-light);
+}
+
+/* ==========================================================================
+   4. Surfaces: list and report containers, forms ("glass-look", no blur)
+   ========================================================================== */
+
+/* Forms and lists hold popups (link suggestions, datatable column menus), so
+   they get the LOOK of glass -- opaque surface, hairline, 1px inner top
+   highlight, 16px radius -- without backdrop-filter. v16 draws lists, report
+   views, kanban boards and query reports flat on the page; the card is the
+   main section that holds the list (.frappe-list) or report (.report-wrapper),
+   so the filter row above it sits inside the same card. No overflow clipping:
+   filter suggestions and menus must be free to hang below a short list. */
+html[data-fps-theme="midnight"] .layout-main-section.frappe-card,
+html[data-fps-theme="midnight"] .layout-main-section:has(> .frappe-list),
+html[data-fps-theme="midnight"] .layout-main-section:has(> .report-wrapper),
+html[data-fps-theme="midnight"] .std-form-layout > .form-layout {
+	background-color: var(--fps-surface-solid);
+	border: 1px solid var(--fps-border);
+	border-radius: var(--fps-radius-card);
+	box-shadow: var(--fps-shadow-card);
+}
+
+/* The filter row paints its own --card-bg with square corners, which would
+   poke out of the card's rounded top. */
+html[data-fps-theme="midnight"] .layout-main-section:has(> .frappe-list) > .page-form,
+html[data-fps-theme="midnight"] .layout-main-section:has(> .report-wrapper) > .page-form {
+	background-color: transparent;
+	border-radius: var(--fps-radius-card) var(--fps-radius-card) 0 0;
+}
+
+/* No overflow:hidden on the form layout: it would break the sticky form tabs.
+   The children carry the radius instead. */
+html[data-fps-theme="midnight"] .std-form-layout > .form-layout > .form-tabs-list {
+	border-radius: var(--fps-radius-card) var(--fps-radius-card) 0 0;
+}
+
+html[data-fps-theme="midnight"] .std-form-layout > .form-layout > .form-page {
+	background-color: transparent;
+	border-radius: 0 0 var(--fps-radius-card) var(--fps-radius-card);
+}
+
+html[data-fps-theme="midnight"] .frappe-card {
+	border-color: var(--fps-border);
+}
+
+/* Form dashboard "Connections" chips paint var(--neutral) -- the plane, which
+   reads as a hole in the card -- and turn their border white on hover. */
+html[data-fps-theme="midnight"] .form-links .document-link {
+	background-color: var(--fps-control);
+}
+
+html[data-fps-theme="midnight"] .form-links .document-link:hover {
+	border-color: var(--fps-electric-ui);
+}
+
+/* Copied from dark.scss so light-theme users get it too. */
+html[data-fps-theme="midnight"] .frappe-card .btn-default {
+	background-color: var(--control-bg);
+}
+
+html[data-fps-theme="midnight"] .frappe-card .btn-default:hover {
+	background-color: var(--fg-hover-color);
+}
+
+/* Form tabs: sticky, so the opaque card colour; the active tab gets the
+   electric underline instead of a white one. */
+html[data-fps-theme="midnight"] .form-tabs-list {
+	background-color: var(--fps-surface-solid);
+	border-bottom-color: var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] .form-tabs-list .form-tabs .nav-item .nav-link {
+	background-color: var(--fps-surface-solid);
+}
+
+html[data-fps-theme="midnight"] .form-tabs-list .form-tabs .nav-item .nav-link:hover {
+	color: var(--fps-text);
+}
+
+html[data-fps-theme="midnight"] .form-tabs-list .form-tabs .nav-item .nav-link.active {
+	color: var(--fps-text);
+	border-bottom: 2px solid var(--fps-electric);
+	padding-bottom: 8px;
+}
+
+html[data-fps-theme="midnight"] .grid-row-open .form-in-grid .form-tabs-list .form-tabs .nav-item .nav-link.active {
+	color: var(--fps-electric-ui);
+	border-bottom-color: var(--fps-electric);
+}
+
+/* Bootstrap .nav-tabs (settings dialogs, a few reports) are hard-coded. */
+html[data-fps-theme="midnight"] .nav-tabs {
+	border-bottom-color: var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] .nav-tabs .nav-link.active,
+html[data-fps-theme="midnight"] .nav-tabs .nav-item.show .nav-link {
+	color: var(--fps-text);
+	background-color: var(--fps-surface-solid);
+	border-color: var(--fps-border) var(--fps-border) var(--fps-surface-solid);
+}
+
+html[data-fps-theme="midnight"] .nav-tabs .nav-link:hover,
+html[data-fps-theme="midnight"] .nav-tabs .nav-link:focus {
+	border-color: var(--fps-border) var(--fps-border) var(--fps-border);
+}
+
+/* Form messages ("Submit this document to confirm" and friends). dark.scss
+   paints these as a saturated 800-step block, which on the live form reads as
+   a loud blue bar across the top of every submittable document. The alert
+   tokens are the quiet tinted version the rest of the theme uses (text 8.9:1
+   and up on their fills); a 1px tinted hairline keeps the edge. Links inside
+   keep --fps-electric-ui from the content-links rule above: 6.18:1 or better
+   on every one of these fills. */
+html[data-fps-theme="midnight"] .form-message.blue {
+	border: 1px solid rgba(90, 168, 255, 0.35);
+	color: var(--alert-text-info);
+	background: var(--alert-bg-info);
+}
+
+html[data-fps-theme="midnight"] .form-message.green {
+	border: 1px solid rgba(52, 211, 153, 0.35);
+	color: var(--alert-text-success);
+	background: var(--alert-bg-success);
+}
+
+html[data-fps-theme="midnight"] .form-message.yellow {
+	border: 1px solid rgba(251, 191, 36, 0.35);
+	color: var(--alert-text-warning);
+	background: var(--alert-bg-warning);
+}
+
+html[data-fps-theme="midnight"] .form-message.orange {
+	border: 1px solid rgba(253, 186, 116, 0.35);
+	color: var(--text-on-orange);
+	background: var(--bg-orange);
+}
+
+html[data-fps-theme="midnight"] .form-message.red {
+	border: 1px solid rgba(251, 113, 133, 0.35);
+	color: var(--alert-text-danger);
+	background: var(--alert-bg-danger);
+}
+
+/* The close (x) follows the message text colour: 8.93:1 or better on every
+   fill (the root --icon-stroke already clears 7.19:1 here; this keeps the icon
+   tied to the ink if a fill ever changes). */
+html[data-fps-theme="midnight"] .form-message .close-message {
+	--icon-stroke: currentColor;
+}
+
+html[data-fps-theme="midnight"] .tag-pill {
+	background-color: var(--fps-hover);
+	color: var(--text-muted);
+}
+
+html[data-fps-theme="midnight"] .version-info .danger,
+html[data-fps-theme="midnight"] .version-info .success,
+html[data-fps-theme="midnight"] .version-info .danger td,
+html[data-fps-theme="midnight"] .version-info .success td {
+	color: #171717;
+}
+
+html[data-fps-theme="midnight"] .progress {
+	background-color: var(--fps-grid);
+	box-shadow: none;
+}
+
+/* ==========================================================================
+   5. Controls and buttons
+   ========================================================================== */
+
+/* A lifted surface plus a 1px hairline. Drawn as an inset shadow, not a
+   border: Frappe's controls are border:none at a fixed height, and a real
+   border would change their box. */
+html[data-fps-theme="midnight"] .form-control {
+	color: var(--fps-text);
+	background-color: var(--control-bg);
+	box-shadow: inset 0 0 0 1px var(--fps-border);
+}
+
+/* :not(:focus) so hovering a focused field keeps the electric ring. */
+html[data-fps-theme="midnight"] .form-control:hover:not(:focus):not(:disabled):not([readonly]) {
+	box-shadow: inset 0 0 0 1px var(--fps-border-strong);
+}
+
+html[data-fps-theme="midnight"] .form-control:focus {
+	color: var(--fps-text);
+	background-color: var(--control-bg);
+	border-color: transparent;
+	box-shadow: inset 0 0 0 1px var(--fps-electric), 0 0 0 3px rgba(50, 147, 252, 0.28);
+}
+
+html[data-fps-theme="midnight"] .form-control::placeholder {
+	color: var(--fps-text-light);
+}
+
+html[data-fps-theme="midnight"] .form-control:disabled,
+html[data-fps-theme="midnight"] .form-control[readonly] {
+	color: var(--disabled-text-color);
+	box-shadow: inset 0 0 0 1px var(--fps-border);
+}
+
+/* The editable grid row draws its own 2px inset ring in grey. */
+html[data-fps-theme="midnight"] .grid-body .editable-row .form-control:focus {
+	box-shadow: inset 0 0 0 2px rgba(50, 147, 252, 0.6);
+}
+
+/* Inside the datatable filter row Frappe removes the ring; keep it removed. */
+html[data-fps-theme="midnight"] .datatable .form-control,
+html[data-fps-theme="midnight"] .datatable .form-control:focus {
+	box-shadow: none;
+}
+
+html[data-fps-theme="midnight"] .datatable .dt-row-filter .dt-filter.dt-input:focus {
+	box-shadow: var(--fps-focus-ring);
+}
+
+html[data-fps-theme="midnight"] .like-disabled-input {
+	box-shadow: inset 0 0 0 1px var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] .input-group-text {
+	color: var(--fps-text-secondary);
+	background-color: var(--fps-subtle-solid);
+	border-color: var(--fps-border-solid);
+}
+
+html[data-fps-theme="midnight"] .custom-select {
+	color: var(--fps-text);
+	background-color: var(--control-bg);
+	border-color: var(--fps-border-solid);
+}
+
+/* Checkbox: dark tick on electric, same rule as primary buttons (white on
+   #3293fc is 3.13:1). Tick image copied from dark.scss, drawn in #04101f. */
+html[data-fps-theme="midnight"] input[type="checkbox"] {
+	border-color: var(--fps-control-border);
+}
+
+html[data-fps-theme="midnight"] input[type="checkbox"]:checked {
+	background-color: var(--fps-electric);
+	background-image: url("data:image/svg+xml, <svg viewBox='0 0 8 7' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M1 4.00001L2.66667 5.80001L7 1.20001' stroke='%2304101F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"), var(--checkbox-gradient);
+}
+
+html[data-fps-theme="midnight"] input[type="checkbox"].disabled-selected,
+html[data-fps-theme="midnight"] input[type="checkbox"]:disabled:checked {
+	background-color: var(--fps-disabled-fill);
+	background-image: url("data:image/svg+xml, <svg viewBox='0 0 8 7' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M1 4.00001L2.66667 5.80001L7 1.20001' stroke='%23A9B2C6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"), var(--checkbox-disabled-gradient);
+}
+
+html[data-fps-theme="midnight"] input[type="checkbox"].disabled-deselected,
+html[data-fps-theme="midnight"] input[type="checkbox"]:disabled {
+	background-color: var(--fps-disabled);
+	border-color: var(--fps-border-solid-strong);
+	box-shadow: none;
+}
+
+html[data-fps-theme="midnight"] input[type="radio"]::before {
+	border-color: var(--fps-control-border);
+}
+
+/* Switch: track electric when on, knob in ink (Frappe flips --neutral /
+   --invert-neutral, which would give a white track here). */
+html[data-fps-theme="midnight"] .slider::before {
+	background-color: var(--fps-text);
+}
+
+html[data-fps-theme="midnight"] input:checked + .slider {
+	background-color: var(--fps-electric);
+}
+
+html[data-fps-theme="midnight"] input:checked + .slider::before {
+	background-color: var(--fps-on-electric);
+}
+
+html[data-fps-theme="midnight"] .custom-control.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+	background: var(--fps-electric);
+	border-color: var(--fps-electric);
+}
+
+/* Primary: Electric Blue with DARK ink (6.11:1). */
+html[data-fps-theme="midnight"] .btn.btn-primary {
+	background-color: var(--fps-electric);
+	border-color: transparent;
+	color: var(--fps-on-electric);
+	font-weight: 500;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+	--icon-stroke: currentColor;
+	--icon-fill-bg: var(--fps-electric);
+}
+
+html[data-fps-theme="midnight"] .btn.btn-primary:hover,
+html[data-fps-theme="midnight"] .btn.btn-primary:focus {
+	background-color: var(--fps-electric-hover);
+	color: var(--fps-on-electric);
+}
+
+html[data-fps-theme="midnight"] .btn.btn-primary:focus-visible {
+	box-shadow: var(--fps-focus-ring);
+}
+
+/* Frappe forces a white fill (var(--invert-neutral)) on :active with
+   !important; matching !important at higher specificity keeps it electric. */
+html[data-fps-theme="midnight"] .btn.btn-primary:active {
+	color: var(--fps-on-electric) !important;
+	background-color: var(--fps-electric-press) !important;
+}
+
+html[data-fps-theme="midnight"] .btn.btn-primary:disabled,
+html[data-fps-theme="midnight"] .btn.btn-primary.disabled {
+	color: var(--fps-on-electric);
+	background-color: var(--fps-electric);
+}
+
+html[data-fps-theme="midnight"] .btn-primary-light {
+	color: var(--fps-electric-ui);
+	background-color: var(--fps-selected);
+	border-color: transparent;
+	box-shadow: none;
+}
+
+html[data-fps-theme="midnight"] .btn-primary-light:hover,
+html[data-fps-theme="midnight"] .btn-primary-light:active {
+	color: var(--fps-electric-ui);
+	background-color: var(--fps-selected-hover);
+}
+
+html[data-fps-theme="midnight"] .btn.btn-default,
+html[data-fps-theme="midnight"] .btn.btn-secondary {
+	background-color: var(--control-bg);
+	color: var(--fps-text);
+	box-shadow: inset 0 0 0 1px var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] .btn.btn-default:hover,
+html[data-fps-theme="midnight"] .btn.btn-secondary:hover {
+	background-color: var(--btn-default-hover-bg);
+	color: var(--fps-text);
+	box-shadow: inset 0 0 0 1px var(--fps-border-strong);
+}
+
+html[data-fps-theme="midnight"] .btn.btn-default:focus-visible,
+html[data-fps-theme="midnight"] .btn.btn-secondary:focus-visible,
+html[data-fps-theme="midnight"] .btn.btn-ghost:focus-visible {
+	box-shadow: var(--fps-focus-ring) !important;
+}
+
+/* Rose fill with dark ink. */
+html[data-fps-theme="midnight"] .btn.btn-danger {
+	background-color: var(--fps-rose);
+	color: var(--fps-on-rose);
+}
+
+html[data-fps-theme="midnight"] .btn.btn-danger:hover {
+	background-color: var(--fps-rose-hover);
+	color: var(--fps-on-rose);
+}
+
+html[data-fps-theme="midnight"] .btn-link {
+	color: var(--fps-electric-ui);
+}
+
+/* ==========================================================================
+   6. Popups: dropdowns, awesomplete, datepicker, modals, toasts, tooltips
+   ========================================================================== */
+
+html[data-fps-theme="midnight"] .dropdown-menu {
+	background-color: var(--fps-raised-solid);
+	border: 1px solid var(--fps-border-strong);
+	box-shadow: var(--fps-shadow-pop);
+}
+
+html[data-fps-theme="midnight"] .dropdown-item:hover,
+html[data-fps-theme="midnight"] .dropdown-item:focus {
+	color: var(--fps-text);
+	background-color: var(--fps-hover-raised);
+}
+
+html[data-fps-theme="midnight"] .dropdown-item.active,
+html[data-fps-theme="midnight"] .dropdown-item:active {
+	color: var(--fps-text);
+	background-color: var(--fps-selected);
+}
+
+html[data-fps-theme="midnight"] .dropdown-item.disabled,
+html[data-fps-theme="midnight"] .dropdown-item:disabled {
+	color: var(--fps-text-faint);
+}
+
+html[data-fps-theme="midnight"] .dropdown-header {
+	color: var(--fps-text-light);
+}
+
+/* Link-field suggestions sit on --bg-color (the plane) by default; a popup
+   reads as a popup on the raised surface. */
+html[data-fps-theme="midnight"] .awesomplete > [role="listbox"] {
+	background-color: var(--fps-raised-solid);
+	border: 1px solid var(--fps-border-strong);
+	box-shadow: var(--fps-shadow-pop);
+}
+
+/* The navbar search modal (awesome_bar.js, .navbar-modal-wrapper) shows its
+   results flush inside the modal; Frappe's navbar.scss flattens the list there.
+   (0,4,1) beats the popup rule above at (0,3,1). */
+html[data-fps-theme="midnight"] .navbar-modal-wrapper .awesomplete > [role="listbox"] {
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
+}
+
+/* air-datepicker: Frappe themes most of it, these are its hard-coded rest. */
+html[data-fps-theme="midnight"] .datepicker {
+	background: var(--fps-raised-solid);
+	border-color: var(--fps-border-strong);
+	box-shadow: var(--fps-shadow-pop);
+}
+
+html[data-fps-theme="midnight"] .datepicker--pointer {
+	background: var(--fps-raised-solid);
+	border-color: var(--fps-border-strong);
+}
+
+html[data-fps-theme="midnight"] .datepicker--day-name {
+	color: var(--fps-text-light);
+}
+
+html[data-fps-theme="midnight"] .datepicker--cell.-current-:not(.-selected-) {
+	color: var(--fps-electric-ui);
+}
+
+html[data-fps-theme="midnight"] .datepicker--cell-day.-other-month-,
+html[data-fps-theme="midnight"] .datepicker--cell-year.-other-decade-,
+html[data-fps-theme="midnight"] .-disabled-.-focus-.datepicker--cell-day.-other-month-,
+html[data-fps-theme="midnight"] .-disabled-.-focus-.datepicker--cell-year.-other-decade-,
+html[data-fps-theme="midnight"] .-in-range-.datepicker--cell-day.-other-month-,
+html[data-fps-theme="midnight"] .-in-range-.datepicker--cell-year.-other-decade- {
+	color: var(--fps-text-light);
+}
+
+html[data-fps-theme="midnight"] .datepicker--cell-day.-other-month-:hover,
+html[data-fps-theme="midnight"] .datepicker--cell-year.-other-decade-:hover {
+	color: var(--fps-text-secondary);
+}
+
+html[data-fps-theme="midnight"] .datepicker--cell.-disabled-,
+html[data-fps-theme="midnight"] .datepicker--cell.-disabled-.-focus-,
+html[data-fps-theme="midnight"] .datepicker--cell.-disabled-.-in-range-,
+html[data-fps-theme="midnight"] .datepicker--cell.-disabled-.-current-.-focus- {
+	color: var(--fps-text-faint);
+}
+
+html[data-fps-theme="midnight"] .-selected-.datepicker--cell-day.-other-month-,
+html[data-fps-theme="midnight"] .-selected-.datepicker--cell-year.-other-decade-,
+html[data-fps-theme="midnight"] .-selected-.-focus-.datepicker--cell-day.-other-month-,
+html[data-fps-theme="midnight"] .-selected-.-focus-.datepicker--cell-year.-other-decade- {
+	color: var(--fps-on-electric);
+	background: var(--fps-electric-hover);
+}
+
+html[data-fps-theme="midnight"] .datepicker--nav-action path {
+	stroke: var(--fps-text-secondary);
+}
+
+html[data-fps-theme="midnight"] .datepicker--nav-title i,
+html[data-fps-theme="midnight"] .datepicker--time-current-ampm,
+html[data-fps-theme="midnight"] .datepicker--time-icon {
+	color: var(--fps-text-light);
+}
+
+html[data-fps-theme="midnight"] .datepicker--time-row {
+	background-image: linear-gradient(to right, var(--fps-border-solid-strong), var(--fps-border-solid-strong));
+}
+
+html[data-fps-theme="midnight"] .datepicker--time-row input[type="range"]::-webkit-slider-thumb {
+	background: var(--fps-text);
+	border-color: var(--fps-border-solid-strong);
+}
+
+html[data-fps-theme="midnight"] .datepicker--time-row input[type="range"]::-moz-range-thumb {
+	background: var(--fps-text);
+	border-color: var(--fps-border-solid-strong);
+}
+
+html[data-fps-theme="midnight"] .datepicker--time-row input[type="range"]:focus::-webkit-slider-thumb {
+	background: var(--fps-electric);
+	border-color: var(--fps-electric);
+}
+
+html[data-fps-theme="midnight"] .datepicker--time-row input[type="range"]:focus::-moz-range-thumb {
+	background: var(--fps-electric);
+	border-color: var(--fps-electric);
+}
+
+html[data-fps-theme="midnight"] .modal-content {
+	border: 1px solid var(--fps-border-strong);
+	box-shadow: var(--fps-shadow-pop);
+}
+
+/* About dialog: Frappe flips the black Frappe wordmark (an <img> SVG drawn with
+   currentColor, which is black inside an image) only under [data-theme=dark].
+   Under Midnight the modal is dark in every user theme, so flip it here too. */
+html[data-fps-theme="midnight"] .about-frappe-wordmark {
+	filter: invert(1);
+}
+
+html[data-fps-theme="midnight"] .modal-backdrop {
+	background-color: var(--fps-backdrop);
+}
+
+html[data-fps-theme="midnight"] .close,
+html[data-fps-theme="midnight"] .close:hover {
+	color: var(--fps-text);
+}
+
+html[data-fps-theme="midnight"] .desk-alert {
+	border: 1px solid var(--fps-border-strong);
+}
+
+/* Bootstrap .toast (rare in the desk; desk-alert is the usual toast). */
+html[data-fps-theme="midnight"] .toast,
+html[data-fps-theme="midnight"] .toast-header {
+	color: var(--fps-text-secondary);
+	background-color: var(--fps-raised-solid);
+	border-color: var(--fps-border-strong);
+}
+
+html[data-fps-theme="midnight"] .tooltip-inner {
+	color: var(--fps-text);
+	background-color: var(--fps-tooltip-bg);
+	box-shadow: 0 0 0 1px var(--fps-border-strong), var(--shadow-md);
+}
+
+html[data-fps-theme="midnight"] .bs-tooltip-top .arrow::before,
+html[data-fps-theme="midnight"] .bs-tooltip-auto[x-placement^="top"] .arrow::before {
+	border-top-color: var(--fps-tooltip-bg);
+}
+
+html[data-fps-theme="midnight"] .bs-tooltip-right .arrow::before,
+html[data-fps-theme="midnight"] .bs-tooltip-auto[x-placement^="right"] .arrow::before {
+	border-right-color: var(--fps-tooltip-bg);
+}
+
+html[data-fps-theme="midnight"] .bs-tooltip-bottom .arrow::before,
+html[data-fps-theme="midnight"] .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
+	border-bottom-color: var(--fps-tooltip-bg);
+}
+
+html[data-fps-theme="midnight"] .bs-tooltip-left .arrow::before,
+html[data-fps-theme="midnight"] .bs-tooltip-auto[x-placement^="left"] .arrow::before {
+	border-left-color: var(--fps-tooltip-bg);
+}
+
+html[data-fps-theme="midnight"] .popover {
+	background-color: var(--fps-raised-solid);
+	border-color: var(--fps-border-strong);
+	box-shadow: var(--fps-shadow-pop);
+}
+
+html[data-fps-theme="midnight"] .popover-header {
+	color: var(--fps-text);
+	background-color: var(--fps-subtle-solid);
+	border-bottom-color: var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] .popover-body {
+	color: var(--fps-text-secondary);
+}
+
+/* ==========================================================================
+   7. Lists, report view, grids, kanban
+   ========================================================================== */
+
+/* The sticky right-hand cell of a list row is painted --bg-color, which Frappe
+   assumes equals the surface behind the list. Here the list sits on the card
+   (section 4), which is a step lighter than the plane. */
+html[data-fps-theme="midnight"] .frappe-list .list-row .level-right {
+	background-color: var(--fps-surface-solid);
+}
+
+html[data-fps-theme="midnight"] .frappe-list .list-row-container:hover .level-right {
+	background-color: var(--highlight-color);
+}
+
+html[data-fps-theme="midnight"] .frappe-list .list-row-head .level-right {
+	background-color: var(--subtle-fg);
+}
+
+html[data-fps-theme="midnight"] .list-paging-area .btn-group .btn-paging.btn-info {
+	background-color: var(--fps-selected);
+	color: var(--fps-text);
+}
+
+/* frappe-datatable leftovers not driven by --dt-* */
+html[data-fps-theme="midnight"] .datatable .dt-cell--focus .dt-cell__content {
+	border-color: var(--fps-electric);
+}
+
+html[data-fps-theme="midnight"] .dt-cell--sticky-last::after {
+	box-shadow: 4px 0 6px -4px rgba(0, 0, 0, 0.6);
+}
+
+html[data-fps-theme="midnight"] .dt-dropdown__list {
+	border: 1px solid var(--fps-border-strong);
+	box-shadow: var(--fps-shadow-pop);
+}
+
+html[data-fps-theme="midnight"] .dt-toast__message {
+	color: var(--fps-text);
+	background-color: var(--fps-raised-solid);
+	border: 1px solid var(--fps-border-strong);
+}
+
+/* Child-table grid. The sticky index column already uses --fg-color
+   (opaque); the header ink is a raw --gray-600 (4.0:1 here). */
+html[data-fps-theme="midnight"] .grid-heading-row {
+	color: var(--fps-text-secondary);
+}
+
+html[data-fps-theme="midnight"] .form-grid {
+	border-color: var(--fps-border-solid);
+}
+
+html[data-fps-theme="midnight"] .grid-static-col:focus-visible,
+html[data-fps-theme="midnight"] .column-limit-reached .form-grid:focus-visible {
+	border-color: var(--fps-electric) !important;
+}
+
+html[data-fps-theme="midnight"] .kanban .kanban-card {
+	border: 1px solid var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] .kanban .kanban-column.add-new-column .kanban-column-title.compose-column {
+	border-color: var(--fps-border-solid-strong);
+}
+
+html[data-fps-theme="midnight"] .heatmap-chart g > rect[fill="#ebedf0"] {
+	fill: var(--fps-grid);
+}
+
+html[data-fps-theme="midnight"] .widget.dashboard-widget-box.heatmap-chart .widget-body .heatmap-legend .legend-label {
+	color: var(--fps-text-light);
+}
+
+/* ==========================================================================
+   8. Timeline, comments, Quill editor
+   ========================================================================== */
+
+html[data-fps-theme="midnight"] .new-timeline .timeline-item .timeline-content.frappe-card {
+	background-color: var(--fps-sunken-solid);
+	border-color: var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] .ql-toolbar.ql-snow {
+	background-color: var(--fps-subtle-solid);
+	border-color: var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] .ql-container.ql-snow {
+	background-color: var(--control-bg);
+	border-color: var(--fps-border);
+}
+
+html[data-fps-theme="midnight"] .ql-editor {
+	color: var(--fps-text);
+}
+
+html[data-fps-theme="midnight"] .ql-editor.ql-blank::before,
+html[data-fps-theme="midnight"] .comment-input-wrapper .ql-editor.ql-blank::before {
+	color: var(--fps-text-light);
+}
+
+/* Read mode inherits whatever text colour pasted content carried in (often
+   black). Same fix as dark.scss. */
+html[data-fps-theme="midnight"] .ql-editor.read-mode span:not(.mention),
+html[data-fps-theme="midnight"] .ql-editor.read-mode p,
+html[data-fps-theme="midnight"] .ql-editor.read-mode u,
+html[data-fps-theme="midnight"] .ql-editor.read-mode strong {
+	background-color: inherit !important;
+	color: inherit !important;
+}
+
+html[data-fps-theme="midnight"] .ql-editor blockquote {
+	border-left-color: var(--fps-border-solid-strong);
+}
+
+html[data-fps-theme="midnight"] .ql-editor td {
+	border-color: var(--fps-border-solid-strong);
+}
+
+html[data-fps-theme="midnight"] .ql-snow .ql-picker-options {
+	background-color: var(--fps-raised-solid);
+	border-color: var(--fps-border-strong) !important;
+	box-shadow: var(--fps-shadow-pop);
+}
+
+html[data-fps-theme="midnight"] .ql-snow .ql-picker-label,
+html[data-fps-theme="midnight"] .ql-snow .ql-picker-item {
+	color: var(--fps-text-secondary);
+}
+
+html[data-fps-theme="midnight"] .ql-snow.ql-toolbar button:hover,
+html[data-fps-theme="midnight"] .ql-snow .ql-toolbar button:hover,
+html[data-fps-theme="midnight"] .ql-snow.ql-toolbar button:focus,
+html[data-fps-theme="midnight"] .ql-snow .ql-toolbar button:focus,
+html[data-fps-theme="midnight"] .ql-snow.ql-toolbar button.ql-active,
+html[data-fps-theme="midnight"] .ql-snow .ql-toolbar button.ql-active,
+html[data-fps-theme="midnight"] .ql-snow .ql-picker-label:hover,
+html[data-fps-theme="midnight"] .ql-snow .ql-picker-label.ql-active,
+html[data-fps-theme="midnight"] .ql-snow .ql-picker-item:hover,
+html[data-fps-theme="midnight"] .ql-snow .ql-picker-item.ql-selected {
+	color: var(--fps-electric-ui);
+}
+
+html[data-fps-theme="midnight"] .ql-snow.ql-toolbar button:hover .ql-stroke,
+html[data-fps-theme="midnight"] .ql-snow .ql-toolbar button:hover .ql-stroke,
+html[data-fps-theme="midnight"] .ql-snow.ql-toolbar button:focus .ql-stroke,
+html[data-fps-theme="midnight"] .ql-snow .ql-toolbar button:focus .ql-stroke,
+html[data-fps-theme="midnight"] .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+html[data-fps-theme="midnight"] .ql-snow .ql-toolbar button.ql-active .ql-stroke,
+html[data-fps-theme="midnight"] .ql-snow .ql-picker-label:hover .ql-stroke,
+html[data-fps-theme="midnight"] .ql-snow .ql-picker-label.ql-active .ql-stroke {
+	stroke: var(--fps-electric-ui);
+}
+
+html[data-fps-theme="midnight"] .ql-snow.ql-toolbar button:hover .ql-fill,
+html[data-fps-theme="midnight"] .ql-snow .ql-toolbar button:hover .ql-fill,
+html[data-fps-theme="midnight"] .ql-snow.ql-toolbar button:focus .ql-fill,
+html[data-fps-theme="midnight"] .ql-snow .ql-toolbar button:focus .ql-fill,
+html[data-fps-theme="midnight"] .ql-snow.ql-toolbar button.ql-active .ql-fill,
+html[data-fps-theme="midnight"] .ql-snow .ql-toolbar button.ql-active .ql-fill {
+	fill: var(--fps-electric-ui);
+}
+
+/* ==========================================================================
+   9. Charts (frappe-charts)
+   ========================================================================== */
+
+html[data-fps-theme="midnight"] .graph-svg-tip {
+	border: 1px solid var(--fps-border-strong);
+	box-shadow: var(--fps-shadow-pop);
+}
+
+/* ==========================================================================
+   10. FPS workspace pages: full width, ambient light, glass widgets
+   ==========================================================================
+   Routes: Workspaces/FPS, the six "Workspaces/FPS <x>" children (the trailing
+   space keeps unrelated names out) and Workspaces/Payment Receipts. */
+
+/* Full width. Replaces the never-committed "WIDE LAYOUT" snippet. Beats
+   body:not(.full-width) [data-page-route=Workspaces] .layout-main (0,3,1). */
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .layout-main {
+	max-width: none;
+}
+
+/* Ambient light (DESIGN.md §1): Electric Blue top-left, Soft Violet top-right,
+   each <= 10% alpha, fixed to the viewport. Decoration only. It is the one
+   thing the glass below has to blur. */
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] {
+	background-color: var(--fps-bg);
+	background-image:
+		radial-gradient(56rem 36rem at 0% -8%, rgba(50, 147, 252, 0.1), rgba(50, 147, 252, 0) 62%),
+		radial-gradient(50rem 34rem at 100% -8%, rgba(167, 139, 250, 0.08), rgba(167, 139, 250, 0) 62%);
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+}
+
+/* Let the light through the page's own fills. (Edit mode keeps Frappe's
+   !important --subtle-fg, which is what an editor wants.) */
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .layout-main-section {
+	background-color: transparent;
+}
+
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .ce-block__content .widget.header {
+	background-color: transparent;
+}
+
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .ce-block__content .ce-header .h4 {
+	color: var(--fps-text);
+}
+
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .ce-block__content .widget.ce-paragraph {
+	color: var(--fps-text-secondary);
+}
+
+/* Glass page head. Its menus are position:absolute inside position:relative
+   .dropdown wrappers, so the containing block backdrop-filter creates does not
+   move them; it is already its own stacking context (sticky, z-index 6). */
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .page-head {
+	background: var(--fps-glass-head);
+	backdrop-filter: var(--fps-glass-filter);
+	border-bottom-color: var(--fps-border);
+}
+
+/* Glass widgets (DESIGN.md §2): number cards, shortcuts, link cards, quick
+   lists, charts and the custom-block boxes. A number card's colours come
+   from its record (inline style) and win over these on purpose. */
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:is(.number-widget-box, .shortcut-widget-box, .links-widget-box, .quick-list-widget-box, .dashboard-widget-box, .custom-block-widget-box) {
+	background-color: var(--fps-surface-1);
+	backdrop-filter: var(--fps-glass-filter);
+	border: 1px solid var(--fps-border);
+	border-radius: var(--fps-radius-card);
+	box-shadow: var(--fps-shadow-card);
+	transition: border-color 150ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:is(.number-widget-box, .links-widget-box, .quick-list-widget-box, .dashboard-widget-box):hover {
+	border-color: var(--fps-border-strong);
+}
+
+/* Frappe turns a hovered shortcut's border and title white (--invert-neutral). */
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.shortcut-widget-box:hover {
+	border-color: rgba(90, 168, 255, 0.55);
+	--icon-stroke: var(--fps-electric-ui);
+}
+
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.shortcut-widget-box:hover .widget-label .widget-title {
+	color: var(--fps-text);
+}
+
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.links-widget-box .link-item .link-content:hover {
+	color: var(--fps-electric-ui);
+}
+
+/* Frappe's own stat colours (not record data): red-500 is 3.9:1 here. */
+html[data-fps-theme="midnight"] .widget.number-widget-box .widget-body .widget-content .red-stat {
+	color: var(--fps-rose);
+}
+
+html[data-fps-theme="midnight"] .widget.number-widget-box .widget-body .widget-content .green-stat {
+	color: var(--fps-mint);
+}
+
+html[data-fps-theme="midnight"] .widget.number-widget-box .widget-body .widget-content .grey-stat {
+	color: var(--fps-text-light);
+}
+
+/* Number Card colours ARE record data: number_card_widget.js render_number()
+   writes the card's `color` as an inline style on the figure,
+   <div class="number" style="color: #0B4FE0;">, so only !important can
+   restyle it, and the record itself is never touched. The site colours below
+   read under WCAG AA (4.5:1) on the dark card; each is lifted to a step of
+   the same hue that clears 4.5:1 on every surface a card sits on (#0f1422
+   FPS glass card, #111726 desk card, #151b2b raised). Worst ratio, before ->
+   after:
+     #0B4FE0 2.62 -> #5AA8FF 6.93  (DESIGN Electric Blue UI tint, hue -10 deg)
+     #CB2929 3.18 -> #EB4C45 4.62
+     #C93A3A 3.39 -> #E45450 4.64
+     #8F4CFF 3.80 -> #A78BFA 6.31  (DESIGN Soft Violet, hue -1 deg)
+     #FF0000 4.29 -> #FF3427 4.72
+     #B86E00 4.31 -> #BF7411 4.68
+   Every other colour on the site's cards already passes (#EF4444 4.56,
+   #0EA5E9 6.19, #10B981 6.77, #F59E0B 7.99, #29CD42 8.10, #22D3EE 9.50).
+   Matched on the inline style text, case-insensitively (a card saved as
+   #0b4fe0 matches too). A card given a new colour falls back to its own. */
+html[data-fps-theme="midnight"] .widget.number-widget-box .widget-body .widget-content .number[style*="#0b4fe0" i] {
+	color: var(--fps-electric-ui) !important;
+}
+
+html[data-fps-theme="midnight"] .widget.number-widget-box .widget-body .widget-content .number[style*="#cb2929" i] {
+	color: #eb4c45 !important;
+}
+
+html[data-fps-theme="midnight"] .widget.number-widget-box .widget-body .widget-content .number[style*="#c93a3a" i] {
+	color: #e45450 !important;
+}
+
+html[data-fps-theme="midnight"] .widget.number-widget-box .widget-body .widget-content .number[style*="#8f4cff" i] {
+	color: var(--fps-violet) !important;
+}
+
+html[data-fps-theme="midnight"] .widget.number-widget-box .widget-body .widget-content .number[style*="#ff0000" i] {
+	color: #ff3427 !important;
+}
+
+html[data-fps-theme="midnight"] .widget.number-widget-box .widget-body .widget-content .number[style*="#b86e00" i] {
+	color: #bf7411 !important;
+}
+
+/* Job Tracker / Customs Tracker blocks: the glass box IS the card, so the
+   block (shadow DOM) is told -- through inherited bridge tokens -- to drop its
+   own fill and border and to take the card radius. */
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget.custom-block-widget-box {
+	padding: 0;
+	--fps-block-bg: transparent;
+	--fps-block-border: transparent;
+	--fps-block-radius: var(--fps-radius-card);
+}
+
+/* FPS Overview hosts the React Command Center. NO glass on its box: a
+   backdrop-filter ancestor becomes the containing block of the dashboard's
+   position:fixed drawer and would trap it inside the card. The dashboard
+   draws its own glass cards inside the shadow root. */
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] [custom_block_name="FPS Overview"] > .widget.custom-block-widget-box {
+	background-color: transparent;
+	backdrop-filter: none;
+	border-color: transparent;
+	box-shadow: none;
+	padding: 0;
+}
+
+/* backdrop-filter also makes each widget a stacking context, so an open
+   dropdown would paint under the next card. Lift the card (and its editor
+   block) while one of its menus is open. */
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .ce-block:has(.dropdown-menu.show),
+html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:has(.dropdown-menu.show) {
+	position: relative;
+	z-index: 20;
+}
+
+/* Edit mode helpers drawn in raw greys. */
+html[data-fps-theme="midnight"] [data-page-route="Workspaces"] .widget.new-widget {
+	border-color: var(--fps-border-solid-strong);
+}
+
+html[data-fps-theme="midnight"] [data-page-route="Workspaces"] .widget.sortable-ghost {
+	background-color: var(--fps-hover);
+	border-color: var(--fps-hover);
+}
+
+html[data-fps-theme="midnight"] [data-page-route="Workspaces"] .codex-editor .codex-editor__redactor .ce-block .divider {
+	border-right-color: var(--fps-border-solid-strong);
+}
+
+html[data-fps-theme="midnight"] [data-page-route="Workspaces"] .codex-editor .ce-toolbar .ce-settings .cdx-settings-sidebar {
+	background: var(--fps-raised-solid);
+	box-shadow: var(--fps-shadow-pop);
+}
+
+/* ==========================================================================
+   11. Fallbacks (DESIGN.md §2 rule 4)
+   ========================================================================== */
+
+/* No backdrop-filter: the glass fills turn solid. Done on the tokens so the
+   Custom HTML Blocks (which read them through the shadow boundary) follow. */
+@supports not (backdrop-filter: blur(1px)) {
+	html[data-fps-theme="midnight"] {
+		--fps-surface-1: var(--fps-surface-solid);
+		--fps-surface-2: var(--fps-raised-solid);
+		--fps-glass-head: var(--fps-bg);
+	}
+}
+
+/* Reduced transparency: solid fills, no blur, no ambient light. The token
+   changes also reach the Custom HTML Blocks through inheritance. */
+@media (prefers-reduced-transparency: reduce) {
+	html[data-fps-theme="midnight"] {
+		--fps-surface-1: var(--fps-surface-solid);
+		--fps-surface-2: var(--fps-raised-solid);
+		--fps-glass-head: var(--fps-bg);
+		--fps-glass-filter: none;
+	}
+
+	html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] {
+		background-image: none;
+	}
+}
+
+/* Forced colours: the system draws borders and fills; drop decoration. */
+@media (forced-colors: active) {
+	html[data-fps-theme="midnight"] {
+		--fps-glass-filter: none;
+		--fps-shadow-card: none;
+		--fps-shadow-pop: none;
+	}
+
+	html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] {
+		background-image: none;
+	}
+
+	html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget:is(.number-widget-box, .shortcut-widget-box, .links-widget-box, .quick-list-widget-box, .dashboard-widget-box, .custom-block-widget-box) {
+		border-color: CanvasText;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html[data-fps-theme="midnight"] body:is([data-route="Workspaces/FPS"], [data-route^="Workspaces/FPS "], [data-route="Workspaces/Payment Receipts"]) [data-page-route="Workspaces"] .widget {
+		transition: none;
+	}
+}
+
+/* ==========================================================================
+   12. Print and print previews keep paper colours
+   ==========================================================================
+   Print iframes and PDFs never load app_include_css; only the IN-DESK
+   preview and a browser print of a desk page can see this file. Light values
+   are Frappe's own light-theme values (css_variables.scss), as literals so a
+   Frappe-dark user's re-pointed --gray-700/800 cannot leak in. */
+
+html[data-fps-theme="midnight"] .print-format,
+html[data-fps-theme="midnight"] .print-preview,
+html[data-fps-theme="midnight"] .print-preview-wrapper {
+	color-scheme: light;
+	--neutral: #ffffff;
+	--invert-neutral: #000000;
+	--bg-color: #ffffff;
+	--fg-color: #ffffff;
+	--card-bg: #ffffff;
+	--modal-bg: #ffffff;
+	--popover-bg: #ffffff;
+	--subtle-accent: #f8f8f8;
+	--subtle-fg: #f3f3f3;
+	--fg-hover-color: #f3f3f3;
+	--highlight-color: #f8f8f8;
+	--control-bg: #f3f3f3;
+	--disabled-control-bg: #f8f8f8;
+	--input-disabled-bg: #ededed;
+	--disabled-text-color: #7c7c7c;
+	--text-color: #383838;
+	--heading-color: #171717;
+	--text-neutral: #171717;
+	--text-muted: #525252;
+	--text-light: #7c7c7c;
+	--text-dark: #ffffff;
+	--icon-stroke: #383838;
+	--primary: #171717;
+	--primary-color: #171717;
+	--border-color: #ededed;
+	--dark-border-color: #e2e2e2;
+	--table-border-color: #ededed;
+	--shadow-inset: inset 0px -1px 0px #e2e2e2;
+	--ink-gray-7: #525252;
+	--charts-label-color: #313b44;
+	--bg-blue: #edf6fd;
+	--text-on-blue: #0070cc;
+	--bg-green: #e4f5e9;
+	--text-on-green: #16794c;
+	--bg-yellow: #fff7d3;
+	--text-on-yellow: #ab6e05;
+	--bg-orange: #fff1e7;
+	--text-on-orange: #bd3e0c;
+	--bg-red: #fff0f0;
+	--text-on-red: #b52a2a;
+	--bg-gray: #f3f3f3;
+	--text-on-gray: #525252;
+	--bg-grey: #f3f3f3;
+	--text-on-grey: #525252;
+	--bg-purple: #f9f0ff;
+	--text-on-purple: #6e399d;
+	--bg-pink: #fff7fc;
+	--text-on-pink: #9c2671;
+	--bg-cyan: #f5fbfc;
+	--text-on-cyan: #267a94;
+}
+
+/* The grey backdrop around the paper (#ededed in light Frappe). */
+html[data-fps-theme="midnight"] .print-preview-wrapper {
+	background-color: #ededed;
+}
+
+html[data-fps-theme="midnight"] .print-format,
+html[data-fps-theme="midnight"] .print-preview {
+	color: var(--text-color);
+}
+
+/* Printing a desk page itself (Ctrl+P on a form or list): back to dark ink on
+   paper. Browsers drop backgrounds by default, so ink is what matters. */
+@media print {
+	html[data-fps-theme="midnight"] {
+		color-scheme: light;
+		background-color: #ffffff;
+		--fps-text: #171717;
+		--fps-text-secondary: #383838;
+		--fps-text-light: #525252;
+		--bg-color: #ffffff;
+		--fg-color: #ffffff;
+		--card-bg: #ffffff;
+		--text-color: #383838;
+		--heading-color: #171717;
+		--text-neutral: #171717;
+		--text-muted: #525252;
+		--text-light: #7c7c7c;
+		--border-color: #ededed;
+		--table-border-color: #ededed;
+	}
+
+	html[data-fps-theme="midnight"] body {
+		background-color: #ffffff;
+	}
+}

@@ -4,6 +4,12 @@
 // given customer keeps the same colour across reloads. Deriving it from row
 // order instead would reshuffle every time a job was touched.
 //
+// THEME. This block renders in a shadow root, which the desk stylesheets
+// cannot reach -- only inherited CSS custom properties cross into it. So the
+// colours below are var(--fps-*, <light colour>): under the FPS Midnight theme
+// (public/css/fps_midnight.css) the --fps-* tokens supply dark-safe values;
+// anywhere else the fallback is the block's original light colour.
+//
 // LIVE REFRESH. Polls every 30s -- see fps_overview.js for why the interval
 // checks the block's own node is still attached before each tick rather than
 // relying on any teardown hook, which these blocks do not get.
@@ -19,24 +25,31 @@
 
 	var REFRESH_MS = 30000;
 
-	// Customer palette. Deliberately distinct from the five status hues, which
+	// Customer palette. Deliberately distinct from the status hues, which
 	// carry fixed meanings -- customer identity and job status must not be
-	// confusable for one another.
+	// confusable for one another. Slot order is unchanged, so a customer keeps
+	// its slot; the midnight values are the same hue families lifted to >= 5.8:1
+	// on the dark card.
 	var PALETTE = [
-		"#0B4FE0", "#22D3EE", "#8F4CFF", "#0EA5E9", "#14B8A6",
-		"#F59E0B", "#EC4899", "#64748B", "#7C3AED", "#0891B2",
-		"#A16207", "#BE185D",
+		"var(--fps-cust-1, #0B4FE0)", "var(--fps-cust-2, #22D3EE)",
+		"var(--fps-cust-3, #8F4CFF)", "var(--fps-cust-4, #0EA5E9)",
+		"var(--fps-cust-5, #14B8A6)", "var(--fps-cust-6, #F59E0B)",
+		"var(--fps-cust-7, #EC4899)", "var(--fps-cust-8, #64748B)",
+		"var(--fps-cust-9, #7C3AED)", "var(--fps-cust-10, #0891B2)",
+		"var(--fps-cust-11, #A16207)", "var(--fps-cust-12, #BE185D)",
 	];
 
+	// Stage -> tone. The tone classes (fps_job_tracker.css) hold the colours,
+	// so a theme can restyle them without touching this map.
 	var STAGE = {
-		New: ["#eff6ff", "#1d4ed8"],
-		"Docs received": ["#fff7ed", "#b45309"],
-		"In Progress": ["#fef3c7", "#92400e"],
-		"Cleared - Ready": ["#ede9fe", "#6d28d9"],
-		Delivered: ["#dcfce7", "#15803d"],
-		Invoiced: ["#f3e8ff", "#7e22ce"],
-		"On Hold": ["#fee2e2", "#b91c1c"],
-		Closed: ["#f1f5f9", "#475569"],
+		New: "blue",
+		"Docs received": "orange",
+		"In Progress": "amber",
+		"Cleared - Ready": "violet",
+		Delivered: "green",
+		Invoiced: "purple",
+		"On Hold": "red",
+		Closed: "gray",
 	};
 
 	function esc(v) {
@@ -73,11 +86,10 @@
 
 		body.innerHTML = jobs
 			.map(function (j) {
-				var pill = STAGE[j.stage] || ["#f1f5f9", "#475569"];
+				var tone = STAGE[j.stage] || "gray";
 				return (
 					'<tr data-job="' + esc(j.name) + '" title="' + esc(j.name) + '">' +
-					'<td class="fps-jt-status"><span class="fps-jt-pill" style="--fps-stage-bg: ' +
-					pill[0] + "; --fps-stage-fg: " + pill[1] + '">' +
+					'<td class="fps-jt-status"><span class="fps-jt-pill fps-tone-' + tone + '">' +
 					esc(j.stage || "—") + "</span></td>" +
 					'<td class="fps-jt-cust" style="--fps-cust-color: ' +
 					(colourOf[j.customer] || "transparent") + '">' +
@@ -135,6 +147,7 @@
 
 	load();
 	var timer = setInterval(function () {
+		// KNOWN ISSUE (fix separately, needs its own OK): body is in a shadow root, so this contains() is always false and the refresh stops after one tick.
 		if (!document.body.contains(body)) {
 			clearInterval(timer);
 			return;

@@ -1,0 +1,11 @@
+# Dashboard-local ignores (the repo root .gitignore already covers
+# node_modules/ and dist/).
+
+# Frappe's compiled desk CSS, copied from a live site for the dev harness only
+# (see README "Dev harness"). Not ours to commit; re-copy it when needed.
+dev-vendor/
+
+# Vite / TypeScript caches and local overrides
+.vite/
+*.tsbuildinfo
+*.local

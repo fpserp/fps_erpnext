@@ -50,8 +50,23 @@ fixtures = [
 # the "1 M" modified stamp, the comment count and the like hearts -- while
 # keeping the "629 of 629" record count. Plain CSS under public/, so it is
 # symlinked to /assets/fps_erpnext/ and needs no bundle entry.
-app_include_css = "/assets/fps_erpnext/css/fps_list_chrome.css"
+#
+# fps_midnight.css + fps_midnight.js are the "FPS Midnight" dark theme for every
+# page under the FPS app tile. The JS only toggles html[data-fps-theme] from the
+# active sidebar (no server calls, no writes) and every rule in the CSS is
+# scoped under that attribute, so other apps keep the user's own theme.
+#
+# ?v= IS A CACHE BUSTER -- BUMP IT ON EVERY CHANGE TO EITHER FILE. Frappe Cloud
+# serves /assets with "cache-control: max-age=31536000, immutable" and these
+# plain paths get no build hash, so a browser that has v=1 keeps v=1 for a year
+# unless the URL changes. (fps_list_chrome.css predates this convention and
+# has no ?v= yet; add one the next time it changes.)
+app_include_css = [
+    "/assets/fps_erpnext/css/fps_list_chrome.css",
+    "/assets/fps_erpnext/css/fps_midnight.css?v=1",
+]
 # app_include_js = "/assets/fps_erpnext/js/fps_erpnext.js"
+app_include_js = ["/assets/fps_erpnext/js/fps_midnight.js?v=1"]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/fps_erpnext/css/fps_erpnext.css"

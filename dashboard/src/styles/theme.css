@@ -1,0 +1,199 @@
+/*
+ * FPS Command Center theme — the tokens of DESIGN.md, wired into Tailwind v4
+ * and shadcn/ui. This stylesheet is compiled, inlined into the bundle and
+ * adopted by the dashboard's OWN shadow roots (<fps-command-center> inside the
+ * Custom HTML Block, and the body-level <fps-cc-portal> for the drawer and
+ * tooltips), so nothing here can reach the rest of the ERPNext desk. That is
+ * also why the variables hang off :host (the shadow hosts) and .fps-cc (the
+ * app and portal roots) instead of :root.
+ *
+ * Class detection: source(none) turns Tailwind's automatic scan of the Vite
+ * root off (it would read dev/, scripts/ and build output too); the only
+ * source is src/ (this file's parent folder).
+ *
+ * @property: the vite.config.ts PostCSS step (tailwindShadowDom) rewrites
+ * Tailwind's @property defaults into plain `@layer properties` declarations,
+ * because @property is ignored inside shadow trees.
+ */
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+
+@source "../";
+
+@custom-variant dark (&:is(.dark *));
+
+:host,
+.fps-cc {
+  /* 1. Baseline and surfaces */
+  --fps-bg: #0b0f19;
+  --fps-surface-1: rgba(17, 23, 38, 0.62);
+  --fps-surface-2: rgba(24, 31, 50, 0.72);
+  --fps-surface-solid: #111726;
+  --fps-surface-inset: rgba(255, 255, 255, 0.03);
+  --fps-border: rgba(255, 255, 255, 0.08);
+  --fps-border-strong: rgba(255, 255, 255, 0.14);
+  --fps-highlight: rgba(255, 255, 255, 0.06);
+
+  /* 4. Executive neon palette (validated, see DESIGN.md §4) */
+  --fps-electric: #3293fc;
+  --fps-electric-ui: #5aa8ff;
+  --fps-mint: #34d399;
+  --fps-violet: #a78bfa;
+  --fps-violet-series: #7d40c8;
+  --fps-cyan: #1d97a3;
+  --fps-amber-series: #c8800d;
+  --fps-rose: #fb7185;
+  --fps-amber: #fbbf24;
+  --fps-series-other: #4b5468;
+
+  /* 5. Ink */
+  --fps-text: #e8ecf4;
+  --fps-text-secondary: #a9b2c6;
+  --fps-text-muted: #7c869c;
+  --fps-grid: #1e2638;
+  --fps-axis: #2a3347;
+
+  /* shadcn/ui semantic variables, mapped onto the FPS tokens */
+  --radius: 1rem;
+  --background: var(--fps-bg);
+  --foreground: var(--fps-text);
+  --card: var(--fps-surface-1);
+  --card-foreground: var(--fps-text);
+  --popover: var(--fps-surface-2);
+  --popover-foreground: var(--fps-text);
+  --primary: var(--fps-electric);
+  --primary-foreground: #04101f;
+  --secondary: rgba(255, 255, 255, 0.06);
+  --secondary-foreground: var(--fps-text);
+  --muted: rgba(255, 255, 255, 0.04);
+  --muted-foreground: var(--fps-text-secondary);
+  --accent: rgba(90, 168, 255, 0.12);
+  --accent-foreground: var(--fps-text);
+  --destructive: var(--fps-rose);
+  --border: var(--fps-border);
+  --input: var(--fps-border-strong);
+  --ring: var(--fps-electric);
+  --chart-1: var(--fps-electric);
+  --chart-2: var(--fps-violet-series);
+  --chart-3: var(--fps-cyan);
+  --chart-4: var(--fps-amber-series);
+  --chart-5: var(--fps-series-other);
+
+  color-scheme: dark;
+  color: var(--fps-text);
+  font-family: InterVariable, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* FPS role colours as utilities: bg-electric, text-mint, border-violet … */
+  --color-plane: var(--fps-bg);
+  --color-surface: var(--fps-surface-1);
+  --color-surface-raised: var(--fps-surface-2);
+  --color-surface-solid: var(--fps-surface-solid);
+  --color-surface-inset: var(--fps-surface-inset);
+  --color-hairline: var(--fps-border);
+  --color-hairline-strong: var(--fps-border-strong);
+  --color-electric: var(--fps-electric);
+  --color-electric-ui: var(--fps-electric-ui);
+  --color-mint: var(--fps-mint);
+  --color-violet: var(--fps-violet);
+  --color-violet-series: var(--fps-violet-series);
+  --color-cyan: var(--fps-cyan);
+  --color-amber: var(--fps-amber);
+  --color-amber-series: var(--fps-amber-series);
+  --color-rose: var(--fps-rose);
+  --color-ink: var(--fps-text);
+  --color-ink-secondary: var(--fps-text-secondary);
+  --color-ink-muted: var(--fps-text-muted);
+  --color-grid: var(--fps-grid);
+  --color-axis: var(--fps-axis);
+
+  --radius-sm: 8px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --font-sans: InterVariable, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --ease-fps: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* 2. Glass — the one material every card, banner and drawer is made of. */
+@utility glass {
+  background: var(--fps-surface-1);
+  backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid var(--fps-border);
+  box-shadow:
+    inset 0 1px 0 var(--fps-highlight),
+    0 8px 24px rgba(0, 0, 0, 0.32);
+}
+
+@utility glass-raised {
+  background: var(--fps-surface-2);
+  backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid var(--fps-border-strong);
+  box-shadow:
+    inset 0 1px 0 var(--fps-highlight),
+    0 16px 48px rgba(0, 0, 0, 0.48);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .glass,
+  .glass-raised {
+    background: var(--fps-surface-solid);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-raised {
+    background: var(--fps-surface-solid);
+    backdrop-filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .glass,
+  .glass-raised {
+    box-shadow: none;
+    border-color: CanvasText;
+  }
+}
+
+@layer base {
+  /* A custom element is inline by default; the shadow hosts are block boxes. */
+  :host {
+    display: block;
+  }
+
+  * {
+    @apply border-border outline-ring/50;
+  }
+}

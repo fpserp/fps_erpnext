@@ -1,0 +1,260 @@
+{
+  "key": "quotations",
+  "label": "Quotations",
+  "unit": "count",
+  "period": "30d",
+  "period_label": "Last 30 days",
+  "compare_label": "vs previous 30 days",
+  "granularity": "day",
+  "value": 28,
+  "previous": 9,
+  "delta_pct": 211.1,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-09-11",
+      "value": 1
+    },
+    {
+      "date": "2026-09-12",
+      "value": 1
+    },
+    {
+      "date": "2026-09-13",
+      "value": 0
+    },
+    {
+      "date": "2026-09-14",
+      "value": 0
+    },
+    {
+      "date": "2026-09-15",
+      "value": 1
+    },
+    {
+      "date": "2026-09-16",
+      "value": 0
+    },
+    {
+      "date": "2026-09-17",
+      "value": 0
+    },
+    {
+      "date": "2026-09-18",
+      "value": 0
+    },
+    {
+      "date": "2026-09-19",
+      "value": 0
+    },
+    {
+      "date": "2026-09-20",
+      "value": 0
+    },
+    {
+      "date": "2026-09-21",
+      "value": 0
+    },
+    {
+      "date": "2026-09-22",
+      "value": 1
+    },
+    {
+      "date": "2026-09-23",
+      "value": 0
+    },
+    {
+      "date": "2026-09-24",
+      "value": 2
+    },
+    {
+      "date": "2026-09-25",
+      "value": 1
+    },
+    {
+      "date": "2026-09-26",
+      "value": 1
+    },
+    {
+      "date": "2026-09-27",
+      "value": 0
+    },
+    {
+      "date": "2026-09-28",
+      "value": 0
+    },
+    {
+      "date": "2026-09-29",
+      "value": 0
+    },
+    {
+      "date": "2026-09-30",
+      "value": 0
+    },
+    {
+      "date": "2026-10-01",
+      "value": 0
+    },
+    {
+      "date": "2026-10-02",
+      "value": 0
+    },
+    {
+      "date": "2026-10-03",
+      "value": 0
+    },
+    {
+      "date": "2026-10-04",
+      "value": 0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 0
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 2
+    },
+    {
+      "date": "2026-10-08",
+      "value": 15
+    },
+    {
+      "date": "2026-10-09",
+      "value": 3
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Status",
+  "dimension_options": [
+    {
+      "key": "Draft",
+      "label": "Draft"
+    },
+    {
+      "key": "Open",
+      "label": "Open"
+    },
+    {
+      "key": "Lost",
+      "label": "Lost"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By status",
+    "rows": [
+      {
+        "key": "Draft",
+        "label": "Draft",
+        "value": 17
+      },
+      {
+        "key": "Open",
+        "label": "Open",
+        "value": 9
+      },
+      {
+        "key": "Lost",
+        "label": "Lost",
+        "value": 2
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/QT/2610/067",
+      "title": "Lead 66 (sample)",
+      "date": "2026-10-09",
+      "route": "/app/quotation/FPS%2FQT%2F2610%2F067",
+      "subtitle": "Lead · Valid till 16 Oct",
+      "value": 21000.0,
+      "status": "Open"
+    },
+    {
+      "name": "FPS/QT/2610/066",
+      "title": "Lead 65 (sample)",
+      "date": "2026-10-09",
+      "route": "/app/quotation/FPS%2FQT%2F2610%2F066",
+      "subtitle": "Lead · Valid till 16 Oct",
+      "value": 21750.0,
+      "status": "Open"
+    },
+    {
+      "name": "FPS/QT/2610/065",
+      "title": "Key account (sample)",
+      "date": "2026-10-09",
+      "route": "/app/quotation/FPS%2FQT%2F2610%2F065",
+      "subtitle": "Valid till 16 Oct",
+      "value": 24600.0,
+      "status": "Draft"
+    },
+    {
+      "name": "FPS/QT/2610/064",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/quotation/FPS%2FQT%2F2610%2F064",
+      "subtitle": "Valid till 15 Oct",
+      "value": 30380.95,
+      "status": "Draft"
+    },
+    {
+      "name": "FPS/QT/2610/063",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/quotation/FPS%2FQT%2F2610%2F063",
+      "subtitle": "Valid till 15 Oct",
+      "value": 66848.33,
+      "status": "Draft"
+    },
+    {
+      "name": "FPS/QT/2610/062",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/quotation/FPS%2FQT%2F2610%2F062",
+      "subtitle": "Valid till 15 Oct",
+      "value": 24236.09,
+      "status": "Draft"
+    },
+    {
+      "name": "FPS/QT/2610/061",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/quotation/FPS%2FQT%2F2610%2F061",
+      "subtitle": "Valid till 15 Oct",
+      "value": 63754.03,
+      "status": "Draft"
+    },
+    {
+      "name": "FPS/QT/2610/060",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/quotation/FPS%2FQT%2F2610%2F060",
+      "subtitle": "Valid till 15 Oct",
+      "value": 65842.69,
+      "status": "Draft"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/quotation"
+    },
+    {
+      "key": "new",
+      "label": "New Quotation",
+      "kind": "new_doc",
+      "doctype": "Quotation"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "key": "customs_cleared",
+  "label": "Customs cleared",
+  "unit": "count",
+  "period": "7d",
+  "period_label": "Last 7 days",
+  "compare_label": "vs previous 7 days",
+  "granularity": "day",
+  "value": 3,
+  "previous": 3,
+  "delta_pct": 0.0,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-10-04",
+      "value": 0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 2
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 0
+    },
+    {
+      "date": "2026-10-08",
+      "value": 1
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Clearance type",
+  "dimension_options": [
+    {
+      "key": "Import to Local from ROW",
+      "label": "Import to Local from ROW"
+    },
+    {
+      "key": "FZ Transit",
+      "label": "FZ Transit"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By clearance type",
+    "rows": [
+      {
+        "key": "Import to Local from ROW",
+        "label": "Import to Local from ROW",
+        "value": 2
+      },
+      {
+        "key": "FZ Transit",
+        "label": "FZ Transit",
+        "value": 1
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/CT/2610/056",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2610%2F056",
+      "subtitle": "FZ Transit · BOE 103-01223328-26",
+      "status": "Cleared"
+    },
+    {
+      "name": "FPS/CT/2609/046",
+      "title": "Key account (sample)",
+      "date": "2026-10-05",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2609%2F046",
+      "subtitle": "Import to Local from ROW · BOE 101-01946053-26",
+      "status": "Cleared"
+    },
+    {
+      "name": "FPS/CT/2607/018",
+      "title": "Customer D",
+      "date": "2026-10-05",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2607%2F018",
+      "subtitle": "Import to Local from ROW · BOE 103-01723669-26",
+      "status": "Cleared"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/customs-tracker?status=Cleared"
+    }
+  ]
+}

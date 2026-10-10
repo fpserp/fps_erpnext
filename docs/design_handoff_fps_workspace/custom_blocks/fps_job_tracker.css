@@ -1,21 +1,30 @@
 /* Job Tracker board -- one row per open job, colour-coded by customer.
-   The five status colours keep their fixed meanings from the handoff and are
-   NOT reused for customers; customer identity is carried by the left rail and
-   the legend chip, status by the pill. Two separate encodings, so neither can
-   be mistaken for the other. */
+   The status colours keep their fixed meanings from the handoff and are NOT
+   reused for customers; customer identity is carried by the left rail and the
+   legend chip, status by the pill. Two separate encodings, so neither can be
+   mistaken for the other.
+
+   THEME. Shadow DOM: only inherited custom properties reach this stylesheet.
+   Every colour reads a desk variable (var(--card-bg), var(--text-color) ...)
+   or an FPS Midnight bridge token (--fps-*, set by fps_midnight.css), each
+   with this block's original light value as the fallback. On the FPS
+   workspace the glass widget box is the card, so --fps-block-bg/-border turn
+   this block's own fill and border off. */
 
 .fps-jt {
-	border: 1px solid var(--border-color, #e2e8f0);
-	border-radius: 10px;
-	background: var(--card-bg, #fff);
+	border: 1px solid var(--fps-block-border, var(--border-color, #e2e8f0));
+	border-radius: var(--fps-block-radius, 10px);
+	background: var(--fps-block-bg, var(--card-bg, #fff));
 	overflow: hidden;
+	/* Inherits "dark" from the midnight theme; unset (so inherited) elsewhere. */
+	color-scheme: var(--fps-color-scheme);
 }
 
 .fps-jt-head {
 	display: flex;
 	align-items: baseline;
-	gap: 10px;
-	padding: 14px 16px 12px;
+	gap: 8px 12px;
+	padding: 16px 16px 12px;
 	flex-wrap: wrap;
 }
 
@@ -32,7 +41,7 @@
 
 .fps-jt-meta {
 	margin-left: auto;
-	font-size: 11.5px;
+	font-size: 12px;
 	color: var(--text-muted, #7c7c7c);
 	font-variant-numeric: tabular-nums;
 }
@@ -40,7 +49,7 @@
 .fps-jt-legend {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 6px 14px;
+	gap: 8px 16px;
 	padding: 0 16px 12px;
 }
 
@@ -48,15 +57,15 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
-	font-size: 11.5px;
+	font-size: 12px;
 	color: var(--text-muted, #7c7c7c);
 	max-width: 240px;
 }
 
 .fps-jt-chip i {
-	width: 9px;
-	height: 9px;
-	border-radius: 3px;
+	width: 8px;
+	height: 8px;
+	border-radius: 2px;
 	background: var(--fps-cust-color, #94a3b8);
 	flex: none;
 }
@@ -84,6 +93,7 @@
 	table-layout: fixed;
 	border-collapse: collapse;
 	font-size: 12.5px;
+	color: var(--text-color, #1f272e);
 }
 
 .fps-jt-table th {
@@ -93,7 +103,7 @@
 	letter-spacing: 0.06em;
 	text-transform: uppercase;
 	color: var(--text-muted, #7c7c7c);
-	padding: 9px 10px;
+	padding: 8px 10px;
 	border-bottom: 1px solid var(--border-color, #e2e8f0);
 	white-space: nowrap;
 }
@@ -114,10 +124,11 @@
 /* Whole row is the click target, so it must look like one. */
 .fps-jt-table tbody tr {
 	cursor: pointer;
+	transition: background-color 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .fps-jt-table tbody tr:hover {
-	background: var(--bg-light-gray, #f7f9fa);
+	background: var(--fps-row-hover, var(--bg-light-gray, #f7f9fa));
 }
 
 .fps-jt-status {
@@ -153,18 +164,66 @@ td.fps-jt-cust {
 .fps-jt-pill {
 	display: inline-block;
 	padding: 2px 8px;
-	border-radius: 20px;
+	border-radius: 8px;
 	font-size: 11px;
 	font-weight: 600;
 	white-space: nowrap;
-	background: var(--fps-stage-bg, #f1f5f9);
-	color: var(--fps-stage-fg, #475569);
+	background: var(--fps-pill-bg, #f1f5f9);
+	color: var(--fps-pill-fg, #475569);
+}
+
+/* Stage tones. Midnight: a tinted translucent fill with light ink (>= 6.3:1
+   on the card and on a hovered row). Fallbacks: the original light pairs. */
+.fps-tone-blue {
+	--fps-pill-bg: var(--fps-tone-blue-bg, #eff6ff);
+	--fps-pill-fg: var(--fps-tone-blue-fg, #1d4ed8);
+}
+
+.fps-tone-orange {
+	--fps-pill-bg: var(--fps-tone-orange-bg, #fff7ed);
+	--fps-pill-fg: var(--fps-tone-orange-fg, #b45309);
+}
+
+.fps-tone-amber {
+	--fps-pill-bg: var(--fps-tone-amber-bg, #fef3c7);
+	--fps-pill-fg: var(--fps-tone-amber-fg, #92400e);
+}
+
+.fps-tone-violet {
+	--fps-pill-bg: var(--fps-tone-violet-bg, #ede9fe);
+	--fps-pill-fg: var(--fps-tone-violet-fg, #6d28d9);
+}
+
+.fps-tone-green {
+	--fps-pill-bg: var(--fps-tone-green-bg, #dcfce7);
+	--fps-pill-fg: var(--fps-tone-green-fg, #15803d);
+}
+
+.fps-tone-purple {
+	--fps-pill-bg: var(--fps-tone-purple-bg, #f3e8ff);
+	--fps-pill-fg: var(--fps-tone-purple-fg, #7e22ce);
+}
+
+.fps-tone-red {
+	--fps-pill-bg: var(--fps-tone-red-bg, #fee2e2);
+	--fps-pill-fg: var(--fps-tone-red-fg, #b91c1c);
+}
+
+.fps-tone-gray {
+	--fps-pill-bg: var(--fps-tone-gray-bg, #f1f5f9);
+	--fps-pill-fg: var(--fps-tone-gray-fg, #475569);
 }
 
 .fps-jt-msg {
-	padding: 18px 16px;
+	padding: 16px;
 	font-size: 12.5px;
 	color: var(--text-muted, #7c7c7c);
 	text-align: left;
 	white-space: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.fps-jt-table tbody tr {
+		transition: none;
+	}
 }

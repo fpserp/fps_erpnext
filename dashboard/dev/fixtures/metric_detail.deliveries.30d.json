@@ -1,0 +1,235 @@
+{
+  "key": "deliveries",
+  "label": "Deliveries",
+  "unit": "count",
+  "period": "30d",
+  "period_label": "Last 30 days",
+  "compare_label": "vs previous 30 days",
+  "granularity": "day",
+  "value": 7,
+  "previous": 3,
+  "delta_pct": 133.3,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-09-11",
+      "value": 0
+    },
+    {
+      "date": "2026-09-12",
+      "value": 0
+    },
+    {
+      "date": "2026-09-13",
+      "value": 0
+    },
+    {
+      "date": "2026-09-14",
+      "value": 0
+    },
+    {
+      "date": "2026-09-15",
+      "value": 0
+    },
+    {
+      "date": "2026-09-16",
+      "value": 1
+    },
+    {
+      "date": "2026-09-17",
+      "value": 0
+    },
+    {
+      "date": "2026-09-18",
+      "value": 1
+    },
+    {
+      "date": "2026-09-19",
+      "value": 0
+    },
+    {
+      "date": "2026-09-20",
+      "value": 0
+    },
+    {
+      "date": "2026-09-21",
+      "value": 1
+    },
+    {
+      "date": "2026-09-22",
+      "value": 0
+    },
+    {
+      "date": "2026-09-23",
+      "value": 1
+    },
+    {
+      "date": "2026-09-24",
+      "value": 0
+    },
+    {
+      "date": "2026-09-25",
+      "value": 0
+    },
+    {
+      "date": "2026-09-26",
+      "value": 0
+    },
+    {
+      "date": "2026-09-27",
+      "value": 0
+    },
+    {
+      "date": "2026-09-28",
+      "value": 0
+    },
+    {
+      "date": "2026-09-29",
+      "value": 0
+    },
+    {
+      "date": "2026-09-30",
+      "value": 1
+    },
+    {
+      "date": "2026-10-01",
+      "value": 2
+    },
+    {
+      "date": "2026-10-02",
+      "value": 0
+    },
+    {
+      "date": "2026-10-03",
+      "value": 0
+    },
+    {
+      "date": "2026-10-04",
+      "value": 0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 0
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 0
+    },
+    {
+      "date": "2026-10-08",
+      "value": 0
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Movement",
+  "dimension_options": [
+    {
+      "key": "SEA",
+      "label": "SEA"
+    },
+    {
+      "key": "AIR",
+      "label": "AIR"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By movement",
+    "rows": [
+      {
+        "key": "SEA",
+        "label": "SEA",
+        "value": 6
+      },
+      {
+        "key": "AIR",
+        "label": "AIR",
+        "value": 1
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/POD/2610/046",
+      "title": "Key account (sample)",
+      "date": "2026-10-01",
+      "route": "/app/proof-of-delivery/FPS%2FPOD%2F2610%2F046",
+      "subtitle": "FPS/JO/2607/050 · PO# 15896",
+      "status": "Delivered"
+    },
+    {
+      "name": "FPS/POD/2610/045",
+      "title": "Key account (sample)",
+      "date": "2026-10-01",
+      "route": "/app/proof-of-delivery/FPS%2FPOD%2F2610%2F045",
+      "subtitle": "FPS/JO/2607/039 · PO# 11223",
+      "status": "Delivered"
+    },
+    {
+      "name": "FPS/POD/2609/044",
+      "title": "Key account (sample)",
+      "date": "2026-09-30",
+      "route": "/app/proof-of-delivery/FPS%2FPOD%2F2609%2F044",
+      "subtitle": "FPS/JO/2605/007 · PO# 12684",
+      "status": "Delivered"
+    },
+    {
+      "name": "FPS/POD/2609/043",
+      "title": "Key account (sample)",
+      "date": "2026-09-23",
+      "route": "/app/proof-of-delivery/FPS%2FPOD%2F2609%2F043",
+      "subtitle": "FPS/JO/2607/058 · PO# 10670",
+      "status": "Delivered"
+    },
+    {
+      "name": "FPS/POD/2609/042",
+      "title": "Customer F",
+      "date": "2026-09-21",
+      "route": "/app/proof-of-delivery/FPS%2FPOD%2F2609%2F042",
+      "subtitle": "FPS/JO/2606/016",
+      "status": "Delivered"
+    },
+    {
+      "name": "FPS/POD/2609/041",
+      "title": "Key account (sample)",
+      "date": "2026-09-18",
+      "route": "/app/proof-of-delivery/FPS%2FPOD%2F2609%2F041",
+      "subtitle": "FPS/JO/2608/075 · PO# 18258",
+      "status": "Delivered"
+    },
+    {
+      "name": "FPS/POD/2609/040",
+      "title": "Customer B",
+      "date": "2026-09-16",
+      "route": "/app/proof-of-delivery/FPS%2FPOD%2F2609%2F040",
+      "subtitle": "FPS/JO/2609/091",
+      "status": "Delivered"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/proof-of-delivery?delivery_status=Delivered"
+    },
+    {
+      "key": "new",
+      "label": "New Proof of Delivery",
+      "kind": "new_doc",
+      "doctype": "Proof of Delivery"
+    }
+  ]
+}

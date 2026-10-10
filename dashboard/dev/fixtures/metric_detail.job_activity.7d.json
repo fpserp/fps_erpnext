@@ -1,0 +1,185 @@
+{
+  "key": "job_activity",
+  "label": "Job updates",
+  "unit": "count",
+  "period": "7d",
+  "period_label": "Last 7 days",
+  "compare_label": "vs previous 7 days",
+  "granularity": "day",
+  "value": 15,
+  "previous": 14,
+  "delta_pct": 7.1,
+  "good_direction": "none",
+  "series": [
+    {
+      "date": "2026-10-04",
+      "value": 0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 4
+    },
+    {
+      "date": "2026-10-06",
+      "value": 1
+    },
+    {
+      "date": "2026-10-07",
+      "value": 1
+    },
+    {
+      "date": "2026-10-08",
+      "value": 4
+    },
+    {
+      "date": "2026-10-09",
+      "value": 5
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Milestone",
+  "dimension_options": [
+    {
+      "key": "__not_set__",
+      "label": "No milestone"
+    },
+    {
+      "key": "PICKED_UP",
+      "label": "Picked up"
+    },
+    {
+      "key": "BOE",
+      "label": "BOE"
+    },
+    {
+      "key": "DOCS",
+      "label": "Docs"
+    },
+    {
+      "key": "DOCS_IN",
+      "label": "Docs in"
+    },
+    {
+      "key": "CLEARED",
+      "label": "Cleared"
+    },
+    {
+      "key": "DUTY",
+      "label": "Duty"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By milestone",
+    "rows": [
+      {
+        "key": "__not_set__",
+        "label": "No milestone",
+        "value": 4
+      },
+      {
+        "key": "PICKED_UP",
+        "label": "Picked up",
+        "value": 3
+      },
+      {
+        "key": "BOE",
+        "label": "BOE",
+        "value": 2
+      },
+      {
+        "key": "DOCS",
+        "label": "Docs",
+        "value": 2
+      },
+      {
+        "key": "DOCS_IN",
+        "label": "Docs in",
+        "value": 2
+      },
+      {
+        "key": "__other__",
+        "label": "Other",
+        "value": 2
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/JO/2608/059",
+      "title": "Customer E",
+      "date": "2026-10-09",
+      "route": "/app/job-order/FPS%2FJO%2F2608%2F059",
+      "subtitle": "Called the client for the commercial invoice",
+      "status": "Cleared - Ready"
+    },
+    {
+      "name": "FPS/JO/2607/050",
+      "title": "Key account (sample)",
+      "date": "2026-10-09",
+      "route": "/app/job-order/FPS%2FJO%2F2607%2F050",
+      "subtitle": "Picked up · Cargo picked up at the port",
+      "status": "Invoiced"
+    },
+    {
+      "name": "FPS/JO/2609/090",
+      "title": "Key account (sample)",
+      "date": "2026-10-09",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F090",
+      "subtitle": "Docs · Shipping documents received",
+      "status": "Docs received"
+    },
+    {
+      "name": "FPS/JO/2608/075",
+      "title": "Key account (sample)",
+      "date": "2026-10-09",
+      "route": "/app/job-order/FPS%2FJO%2F2608%2F075",
+      "subtitle": "Cleared · Cleared by customs",
+      "status": "New"
+    },
+    {
+      "name": "FPS/JO/2609/092",
+      "title": "Customer G",
+      "date": "2026-10-09",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F092",
+      "subtitle": "Docs in · Original documents handed to customs",
+      "status": "Delivered"
+    },
+    {
+      "name": "FPS/JO/2609/085",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F085",
+      "subtitle": "Duty · Duty paid via deposit account",
+      "status": "Cleared - Ready"
+    },
+    {
+      "name": "FPS/JO/2608/072",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/job-order/FPS%2FJO%2F2608%2F072",
+      "subtitle": "Docs in · Original documents handed to customs",
+      "status": "In Progress"
+    },
+    {
+      "name": "FPS/JO/2608/071",
+      "title": "Customer C",
+      "date": "2026-10-08",
+      "route": "/app/job-order/FPS%2FJO%2F2608%2F071",
+      "subtitle": "Called the client for the commercial invoice",
+      "status": "New"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/job-order"
+    }
+  ]
+}

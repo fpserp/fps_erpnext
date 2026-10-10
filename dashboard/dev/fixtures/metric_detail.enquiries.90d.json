@@ -1,0 +1,175 @@
+{
+  "key": "enquiries",
+  "label": "New enquiries",
+  "unit": "count",
+  "period": "90d",
+  "period_label": "Last 13 weeks",
+  "compare_label": "vs previous 13 weeks",
+  "granularity": "week",
+  "value": 52,
+  "previous": null,
+  "delta_pct": null,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-07-12",
+      "value": 0
+    },
+    {
+      "date": "2026-07-19",
+      "value": 2
+    },
+    {
+      "date": "2026-07-26",
+      "value": 8
+    },
+    {
+      "date": "2026-08-02",
+      "value": 5
+    },
+    {
+      "date": "2026-08-09",
+      "value": 5
+    },
+    {
+      "date": "2026-08-16",
+      "value": 7
+    },
+    {
+      "date": "2026-08-23",
+      "value": 7
+    },
+    {
+      "date": "2026-08-30",
+      "value": 4
+    },
+    {
+      "date": "2026-09-06",
+      "value": 2
+    },
+    {
+      "date": "2026-09-13",
+      "value": 0
+    },
+    {
+      "date": "2026-09-20",
+      "value": 0
+    },
+    {
+      "date": "2026-09-27",
+      "value": 0
+    },
+    {
+      "date": "2026-10-04",
+      "value": 12,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Source",
+  "dimension_options": [
+    {
+      "key": "WhatsApp",
+      "label": "WhatsApp"
+    },
+    {
+      "key": "Email",
+      "label": "Email"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By source",
+    "rows": [
+      {
+        "key": "WhatsApp",
+        "label": "WhatsApp",
+        "value": 34
+      },
+      {
+        "key": "Email",
+        "label": "Email",
+        "value": 18
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/ENQ/2610/052",
+      "title": "Lead 52 (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F052",
+      "subtitle": "WhatsApp · SEA",
+      "status": "Open"
+    },
+    {
+      "name": "FPS/ENQ/2610/051",
+      "title": "Lead 51 (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F051",
+      "subtitle": "WhatsApp · LAND",
+      "status": "Open"
+    },
+    {
+      "name": "FPS/ENQ/2610/050",
+      "title": "Lead 50 (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F050",
+      "subtitle": "WhatsApp · SEA",
+      "status": "Quoted"
+    },
+    {
+      "name": "FPS/ENQ/2610/049",
+      "title": "Lead 49 (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F049",
+      "subtitle": "WhatsApp · SEA",
+      "status": "Open"
+    },
+    {
+      "name": "FPS/ENQ/2610/048",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F048",
+      "subtitle": "Email · SEA",
+      "status": "Open"
+    },
+    {
+      "name": "FPS/ENQ/2610/047",
+      "title": "Lead 47 (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F047",
+      "subtitle": "WhatsApp · SEA",
+      "status": "Quoted"
+    },
+    {
+      "name": "FPS/ENQ/2610/046",
+      "title": "Lead 46 (sample)",
+      "date": "2026-10-07",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F046",
+      "subtitle": "WhatsApp · LAND",
+      "status": "Quoted"
+    },
+    {
+      "name": "FPS/ENQ/2610/045",
+      "title": "Lead 45 (sample)",
+      "date": "2026-10-07",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F045",
+      "subtitle": "WhatsApp · AIR",
+      "status": "Open"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/fps-enquiry"
+    },
+    {
+      "key": "new",
+      "label": "New FPS Enquiry",
+      "kind": "new_doc",
+      "doctype": "FPS Enquiry"
+    }
+  ]
+}

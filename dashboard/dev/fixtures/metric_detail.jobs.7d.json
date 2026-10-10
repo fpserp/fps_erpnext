@@ -1,0 +1,103 @@
+{
+  "key": "jobs",
+  "label": "New jobs",
+  "unit": "count",
+  "period": "7d",
+  "period_label": "Last 7 days",
+  "compare_label": "vs previous 7 days",
+  "granularity": "day",
+  "value": 2,
+  "previous": 0,
+  "delta_pct": null,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-10-04",
+      "value": 0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 0
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 1
+    },
+    {
+      "date": "2026-10-08",
+      "value": 1
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Service line",
+  "dimension_options": [
+    {
+      "key": "XB - Cross-Border Land Transport",
+      "label": "Cross-border"
+    },
+    {
+      "key": "CC - Customs Clearance",
+      "label": "Customs clearance"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By service line",
+    "rows": [
+      {
+        "key": "XB - Cross-Border Land Transport",
+        "label": "Cross-border",
+        "value": 1
+      },
+      {
+        "key": "CC - Customs Clearance",
+        "label": "Customs clearance",
+        "value": 1
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/JO/2610/097",
+      "title": "Customer B",
+      "date": "2026-10-08",
+      "route": "/app/job-order/FPS%2FJO%2F2610%2F097",
+      "subtitle": "Customs clearance · REF-7404",
+      "status": "In Progress"
+    },
+    {
+      "name": "FPS/JO/2610/096",
+      "title": "Customer C",
+      "date": "2026-10-07",
+      "route": "/app/job-order/FPS%2FJO%2F2610%2F096",
+      "subtitle": "Cross-border · REF-1878",
+      "status": "New"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/job-order"
+    },
+    {
+      "key": "new",
+      "label": "New Job Order",
+      "kind": "new_doc",
+      "doctype": "Job Order"
+    }
+  ]
+}

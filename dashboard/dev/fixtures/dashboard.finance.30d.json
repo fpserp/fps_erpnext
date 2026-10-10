@@ -1,0 +1,1696 @@
+{
+  "as_of": "2026-10-10",
+  "generated_at": "2026-10-10 09:30:00",
+  "period": "30d",
+  "period_label": "Last 30 days",
+  "compare_label": "vs previous 30 days",
+  "viewer": {
+    "finance": true,
+    "full_name": "Sample Finance User"
+  },
+  "kpis": [
+    {
+      "key": "enquiries",
+      "label": "New enquiries",
+      "definition": "Enquiries logged in FPS Enquiry, by enquiry date. Cancelled bot-line duplicates are left out.",
+      "unit": "count",
+      "value": 12,
+      "previous": 25,
+      "delta_pct": -52.0,
+      "good_direction": "up",
+      "granularity": "day",
+      "series": [
+        {
+          "date": "2026-09-11",
+          "value": 0
+        },
+        {
+          "date": "2026-09-12",
+          "value": 0
+        },
+        {
+          "date": "2026-09-13",
+          "value": 0
+        },
+        {
+          "date": "2026-09-14",
+          "value": 0
+        },
+        {
+          "date": "2026-09-15",
+          "value": 0
+        },
+        {
+          "date": "2026-09-16",
+          "value": 0
+        },
+        {
+          "date": "2026-09-17",
+          "value": 0
+        },
+        {
+          "date": "2026-09-18",
+          "value": 0
+        },
+        {
+          "date": "2026-09-19",
+          "value": 0
+        },
+        {
+          "date": "2026-09-20",
+          "value": 0
+        },
+        {
+          "date": "2026-09-21",
+          "value": 0
+        },
+        {
+          "date": "2026-09-22",
+          "value": 0
+        },
+        {
+          "date": "2026-09-23",
+          "value": 0
+        },
+        {
+          "date": "2026-09-24",
+          "value": 0
+        },
+        {
+          "date": "2026-09-25",
+          "value": 0
+        },
+        {
+          "date": "2026-09-26",
+          "value": 0
+        },
+        {
+          "date": "2026-09-27",
+          "value": 0
+        },
+        {
+          "date": "2026-09-28",
+          "value": 0
+        },
+        {
+          "date": "2026-09-29",
+          "value": 0
+        },
+        {
+          "date": "2026-09-30",
+          "value": 0
+        },
+        {
+          "date": "2026-10-01",
+          "value": 0
+        },
+        {
+          "date": "2026-10-02",
+          "value": 0
+        },
+        {
+          "date": "2026-10-03",
+          "value": 0
+        },
+        {
+          "date": "2026-10-04",
+          "value": 0
+        },
+        {
+          "date": "2026-10-05",
+          "value": 0
+        },
+        {
+          "date": "2026-10-06",
+          "value": 1
+        },
+        {
+          "date": "2026-10-07",
+          "value": 5
+        },
+        {
+          "date": "2026-10-08",
+          "value": 6
+        },
+        {
+          "date": "2026-10-09",
+          "value": 0
+        },
+        {
+          "date": "2026-10-10",
+          "value": 0,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Open now",
+          "value": "37"
+        },
+        {
+          "label": "Quoted",
+          "value": "4"
+        }
+      ],
+      "route": "/app/fps-enquiry",
+      "new_doctype": "FPS Enquiry",
+      "finance": false
+    },
+    {
+      "key": "quotations",
+      "label": "Quotations",
+      "definition": "Quotations dated in the period, draft or submitted. Cancelled quotations are left out.",
+      "unit": "count",
+      "value": 28,
+      "previous": 9,
+      "delta_pct": 211.1,
+      "good_direction": "up",
+      "granularity": "day",
+      "series": [
+        {
+          "date": "2026-09-11",
+          "value": 1
+        },
+        {
+          "date": "2026-09-12",
+          "value": 1
+        },
+        {
+          "date": "2026-09-13",
+          "value": 0
+        },
+        {
+          "date": "2026-09-14",
+          "value": 0
+        },
+        {
+          "date": "2026-09-15",
+          "value": 1
+        },
+        {
+          "date": "2026-09-16",
+          "value": 0
+        },
+        {
+          "date": "2026-09-17",
+          "value": 0
+        },
+        {
+          "date": "2026-09-18",
+          "value": 0
+        },
+        {
+          "date": "2026-09-19",
+          "value": 0
+        },
+        {
+          "date": "2026-09-20",
+          "value": 0
+        },
+        {
+          "date": "2026-09-21",
+          "value": 0
+        },
+        {
+          "date": "2026-09-22",
+          "value": 1
+        },
+        {
+          "date": "2026-09-23",
+          "value": 0
+        },
+        {
+          "date": "2026-09-24",
+          "value": 2
+        },
+        {
+          "date": "2026-09-25",
+          "value": 1
+        },
+        {
+          "date": "2026-09-26",
+          "value": 1
+        },
+        {
+          "date": "2026-09-27",
+          "value": 0
+        },
+        {
+          "date": "2026-09-28",
+          "value": 0
+        },
+        {
+          "date": "2026-09-29",
+          "value": 0
+        },
+        {
+          "date": "2026-09-30",
+          "value": 0
+        },
+        {
+          "date": "2026-10-01",
+          "value": 0
+        },
+        {
+          "date": "2026-10-02",
+          "value": 0
+        },
+        {
+          "date": "2026-10-03",
+          "value": 0
+        },
+        {
+          "date": "2026-10-04",
+          "value": 0
+        },
+        {
+          "date": "2026-10-05",
+          "value": 0
+        },
+        {
+          "date": "2026-10-06",
+          "value": 0
+        },
+        {
+          "date": "2026-10-07",
+          "value": 2
+        },
+        {
+          "date": "2026-10-08",
+          "value": 15
+        },
+        {
+          "date": "2026-10-09",
+          "value": 3
+        },
+        {
+          "date": "2026-10-10",
+          "value": 0,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Submitted",
+          "value": "11"
+        },
+        {
+          "label": "Drafts, last 30 days",
+          "value": "17"
+        }
+      ],
+      "route": "/app/quotation",
+      "new_doctype": "Quotation",
+      "finance": false
+    },
+    {
+      "key": "jobs",
+      "label": "New jobs",
+      "definition": "Job Orders opened in the period, by job date, draft or submitted. Cancelled jobs are left out.",
+      "unit": "count",
+      "value": 9,
+      "previous": 19,
+      "delta_pct": -52.6,
+      "good_direction": "up",
+      "granularity": "day",
+      "series": [
+        {
+          "date": "2026-09-11",
+          "value": 2
+        },
+        {
+          "date": "2026-09-12",
+          "value": 0
+        },
+        {
+          "date": "2026-09-13",
+          "value": 0
+        },
+        {
+          "date": "2026-09-14",
+          "value": 0
+        },
+        {
+          "date": "2026-09-15",
+          "value": 0
+        },
+        {
+          "date": "2026-09-16",
+          "value": 2
+        },
+        {
+          "date": "2026-09-17",
+          "value": 0
+        },
+        {
+          "date": "2026-09-18",
+          "value": 1
+        },
+        {
+          "date": "2026-09-19",
+          "value": 0
+        },
+        {
+          "date": "2026-09-20",
+          "value": 0
+        },
+        {
+          "date": "2026-09-21",
+          "value": 0
+        },
+        {
+          "date": "2026-09-22",
+          "value": 0
+        },
+        {
+          "date": "2026-09-23",
+          "value": 0
+        },
+        {
+          "date": "2026-09-24",
+          "value": 0
+        },
+        {
+          "date": "2026-09-25",
+          "value": 2
+        },
+        {
+          "date": "2026-09-26",
+          "value": 0
+        },
+        {
+          "date": "2026-09-27",
+          "value": 0
+        },
+        {
+          "date": "2026-09-28",
+          "value": 0
+        },
+        {
+          "date": "2026-09-29",
+          "value": 0
+        },
+        {
+          "date": "2026-09-30",
+          "value": 0
+        },
+        {
+          "date": "2026-10-01",
+          "value": 0
+        },
+        {
+          "date": "2026-10-02",
+          "value": 0
+        },
+        {
+          "date": "2026-10-03",
+          "value": 0
+        },
+        {
+          "date": "2026-10-04",
+          "value": 0
+        },
+        {
+          "date": "2026-10-05",
+          "value": 0
+        },
+        {
+          "date": "2026-10-06",
+          "value": 0
+        },
+        {
+          "date": "2026-10-07",
+          "value": 1
+        },
+        {
+          "date": "2026-10-08",
+          "value": 1
+        },
+        {
+          "date": "2026-10-09",
+          "value": 0
+        },
+        {
+          "date": "2026-10-10",
+          "value": 0,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Active pipeline",
+          "value": "34"
+        },
+        {
+          "label": "In progress",
+          "value": "7"
+        }
+      ],
+      "route": "/app/job-order",
+      "new_doctype": "Job Order",
+      "finance": false
+    },
+    {
+      "key": "customs_cleared",
+      "label": "Customs cleared",
+      "definition": "Customs Trackers whose last declaration cleared in the period, by clearance date.",
+      "unit": "count",
+      "value": 12,
+      "previous": 9,
+      "delta_pct": 33.3,
+      "good_direction": "up",
+      "granularity": "day",
+      "series": [
+        {
+          "date": "2026-09-11",
+          "value": 0
+        },
+        {
+          "date": "2026-09-12",
+          "value": 1
+        },
+        {
+          "date": "2026-09-13",
+          "value": 0
+        },
+        {
+          "date": "2026-09-14",
+          "value": 2
+        },
+        {
+          "date": "2026-09-15",
+          "value": 0
+        },
+        {
+          "date": "2026-09-16",
+          "value": 0
+        },
+        {
+          "date": "2026-09-17",
+          "value": 1
+        },
+        {
+          "date": "2026-09-18",
+          "value": 1
+        },
+        {
+          "date": "2026-09-19",
+          "value": 0
+        },
+        {
+          "date": "2026-09-20",
+          "value": 1
+        },
+        {
+          "date": "2026-09-21",
+          "value": 0
+        },
+        {
+          "date": "2026-09-22",
+          "value": 0
+        },
+        {
+          "date": "2026-09-23",
+          "value": 0
+        },
+        {
+          "date": "2026-09-24",
+          "value": 0
+        },
+        {
+          "date": "2026-09-25",
+          "value": 0
+        },
+        {
+          "date": "2026-09-26",
+          "value": 0
+        },
+        {
+          "date": "2026-09-27",
+          "value": 0
+        },
+        {
+          "date": "2026-09-28",
+          "value": 2
+        },
+        {
+          "date": "2026-09-29",
+          "value": 0
+        },
+        {
+          "date": "2026-09-30",
+          "value": 1
+        },
+        {
+          "date": "2026-10-01",
+          "value": 0
+        },
+        {
+          "date": "2026-10-02",
+          "value": 0
+        },
+        {
+          "date": "2026-10-03",
+          "value": 0
+        },
+        {
+          "date": "2026-10-04",
+          "value": 0
+        },
+        {
+          "date": "2026-10-05",
+          "value": 2
+        },
+        {
+          "date": "2026-10-06",
+          "value": 0
+        },
+        {
+          "date": "2026-10-07",
+          "value": 0
+        },
+        {
+          "date": "2026-10-08",
+          "value": 1
+        },
+        {
+          "date": "2026-10-09",
+          "value": 0
+        },
+        {
+          "date": "2026-10-10",
+          "value": 0,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Docs overdue",
+          "value": "5"
+        },
+        {
+          "label": "Not cleared",
+          "value": "5"
+        }
+      ],
+      "route": "/app/customs-tracker?status=Cleared",
+      "finance": false
+    },
+    {
+      "key": "deliveries",
+      "label": "Deliveries",
+      "definition": "Proofs of delivery marked Delivered, by POD date, draft or submitted.",
+      "unit": "count",
+      "value": 7,
+      "previous": 3,
+      "delta_pct": 133.3,
+      "good_direction": "up",
+      "granularity": "day",
+      "series": [
+        {
+          "date": "2026-09-11",
+          "value": 0
+        },
+        {
+          "date": "2026-09-12",
+          "value": 0
+        },
+        {
+          "date": "2026-09-13",
+          "value": 0
+        },
+        {
+          "date": "2026-09-14",
+          "value": 0
+        },
+        {
+          "date": "2026-09-15",
+          "value": 0
+        },
+        {
+          "date": "2026-09-16",
+          "value": 1
+        },
+        {
+          "date": "2026-09-17",
+          "value": 0
+        },
+        {
+          "date": "2026-09-18",
+          "value": 1
+        },
+        {
+          "date": "2026-09-19",
+          "value": 0
+        },
+        {
+          "date": "2026-09-20",
+          "value": 0
+        },
+        {
+          "date": "2026-09-21",
+          "value": 1
+        },
+        {
+          "date": "2026-09-22",
+          "value": 0
+        },
+        {
+          "date": "2026-09-23",
+          "value": 1
+        },
+        {
+          "date": "2026-09-24",
+          "value": 0
+        },
+        {
+          "date": "2026-09-25",
+          "value": 0
+        },
+        {
+          "date": "2026-09-26",
+          "value": 0
+        },
+        {
+          "date": "2026-09-27",
+          "value": 0
+        },
+        {
+          "date": "2026-09-28",
+          "value": 0
+        },
+        {
+          "date": "2026-09-29",
+          "value": 0
+        },
+        {
+          "date": "2026-09-30",
+          "value": 1
+        },
+        {
+          "date": "2026-10-01",
+          "value": 2
+        },
+        {
+          "date": "2026-10-02",
+          "value": 0
+        },
+        {
+          "date": "2026-10-03",
+          "value": 0
+        },
+        {
+          "date": "2026-10-04",
+          "value": 0
+        },
+        {
+          "date": "2026-10-05",
+          "value": 0
+        },
+        {
+          "date": "2026-10-06",
+          "value": 0
+        },
+        {
+          "date": "2026-10-07",
+          "value": 0
+        },
+        {
+          "date": "2026-10-08",
+          "value": 0
+        },
+        {
+          "date": "2026-10-09",
+          "value": 0
+        },
+        {
+          "date": "2026-10-10",
+          "value": 0,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Awaiting invoice",
+          "value": "2"
+        },
+        {
+          "label": "PODs pending",
+          "value": "3"
+        }
+      ],
+      "route": "/app/proof-of-delivery?delivery_status=Delivered",
+      "new_doctype": "Proof of Delivery",
+      "finance": false
+    },
+    {
+      "key": "job_activity",
+      "label": "Job updates",
+      "definition": "Updates logged on Job Orders, by update date. Rows loaded by the go-live backfill are left out.",
+      "unit": "count",
+      "value": 85,
+      "previous": null,
+      "delta_pct": null,
+      "good_direction": "none",
+      "granularity": "day",
+      "series": [
+        {
+          "date": "2026-09-11",
+          "value": 4
+        },
+        {
+          "date": "2026-09-12",
+          "value": 2
+        },
+        {
+          "date": "2026-09-13",
+          "value": 0
+        },
+        {
+          "date": "2026-09-14",
+          "value": 7
+        },
+        {
+          "date": "2026-09-15",
+          "value": 2
+        },
+        {
+          "date": "2026-09-16",
+          "value": 7
+        },
+        {
+          "date": "2026-09-17",
+          "value": 1
+        },
+        {
+          "date": "2026-09-18",
+          "value": 4
+        },
+        {
+          "date": "2026-09-19",
+          "value": 6
+        },
+        {
+          "date": "2026-09-20",
+          "value": 0
+        },
+        {
+          "date": "2026-09-21",
+          "value": 5
+        },
+        {
+          "date": "2026-09-22",
+          "value": 2
+        },
+        {
+          "date": "2026-09-23",
+          "value": 2
+        },
+        {
+          "date": "2026-09-24",
+          "value": 5
+        },
+        {
+          "date": "2026-09-25",
+          "value": 4
+        },
+        {
+          "date": "2026-09-26",
+          "value": 5
+        },
+        {
+          "date": "2026-09-27",
+          "value": 0
+        },
+        {
+          "date": "2026-09-28",
+          "value": 0
+        },
+        {
+          "date": "2026-09-29",
+          "value": 0
+        },
+        {
+          "date": "2026-09-30",
+          "value": 2
+        },
+        {
+          "date": "2026-10-01",
+          "value": 9
+        },
+        {
+          "date": "2026-10-02",
+          "value": 0
+        },
+        {
+          "date": "2026-10-03",
+          "value": 3
+        },
+        {
+          "date": "2026-10-04",
+          "value": 0
+        },
+        {
+          "date": "2026-10-05",
+          "value": 4
+        },
+        {
+          "date": "2026-10-06",
+          "value": 1
+        },
+        {
+          "date": "2026-10-07",
+          "value": 1
+        },
+        {
+          "date": "2026-10-08",
+          "value": 4
+        },
+        {
+          "date": "2026-10-09",
+          "value": 5
+        },
+        {
+          "date": "2026-10-10",
+          "value": 0,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Jobs updated",
+          "value": "38"
+        },
+        {
+          "label": "Milestones",
+          "value": "56"
+        }
+      ],
+      "route": "/app/job-order",
+      "finance": false
+    },
+    {
+      "key": "invoiced",
+      "label": "Invoiced (net)",
+      "definition": "Net value (before VAT) of submitted sales invoices, by posting date, credit notes included. Payment requests and drafts are left out.",
+      "unit": "currency",
+      "currency": "AED",
+      "value": 55049.24,
+      "previous": 64571.31,
+      "delta_pct": -14.7,
+      "good_direction": "up",
+      "granularity": "day",
+      "series": [
+        {
+          "date": "2026-09-11",
+          "value": 9625.98
+        },
+        {
+          "date": "2026-09-12",
+          "value": 10968.04
+        },
+        {
+          "date": "2026-09-13",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-14",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-15",
+          "value": 6386.15
+        },
+        {
+          "date": "2026-09-16",
+          "value": 2244.2
+        },
+        {
+          "date": "2026-09-17",
+          "value": 3226.56
+        },
+        {
+          "date": "2026-09-18",
+          "value": 5670.42
+        },
+        {
+          "date": "2026-09-19",
+          "value": 4876.78
+        },
+        {
+          "date": "2026-09-20",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-21",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-22",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-23",
+          "value": 12051.11
+        },
+        {
+          "date": "2026-09-24",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-25",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-26",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-27",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-28",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-29",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-30",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-01",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-02",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-03",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-04",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-05",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-06",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-07",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-08",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-09",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-10",
+          "value": 0.0,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Drafts waiting",
+          "value": "26 · AED 1.5M"
+        },
+        {
+          "label": "Last submitted",
+          "value": "23 Sep"
+        }
+      ],
+      "route": "/app/sales-invoice?docstatus=1",
+      "new_doctype": "Sales Invoice",
+      "finance": true
+    },
+    {
+      "key": "collected",
+      "label": "Collected",
+      "definition": "Customer receipts (submitted Payment Entries of type Receive), by posting date.",
+      "unit": "currency",
+      "currency": "AED",
+      "value": 71115.57,
+      "previous": 680473.02,
+      "delta_pct": -89.5,
+      "good_direction": "up",
+      "granularity": "day",
+      "series": [
+        {
+          "date": "2026-09-11",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-12",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-13",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-14",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-15",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-16",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-17",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-18",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-19",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-20",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-21",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-22",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-23",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-24",
+          "value": 59064.46
+        },
+        {
+          "date": "2026-09-25",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-26",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-27",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-28",
+          "value": 12051.11
+        },
+        {
+          "date": "2026-09-29",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-30",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-01",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-02",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-03",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-04",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-05",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-06",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-07",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-08",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-09",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-10",
+          "value": 0.0,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Outstanding AR",
+          "value": "AED 756.6K"
+        },
+        {
+          "label": "Receipts",
+          "value": "2"
+        }
+      ],
+      "caveat": "Receipts are booked a median of 28 days after the payment date, so recent weeks fill in later.",
+      "route": "/app/payment-entry?payment_type=Receive&docstatus=1",
+      "finance": true
+    }
+  ],
+  "stages": {
+    "tiles": [
+      {
+        "key": "enquiry",
+        "label": "Enquiry",
+        "note": "open",
+        "count": 37,
+        "route": "/app/fps-enquiry?status=Open"
+      },
+      {
+        "key": "quotation",
+        "label": "Quotation",
+        "note": "open",
+        "count": 9,
+        "route": "/app/quotation?status=Open"
+      },
+      {
+        "key": "job_order",
+        "label": "Job Order",
+        "note": "open",
+        "count": 34,
+        "route": "/app/job-order?fps_stage=%5B%22not%20in%22%2C%5B%22Closed%22%2C%22Completed%22%2C%22Invoiced%22%5D%5D&docstatus=%5B%22%3C%22%2C2%5D"
+      },
+      {
+        "key": "customs",
+        "label": "Customs Tracker",
+        "note": "not cleared",
+        "count": 5,
+        "route": "/app/customs-tracker?status=%5B%22not%20in%22%2C%5B%22Cleared%22%5D%5D"
+      },
+      {
+        "key": "in_progress",
+        "label": "In Progress",
+        "note": "jobs",
+        "count": 7,
+        "route": "/app/job-order?fps_stage=In%20Progress&docstatus=%5B%22%3C%22%2C2%5D"
+      },
+      {
+        "key": "delivered",
+        "label": "Delivered",
+        "note": "awaiting invoice",
+        "count": 2,
+        "route": "/app/job-order?fps_stage=Delivered&docstatus=%5B%22%3C%22%2C2%5D"
+      },
+      {
+        "key": "invoices",
+        "label": "Invoices",
+        "note": "open",
+        "count": 72,
+        "route": "/app/sales-invoice?status=%5B%22in%22%2C%5B%22Unpaid%22%2C%22Overdue%22%2C%22Partly%20Paid%22%5D%5D"
+      }
+    ],
+    "footnotes": [
+      "2 past ETA",
+      "20 with no ETA",
+      "45 PODs on file"
+    ]
+  },
+  "trend": [
+    {
+      "key": "pipeline",
+      "label": "Sales pipeline",
+      "unit": "count",
+      "series": [
+        {
+          "key": "enquiries",
+          "label": "Enquiries",
+          "slot": 1
+        },
+        {
+          "key": "quotations",
+          "label": "Quotations",
+          "slot": 2
+        },
+        {
+          "key": "jobs",
+          "label": "Jobs",
+          "slot": 3
+        }
+      ],
+      "points": [
+        {
+          "week_start": "2026-07-20",
+          "label": "20 Jul",
+          "partial": false,
+          "values": {
+            "enquiries": 2,
+            "quotations": 1,
+            "jobs": 20
+          }
+        },
+        {
+          "week_start": "2026-07-27",
+          "label": "27 Jul",
+          "partial": false,
+          "values": {
+            "enquiries": 8,
+            "quotations": 0,
+            "jobs": 1
+          }
+        },
+        {
+          "week_start": "2026-08-03",
+          "label": "3 Aug",
+          "partial": false,
+          "values": {
+            "enquiries": 5,
+            "quotations": 2,
+            "jobs": 7
+          }
+        },
+        {
+          "week_start": "2026-08-10",
+          "label": "10 Aug",
+          "partial": false,
+          "values": {
+            "enquiries": 5,
+            "quotations": 0,
+            "jobs": 6
+          }
+        },
+        {
+          "week_start": "2026-08-17",
+          "label": "17 Aug",
+          "partial": false,
+          "values": {
+            "enquiries": 7,
+            "quotations": 4,
+            "jobs": 9
+          }
+        },
+        {
+          "week_start": "2026-08-24",
+          "label": "24 Aug",
+          "partial": false,
+          "values": {
+            "enquiries": 7,
+            "quotations": 0,
+            "jobs": 3
+          }
+        },
+        {
+          "week_start": "2026-08-31",
+          "label": "31 Aug",
+          "partial": false,
+          "values": {
+            "enquiries": 4,
+            "quotations": 5,
+            "jobs": 1
+          }
+        },
+        {
+          "week_start": "2026-09-07",
+          "label": "7 Sep",
+          "partial": false,
+          "values": {
+            "enquiries": 2,
+            "quotations": 2,
+            "jobs": 6
+          }
+        },
+        {
+          "week_start": "2026-09-14",
+          "label": "14 Sep",
+          "partial": false,
+          "values": {
+            "enquiries": 0,
+            "quotations": 1,
+            "jobs": 3
+          }
+        },
+        {
+          "week_start": "2026-09-21",
+          "label": "21 Sep",
+          "partial": false,
+          "values": {
+            "enquiries": 0,
+            "quotations": 5,
+            "jobs": 2
+          }
+        },
+        {
+          "week_start": "2026-09-28",
+          "label": "28 Sep",
+          "partial": false,
+          "values": {
+            "enquiries": 0,
+            "quotations": 0,
+            "jobs": 0
+          }
+        },
+        {
+          "week_start": "2026-10-05",
+          "label": "5 Oct",
+          "partial": true,
+          "values": {
+            "enquiries": 12,
+            "quotations": 20,
+            "jobs": 2
+          }
+        }
+      ],
+      "finance": false
+    },
+    {
+      "key": "activity",
+      "label": "Operations",
+      "unit": "count",
+      "series": [
+        {
+          "key": "customs_cleared",
+          "label": "Cleared",
+          "slot": 1
+        },
+        {
+          "key": "deliveries",
+          "label": "Delivered",
+          "slot": 2
+        }
+      ],
+      "points": [
+        {
+          "week_start": "2026-07-20",
+          "label": "20 Jul",
+          "partial": false,
+          "values": {
+            "customs_cleared": 6,
+            "deliveries": 1
+          }
+        },
+        {
+          "week_start": "2026-07-27",
+          "label": "27 Jul",
+          "partial": false,
+          "values": {
+            "customs_cleared": 3,
+            "deliveries": 2
+          }
+        },
+        {
+          "week_start": "2026-08-03",
+          "label": "3 Aug",
+          "partial": false,
+          "values": {
+            "customs_cleared": 1,
+            "deliveries": 3
+          }
+        },
+        {
+          "week_start": "2026-08-10",
+          "label": "10 Aug",
+          "partial": false,
+          "values": {
+            "customs_cleared": 2,
+            "deliveries": 0
+          }
+        },
+        {
+          "week_start": "2026-08-17",
+          "label": "17 Aug",
+          "partial": false,
+          "values": {
+            "customs_cleared": 2,
+            "deliveries": 2
+          }
+        },
+        {
+          "week_start": "2026-08-24",
+          "label": "24 Aug",
+          "partial": false,
+          "values": {
+            "customs_cleared": 2,
+            "deliveries": 1
+          }
+        },
+        {
+          "week_start": "2026-08-31",
+          "label": "31 Aug",
+          "partial": false,
+          "values": {
+            "customs_cleared": 1,
+            "deliveries": 0
+          }
+        },
+        {
+          "week_start": "2026-09-07",
+          "label": "7 Sep",
+          "partial": false,
+          "values": {
+            "customs_cleared": 3,
+            "deliveries": 0
+          }
+        },
+        {
+          "week_start": "2026-09-14",
+          "label": "14 Sep",
+          "partial": false,
+          "values": {
+            "customs_cleared": 5,
+            "deliveries": 2
+          }
+        },
+        {
+          "week_start": "2026-09-21",
+          "label": "21 Sep",
+          "partial": false,
+          "values": {
+            "customs_cleared": 0,
+            "deliveries": 2
+          }
+        },
+        {
+          "week_start": "2026-09-28",
+          "label": "28 Sep",
+          "partial": false,
+          "values": {
+            "customs_cleared": 3,
+            "deliveries": 3
+          }
+        },
+        {
+          "week_start": "2026-10-05",
+          "label": "5 Oct",
+          "partial": true,
+          "values": {
+            "customs_cleared": 3,
+            "deliveries": 0
+          }
+        }
+      ],
+      "finance": false
+    },
+    {
+      "key": "money",
+      "label": "Money",
+      "unit": "currency",
+      "currency": "AED",
+      "series": [
+        {
+          "key": "invoiced",
+          "label": "Invoiced (net)",
+          "slot": 1
+        },
+        {
+          "key": "collected",
+          "label": "Collected",
+          "slot": 2
+        }
+      ],
+      "points": [
+        {
+          "week_start": "2026-07-20",
+          "label": "20 Jul",
+          "partial": false,
+          "values": {
+            "invoiced": 84858.68,
+            "collected": 100000.0
+          }
+        },
+        {
+          "week_start": "2026-07-27",
+          "label": "27 Jul",
+          "partial": false,
+          "values": {
+            "invoiced": 26601.61,
+            "collected": 21693.49
+          }
+        },
+        {
+          "week_start": "2026-08-03",
+          "label": "3 Aug",
+          "partial": false,
+          "values": {
+            "invoiced": 2361.15,
+            "collected": 164689.21
+          }
+        },
+        {
+          "week_start": "2026-08-10",
+          "label": "10 Aug",
+          "partial": false,
+          "values": {
+            "invoiced": 621153.21,
+            "collected": 2090.0
+          }
+        },
+        {
+          "week_start": "2026-08-17",
+          "label": "17 Aug",
+          "partial": false,
+          "values": {
+            "invoiced": 28466.58,
+            "collected": 165322.5
+          }
+        },
+        {
+          "week_start": "2026-08-24",
+          "label": "24 Aug",
+          "partial": false,
+          "values": {
+            "invoiced": 2737.5,
+            "collected": 29667.52
+          }
+        },
+        {
+          "week_start": "2026-08-31",
+          "label": "31 Aug",
+          "partial": false,
+          "values": {
+            "invoiced": 0.0,
+            "collected": 478393.0
+          }
+        },
+        {
+          "week_start": "2026-09-07",
+          "label": "7 Sep",
+          "partial": false,
+          "values": {
+            "invoiced": 46956.13,
+            "collected": 5000.0
+          }
+        },
+        {
+          "week_start": "2026-09-14",
+          "label": "14 Sep",
+          "partial": false,
+          "values": {
+            "invoiced": 22404.11,
+            "collected": 0.0
+          }
+        },
+        {
+          "week_start": "2026-09-21",
+          "label": "21 Sep",
+          "partial": false,
+          "values": {
+            "invoiced": 12051.11,
+            "collected": 59064.46
+          }
+        },
+        {
+          "week_start": "2026-09-28",
+          "label": "28 Sep",
+          "partial": false,
+          "values": {
+            "invoiced": 0.0,
+            "collected": 12051.11
+          }
+        },
+        {
+          "week_start": "2026-10-05",
+          "label": "5 Oct",
+          "partial": true,
+          "values": {
+            "invoiced": 0.0,
+            "collected": 0.0
+          }
+        }
+      ],
+      "caveat": "Receipts are booked a median of 28 days after the payment date, so recent weeks fill in later.",
+      "finance": true
+    }
+  ],
+  "insights": [
+    {
+      "id": "customs_docs",
+      "severity": "critical",
+      "title": "5 document submissions are past the Dubai Customs deadline",
+      "detail": "Oldest deadline 8 Aug (FPS/CT/2607/019); 1 more falls due in the next 14 days. Dubai Customs fines late originals every day until they are submitted.",
+      "route": "/app/customs-tracker?fps_doc_submission=%5B%22in%22%2C%5B%22Pending%22%5D%5D&fps_doc_deadline=%5B%22%3C%3D%22%2C%222026-10-10%22%5D"
+    },
+    {
+      "id": "customs_mofa",
+      "severity": "critical",
+      "title": "3 MOFA attestations are past the deadline",
+      "detail": "Oldest deadline 3 Aug (FPS/CT/2607/022); 3 more fall due in the next 14 days. Attestation is due 14 days after clearance.",
+      "route": "/app/customs-tracker?fps_mofa_status=%5B%22in%22%2C%5B%22Pending%22%2C%22Under%20Process%22%2C%22Under%20Client%22%5D%5D&fps_mofa_deadline=%5B%22%3C%22%2C%222026-10-10%22%5D"
+    },
+    {
+      "id": "duplicate_drafts",
+      "severity": "warning",
+      "title": "2 draft invoices repeat an already submitted invoice",
+      "detail": "FPS/INV/2609/145 and FPS/INV/2609/146 have the Job Order and grand total of a submitted invoice (AED 631.1K in all); check before submitting.",
+      "route": "/app/sales-invoice?docstatus=0"
+    },
+    {
+      "id": "invoicing_stall",
+      "severity": "warning",
+      "title": "No invoice submitted for 17 days",
+      "detail": "The last one was posted 23 Sep. 26 draft invoices worth AED 1.5M are waiting.",
+      "metric_key": "invoiced"
+    },
+    {
+      "id": "jobs_past_eta",
+      "severity": "warning",
+      "title": "2 open jobs are past their ETA",
+      "detail": "Oldest ETA 29 Sep on FPS/JO/2609/094. Move the job on or update its ETA.",
+      "route": "/app/job-order?fps_stage=%5B%22not%20in%22%2C%5B%22Closed%22%2C%22Completed%22%2C%22Invoiced%22%5D%5D&eta=%5B%22between%22%2C%5B%222000-01-01%22%2C%222026-10-09%22%5D%5D&docstatus=%5B%22%3C%22%2C2%5D"
+    },
+    {
+      "id": "swing:jobs",
+      "severity": "warning",
+      "title": "New jobs down 52.6% vs previous 30 days",
+      "detail": "9 this period against 19 in the previous 30 days.",
+      "metric_key": "jobs"
+    }
+  ]
+}

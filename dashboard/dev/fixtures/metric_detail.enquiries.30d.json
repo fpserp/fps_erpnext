@@ -1,0 +1,243 @@
+{
+  "key": "enquiries",
+  "label": "New enquiries",
+  "unit": "count",
+  "period": "30d",
+  "period_label": "Last 30 days",
+  "compare_label": "vs previous 30 days",
+  "granularity": "day",
+  "value": 12,
+  "previous": 25,
+  "delta_pct": -52.0,
+  "good_direction": "up",
+  "series": [
+    {
+      "date": "2026-09-11",
+      "value": 0
+    },
+    {
+      "date": "2026-09-12",
+      "value": 0
+    },
+    {
+      "date": "2026-09-13",
+      "value": 0
+    },
+    {
+      "date": "2026-09-14",
+      "value": 0
+    },
+    {
+      "date": "2026-09-15",
+      "value": 0
+    },
+    {
+      "date": "2026-09-16",
+      "value": 0
+    },
+    {
+      "date": "2026-09-17",
+      "value": 0
+    },
+    {
+      "date": "2026-09-18",
+      "value": 0
+    },
+    {
+      "date": "2026-09-19",
+      "value": 0
+    },
+    {
+      "date": "2026-09-20",
+      "value": 0
+    },
+    {
+      "date": "2026-09-21",
+      "value": 0
+    },
+    {
+      "date": "2026-09-22",
+      "value": 0
+    },
+    {
+      "date": "2026-09-23",
+      "value": 0
+    },
+    {
+      "date": "2026-09-24",
+      "value": 0
+    },
+    {
+      "date": "2026-09-25",
+      "value": 0
+    },
+    {
+      "date": "2026-09-26",
+      "value": 0
+    },
+    {
+      "date": "2026-09-27",
+      "value": 0
+    },
+    {
+      "date": "2026-09-28",
+      "value": 0
+    },
+    {
+      "date": "2026-09-29",
+      "value": 0
+    },
+    {
+      "date": "2026-09-30",
+      "value": 0
+    },
+    {
+      "date": "2026-10-01",
+      "value": 0
+    },
+    {
+      "date": "2026-10-02",
+      "value": 0
+    },
+    {
+      "date": "2026-10-03",
+      "value": 0
+    },
+    {
+      "date": "2026-10-04",
+      "value": 0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 0
+    },
+    {
+      "date": "2026-10-06",
+      "value": 1
+    },
+    {
+      "date": "2026-10-07",
+      "value": 5
+    },
+    {
+      "date": "2026-10-08",
+      "value": 6
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Source",
+  "dimension_options": [
+    {
+      "key": "WhatsApp",
+      "label": "WhatsApp"
+    },
+    {
+      "key": "Email",
+      "label": "Email"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By source",
+    "rows": [
+      {
+        "key": "WhatsApp",
+        "label": "WhatsApp",
+        "value": 10
+      },
+      {
+        "key": "Email",
+        "label": "Email",
+        "value": 2
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/ENQ/2610/052",
+      "title": "Lead 52 (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F052",
+      "subtitle": "WhatsApp · SEA",
+      "status": "Open"
+    },
+    {
+      "name": "FPS/ENQ/2610/051",
+      "title": "Lead 51 (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F051",
+      "subtitle": "WhatsApp · LAND",
+      "status": "Open"
+    },
+    {
+      "name": "FPS/ENQ/2610/050",
+      "title": "Lead 50 (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F050",
+      "subtitle": "WhatsApp · SEA",
+      "status": "Quoted"
+    },
+    {
+      "name": "FPS/ENQ/2610/049",
+      "title": "Lead 49 (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F049",
+      "subtitle": "WhatsApp · SEA",
+      "status": "Open"
+    },
+    {
+      "name": "FPS/ENQ/2610/048",
+      "title": "Key account (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F048",
+      "subtitle": "Email · SEA",
+      "status": "Open"
+    },
+    {
+      "name": "FPS/ENQ/2610/047",
+      "title": "Lead 47 (sample)",
+      "date": "2026-10-08",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F047",
+      "subtitle": "WhatsApp · SEA",
+      "status": "Quoted"
+    },
+    {
+      "name": "FPS/ENQ/2610/046",
+      "title": "Lead 46 (sample)",
+      "date": "2026-10-07",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F046",
+      "subtitle": "WhatsApp · LAND",
+      "status": "Quoted"
+    },
+    {
+      "name": "FPS/ENQ/2610/045",
+      "title": "Lead 45 (sample)",
+      "date": "2026-10-07",
+      "route": "/app/fps-enquiry/FPS%2FENQ%2F2610%2F045",
+      "subtitle": "WhatsApp · AIR",
+      "status": "Open"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/fps-enquiry"
+    },
+    {
+      "key": "new",
+      "label": "New FPS Enquiry",
+      "kind": "new_doc",
+      "doctype": "FPS Enquiry"
+    }
+  ]
+}
