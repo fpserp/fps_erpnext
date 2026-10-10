@@ -160,6 +160,9 @@ function SheetPortal({
 /** Exit animation off when the sheet was closed by a route change. */
 const NO_EXIT_ANIMATION = "data-[state=closed]:animate-none"
 
+// FPS: both overlays use bg-backdrop (the Pearl slate scrim, theme.css) instead
+// of shadcn's bg-black/50, which turns the light plane into a blackout.
+
 function SheetOverlay({
   className,
   ...props
@@ -169,7 +172,7 @@ function SheetOverlay({
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        "fixed inset-0 z-50 bg-backdrop data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
         instantClose && NO_EXIT_ANIMATION,
         className
       )}
@@ -228,7 +231,7 @@ function ShadowSafeOverlay({
       aria-hidden="true"
       onClick={onDismiss}
       className={cn(
-        "fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        "fixed inset-0 z-50 bg-backdrop data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
         instantClose && NO_EXIT_ANIMATION
       )}
     />

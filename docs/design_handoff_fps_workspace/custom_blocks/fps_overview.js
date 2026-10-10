@@ -1,4 +1,4 @@
-var FPS_CC_VERSION = "65c82e7ad9c7";
+var FPS_CC_VERSION = "26020cbd3f34";
 // ^ Rewritten with the bundle's content hash by dashboard/scripts/sync-block.mjs
 //   after every build (it matches that exact line). Keep it the only line of
 //   its kind in this file.

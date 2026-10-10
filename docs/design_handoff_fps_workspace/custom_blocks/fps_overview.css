@@ -6,8 +6,8 @@
    may target :host or bare elements, or it would leak into the dashboard.
 
    THEME. Shadow DOM: only inherited custom properties reach this stylesheet.
-   Colours read the desk variables and the FPS Midnight tokens (set by
-   fps_midnight.css), each with the old light value as the fallback. On the
+   Colours read the desk variables and the FPS theme tokens (set by
+   public/css/fps_theme.css), each with the old light value as the fallback. On the
    FPS workspace this block's widget box is deliberately NOT glass (it would
    trap the dashboard's fixed-position drawer), so the strip draws its own
    card. */

@@ -4,11 +4,13 @@
  * Frappe's real desk.bundle.css is loaded at document level (index.html) so the
  * workspace wrappers (.layout-main, .widget.custom-block-widget-box …) behave
  * as on the live site, including the 900px workspace cap unless the body has
- * .full-width. This file adds what the harness fakes: the FPS dark plane, a
+ * .full-width. This file adds what the harness fakes: the FPS Pearl plane, a
  * 220px sidebar (z-index 1020, like the desk's), a sticky navbar holding the
  * harness toolbar (z-index 1019), the page head, the toast and a stand-in for
  * a Frappe modal (backdrop 1040, dialog 1050). Class names prefixed fps-dev-
- * are harness-only; the rest are the real desk class names.
+ * are harness-only; the rest are the real desk class names. Colours are the
+ * Pearl desk values (DESIGN.md §1, §5), so the block sits in the same light
+ * as on the live desk.
  *
  * The document itself scrolls (like the desk: the window scrolls, the navbar is
  * sticky), so nothing is cut off at any viewport size. Under 768px the fake
@@ -19,19 +21,22 @@
  */
 
 :root {
-  --fps-dev-plane: #0b0f19;
-  --fps-dev-chrome: #0f1422;
-  --fps-dev-raised: #151b2b;
-  --fps-dev-border: rgba(255, 255, 255, 0.08);
-  --fps-dev-border-strong: rgba(255, 255, 255, 0.14);
-  --fps-dev-text: #e8ecf4;
-  --fps-dev-muted: #a9b2c6;
-  --fps-dev-accent: #3293fc;
+  --fps-dev-plane: #d9dee7;
+  --fps-dev-chrome: #dde2ea;
+  --fps-dev-raised: #ffffff;
+  --fps-dev-border: rgba(28, 34, 48, 0.1);
+  --fps-dev-border-strong: rgba(28, 34, 48, 0.18);
+  --fps-dev-text: #1c2230;
+  --fps-dev-muted: #3f4859;
+  --fps-dev-accent: #1d6fd8;
+  --fps-dev-shadow-pop:
+    0 16px 40px rgba(28, 34, 48, 0.16),
+    0 2px 8px rgba(28, 34, 48, 0.08);
   --fps-dev-sidebar-width: 220px;
   --fps-dev-navbar-height: 48px;
 }
 
-/* desk.bundle.css paints html/body with var(--bg-color); the FPS route is dark. */
+/* desk.bundle.css paints html/body with var(--bg-color); the FPS route is the Pearl plane. */
 html,
 body {
   background-color: var(--fps-dev-plane) !important;
@@ -81,7 +86,7 @@ body {
 }
 
 .fps-dev-sidebar a[aria-current="page"] {
-  background: rgba(90, 168, 255, 0.12);
+  background: #cad7e8;
   color: var(--fps-dev-text);
 }
 
@@ -90,7 +95,7 @@ body {
   font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #7c869c;
+  color: #566070;
 }
 
 /* ---- main column -------------------------------------------------------- */
@@ -126,7 +131,7 @@ body {
   min-height: var(--fps-dev-navbar-height);
   padding: 6px 16px;
   box-sizing: border-box;
-  background: rgba(11, 15, 25, 0.88);
+  background: rgba(217, 222, 231, 0.88);
   border-bottom: 1px solid var(--fps-dev-border);
   flex-wrap: wrap;
 }
@@ -161,7 +166,7 @@ body {
 }
 
 .fps-dev-toolbar button[aria-pressed="true"] {
-  background: rgba(50, 147, 252, 0.22);
+  background: rgba(29, 111, 216, 0.16);
   border-color: var(--fps-dev-accent);
 }
 
@@ -218,7 +223,7 @@ body {
 }
 
 /*
- * Only when the app's host theme (fps_erpnext/public/css/fps_midnight.css) is
+ * Only when the app's host theme (fps_erpnext/public/css/fps_theme.css) is
  * missing: mimic what it does around the block -- no white card frame, no
  * extra padding. main.dev.tsx adds this class only in that case.
  */
@@ -250,14 +255,15 @@ body.fps-dev-emulate-host .layout-main-section {
   width: 24px;
   height: 24px;
   border-radius: 6px;
-  background: #fff;
-  color: #1f272e;
+  background: var(--fps-dev-raised);
+  color: var(--fps-dev-text);
   font-size: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(28, 34, 48, 0.2);
 }
 
 /* ---- toast ---------------------------------------------------------------- */
 
+/* Inverse, like the desk's Pearl tooltip: slate with light ink. */
 .fps-dev-toast {
   position: fixed;
   right: 16px;
@@ -266,11 +272,11 @@ body.fps-dev-emulate-host .layout-main-section {
   max-width: min(480px, calc(100vw - 32px));
   padding: 10px 14px;
   border-radius: 10px;
-  background: #e8ecf4;
-  color: #0b0f19;
+  background: #1f2634;
+  color: #f2f4f8;
   font-size: 12px;
   line-height: 1.4;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--fps-dev-shadow-pop);
   opacity: 0;
   transform: translateY(8px);
   transition:
@@ -287,11 +293,12 @@ body.fps-dev-emulate-host .layout-main-section {
 
 /* ---- a stand-in for a Frappe/Bootstrap modal (Quick Entry) --------------- */
 
+/* The desk's Pearl backdrop (#2a3242) at Bootstrap's 0.8 opacity. */
 .fps-dev-modal-backdrop {
   position: fixed;
   inset: 0;
   z-index: 1040;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(42, 50, 66, 0.8);
 }
 
 .fps-dev-modal {
@@ -304,9 +311,9 @@ body.fps-dev-emulate-host .layout-main-section {
   padding: 20px;
   box-sizing: border-box;
   border-radius: 12px;
-  background: #fff;
-  color: #1f272e;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  background: var(--fps-dev-raised);
+  color: var(--fps-dev-text);
+  box-shadow: var(--fps-dev-shadow-pop);
   font-size: 13px;
 }
 
@@ -321,7 +328,7 @@ body.fps-dev-emulate-host .layout-main-section {
   height: 32px;
   margin: 8px 0 16px;
   padding: 0 8px;
-  border: 1px solid #d1d8dd;
+  border: 1px solid var(--fps-dev-border-strong);
   border-radius: 6px;
 }
 
@@ -329,7 +336,7 @@ body.fps-dev-emulate-host .layout-main-section {
   height: 30px;
   padding: 0 12px;
   border-radius: 6px;
-  border: 1px solid #d1d8dd;
-  background: #f4f5f6;
+  border: 1px solid var(--fps-dev-border-strong);
+  background: #f3f5f9;
   cursor: pointer;
 }

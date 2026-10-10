@@ -1,5 +1,5 @@
 /**
- * FPS Command Center — the root of the dark executive dashboard mounted in the
+ * FPS Command Center — the root of the executive dashboard mounted in the
  * FPS Overview Custom HTML Block (see main.tsx for the shadow-root plumbing).
  *
  * Layout (DESIGN.md §8, 12-column bento measured on the dashboard's own width):

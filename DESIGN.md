@@ -1,7 +1,10 @@
 # FPS Command Center — design system
 
-The dark "AI-look" executive theme for the FPS home dashboard in ERPNext
-(Workspace **FPS**, route `/desk/fps`) and the FPS workspace pages around it.
+The "AI-look" executive theme for the FPS home dashboard in ERPNext
+(Workspace **FPS**, route `/desk/fps`) and the FPS workspace pages around it,
+in its **Pearl** finish: a matt, muted blue-grey plane under off-white glass
+cards, slate ink, and Electric Blue / Soft Violet accents stepped deep enough
+to pass on a light surface.
 
 > **Scope rule — presentation only.** Everything this file governs changes how
 > the dashboard *looks*. It never creates, edits, moves, submits or deletes an
@@ -11,8 +14,10 @@ The dark "AI-look" executive theme for the FPS home dashboard in ERPNext
 > a write is out of scope for this system and needs its own review.
 
 Source of truth for the tokens below: `dashboard/src/styles/theme.css`
-(the Tailwind v4 `@theme` block). This document explains them; if the two ever
-disagree, fix the CSS and this file in the same commit.
+(the `:host, .fps-cc` block feeding the Tailwind v4 `@theme`). The desk
+stylesheet `fps_erpnext/public/css/fps_theme.css` carries the same `--fps-*`
+names and values for the pages around the dashboard. This document explains
+them; if any two ever disagree, fix the CSS and this file in the same commit.
 
 ---
 
@@ -20,19 +25,26 @@ disagree, fix the CSS and this file in the same commit.
 
 | Token | Value | Use |
 |---|---|---|
-| `--fps-bg` | `#0B0F19` | Page plane. Slate/charcoal baseline behind everything. |
-| `--fps-surface-1` | `rgba(17, 23, 38, 0.62)` | Glass card (default). Effective colour over the plane ≈ `#0F1422`. |
-| `--fps-surface-2` | `rgba(24, 31, 50, 0.72)` | Raised glass: drawer, tooltip, popover. ≈ `#151B2B`. |
-| `--fps-surface-solid` | `#111726` | Fallback when `backdrop-filter` is unavailable or transparency is reduced. |
-| `--fps-border` | `rgba(255, 255, 255, 0.08)` | The 1px translucent hairline on every glass surface. |
-| `--fps-border-strong` | `rgba(255, 255, 255, 0.14)` | Hover / focus-within border, dividers inside the drawer. |
-| `--fps-highlight` | `rgba(255, 255, 255, 0.06)` | 1px inner top highlight (`inset 0 1px 0`) that sells the glass edge. |
+| `--fps-bg` | `#D9DEE7` | Page plane. Muted blue-grey, OKLCH L 0.90 — matt, never white. |
+| `--fps-surface-1` | `rgba(247, 248, 251, 0.62)` | Glass card (default). Effective colour over the plane ≈ `#ECEEF3`. |
+| `--fps-surface-2` | `rgba(255, 255, 255, 0.78)` | Raised glass: drawer, tooltip, popover. ≈ `#F7F8FA`. |
+| `--fps-surface-solid` | `#F7F8FB` | Fallback when `backdrop-filter` is unavailable or transparency is reduced. |
+| `--fps-surface-inset` | `rgba(28, 34, 48, 0.03)` | Sunken tiles: icon wells, hovered rows. |
+| `--fps-border` | `rgba(28, 34, 48, 0.10)` | The 1px translucent hairline on every glass surface. |
+| `--fps-border-strong` | `rgba(28, 34, 48, 0.18)` | Hover / focus-within border, dividers inside the drawer. |
+| `--fps-highlight` | `rgba(255, 255, 255, 0.70)` | 1px inner top highlight (`inset 0 1px 0`) that sells the glass edge. |
+| `--fps-backdrop` | `rgba(42, 50, 66, 0.45)` | The drawer's page scrim — slate, never black, so the plane stays pearl under it. |
+
+Every translucent value is slate (`#1C2230`, the ink) or white at an alpha,
+never black: on a light plane a black hairline or shadow reads as dirt.
 
 **Ambient light.** Glass needs something to blur. The bento sits on the plane
 with two fixed, very low-alpha radial glows — Electric Blue at the top-left and
-Soft Violet at the top-right, each ≤ 10% alpha. They are decoration only: no
-data is ever encoded in them, and they are removed under
-`prefers-reduced-transparency` and `forced-colors`.
+Soft Violet at the top-right, each ≤ 10% alpha. On the light plane they read as
+a soft tint that darkens the top of the dashboard to ≈ `#C6D3E6`. They are
+decoration only: no data is ever encoded in them, and they are removed under
+`prefers-reduced-transparency` and `forced-colors`. Text that sits directly on
+the plane under a glow should use `--fps-text-secondary` or darker (see §5).
 
 ## 2. Glassmorphism rules
 
@@ -43,28 +55,36 @@ Every card, banner and drawer is a glass surface built the same way:
   background: var(--fps-surface-1);
   backdrop-filter: blur(12px) saturate(140%);
   border: 1px solid var(--fps-border);
-  box-shadow: inset 0 1px 0 var(--fps-highlight), 0 8px 24px rgba(0, 0, 0, 0.32);
+  box-shadow: inset 0 1px 0 var(--fps-highlight), 0 8px 24px rgba(28, 34, 48, 0.08);
   border-radius: 16px;
 }
 ```
 
 1. **Blur is exactly 12px.** Not 8, not 20 — one value so stacked surfaces read
    as one material. Raised surfaces (drawer, tooltip) change the *fill*
-   (`--fps-surface-2`), never the blur.
+   (`--fps-surface-2`) and the *shadow* (the desk's pop shadow,
+   `0 16px 40px rgba(28, 34, 48, 0.16), 0 2px 8px rgba(28, 34, 48, 0.08)`),
+   never the blur.
 2. **Borders are always 1px and translucent** (`--fps-border`). Never a solid
    colour border on glass; a coloured accent is a 2px *top edge* or a glow, not
    the border.
-3. **Write `backdrop-filter` unprefixed** in source. The build (Lightning CSS
+3. **Shadows are slate, soft and short.** `rgba(28, 34, 48, …)` at 0.08 for
+   cards and 0.16 for raised glass. Never `rgba(0, 0, 0, …)`, never a glow
+   under a card: on Pearl depth comes from the white inner highlight and the
+   hairline, the shadow only lifts the edge.
+4. **Write `backdrop-filter` unprefixed** in source. The build (Lightning CSS
    inside Tailwind v4) emits the `-webkit-` prefix; hand-writing both has
    broken builds on this team's other projects.
-4. **Fallbacks are mandatory.**
+5. **Fallbacks are mandatory.**
    `@supports not (backdrop-filter: blur(1px))` and
    `@media (prefers-reduced-transparency: reduce)` swap the fill to
    `--fps-surface-solid`. `@media (forced-colors: active)` drops glows and
    shadows and lets the system colours draw borders.
-5. **Glass never sits on glass more than two deep** (page → card → drawer).
-   Text contrast is measured against the *effective* colour of the deepest
-   surface (`#151B2B`), see §5.
+6. **Glass never sits on glass more than two deep** (page → card → drawer).
+   Text contrast is measured against the *effective* colour of the surface the
+   text sits on: `#ECEEF3` for a card, `#F7F8FA` for raised glass, and the
+   bare plane `#D9DEE7` (`#C6D3E6` under a glow) for text outside any card,
+   see §5.
 
 ## 3. The 8px grid
 
@@ -86,42 +106,53 @@ icon-to-label gaps, badge padding and hairline offsets.
 - Control heights: 32px (compact) and 40px (default). Hit targets ≥ 24px.
 - Phone layout keeps a **16px side gutter** and never scrolls horizontally.
 
-## 4. Executive neon palette
+## 4. Executive palette (Pearl steps)
 
-Validated with the dataviz six-checks validator against the dark surfaces
-`#0F1422` and `#0B0F19` (OKLab ΔE ×100, Machado 2009 CVD simulation):
-**all checks pass** — worst adjacent CVD ΔE **13.5** (target ≥ 8), worst
-normal-vision ΔE **20.6** (floor 15), every slot ≥ 3:1 against the surface.
+Validated with the dataviz six-checks validator in `--mode light` against the
+effective glass card `#ECEEF3` (surface-1 over the plane), the solid card
+`#F7F8FB` and white `#FFFFFF` (popups) (OKLab ΔE ×100, Machado 2009 CVD
+simulation): **all checks pass** — lightness band L 0.43–0.77, chroma ≥ 0.10,
+worst adjacent CVD ΔE **12.3** (deutan; tritan 21.3, target ≥ 8), worst
+normal-vision ΔE **20.2** (floor 15), every slot ≥ 3:1 against the surface.
+On the bare plane `#D9DEE7` cyan is 2.92:1 — a validator WARN, not a fail —
+which is one more reason a chart only ever renders inside a glass card.
 
 ### Roles
 
+Contrast figures are text contrast on the glass card `#ECEEF3`.
+
 | Role | Name | Hex | OKLCH | Where |
 |---|---|---|---|---|
-| **Primary data** | Electric Blue | `#3293FC` | L .66 C .18 h254 | series 1, primary sparklines, focus ring, primary buttons |
-| Electric Blue UI tint | — | `#5AA8FF` | — | links and icons on glass (7.4:1) |
-| **Positive delta** | Mint Green | `#34D399` | — | "up and good" badges, success states (9.6:1) |
-| **AI insights / secondary data** | Soft Violet | `#A78BFA` | — | AI banner accents, insight icons, glow (6.8:1) — UI only, not a chart mark |
-| Soft Violet series step | — | `#7D40C8` | L .52 C .20 h300 | series 2 marks in charts (deeper step so it never collides with blue) |
-| Negative delta | Rose | `#FB7185` | — | "down and bad" badges, critical states (6.8:1) |
-| Warning | Amber | `#FBBF24` | — | warnings, deadlines approaching (11.0:1) |
+| **Primary data** | Electric Blue | `#1D6FD8` | L .55 C .18 h257 | series 1, primary sparklines, focus ring, primary buttons (white on it 4.9:1) |
+| Electric Blue UI step | — | `#1456B8` | L .47 C .17 h259 | links and icons on glass (5.9:1) |
+| **Positive delta** | Mint Green | `#0D6E48` | L .48 C .10 h160 | "up and good" badges, success states (5.4:1) |
+| **AI insights / secondary data** | Soft Violet | `#6D4ACB` | L .52 C .19 h291 | AI banner accents, insight icons, shimmer (5.2:1) — UI only, not a chart mark |
+| Soft Violet series step | — | `#6D1F9D` | L .43 C .19 h308 | series 2 marks in charts and the money role colour (7.8:1; a lightness step below blue so the pair survives every CVD) |
+| Negative delta | Rose | `#B3243E` | L .50 C .18 h17 | "down and bad" badges, critical states (5.6:1; white on it 6.5:1) |
+| Warning | Amber | `#8A5007` | L .49 C .11 h63 | warnings, deadlines approaching (5.6:1) |
 
-Why two violets: at the same lightness Electric Blue and Soft Violet collapse
-to ΔE ≈ 1 for protanopes — they become the same colour. The validated fix keeps
-blue bright (L .66) and steps the *chart* violet down to L .52, so the two
-primary series are separated by lightness, which survives every kind of colour
-blindness. The light Soft Violet stays for UI accents, where it is never the
-only thing telling two data series apart.
+Why two violets: at close lightness Electric Blue and Soft Violet collapse for
+protanopes and deuteranopes — they become the same colour. The validated fix
+keeps blue at L .55 and steps the *chart* violet down to L .43 (and round to a
+more magenta hue), so the two primary series are separated by lightness, which
+survives every kind of colour blindness. The UI violet stays for accents, where
+it is never the only thing telling two data series apart.
+
+The Pearl trade-off: on a light surface every accent has to go deep to reach
+4.5:1, so status colours read as ink, not light (amber is a brown, mint a
+forest green). That is by design — do not brighten them for "pop"; a brighter
+step fails the text check.
 
 ### Categorical order (charts) — fixed, never cycled
 
 | Slot | Hue | Hex |
 |---|---|---|
-| 1 | Electric Blue | `#3293FC` |
-| 2 | Soft Violet (series) | `#7D40C8` |
-| 3 | Cyan | `#1D97A3` |
-| 4 | Amber (series) | `#C8800D` |
+| 1 | Electric Blue | `#1D6FD8` |
+| 2 | Soft Violet (series) | `#6D1F9D` |
+| 3 | Cyan | `#008F90` |
+| 4 | Amber (series) | `#A26000` |
 
-- A fifth series folds into **Other** (`--fps-series-other: #4B5468`). Never
+- A fifth series folds into **Other** (`--fps-series-other: #6B7587`). Never
   generate a hue.
 - Colour follows the entity, never its rank: a filter that hides a series must
   not repaint the survivors (map series → slot by key, not by index).
@@ -144,13 +175,13 @@ computed against a zero or negative base (show "new" instead of `+∞%`).
 
 ## 5. Ink and type
 
-| Token | Hex | Contrast on `#151B2B` (worst surface) |
+| Token | Hex | Contrast on `#ECEEF3` (glass card) · `#D9DEE7` (plane) |
 |---|---|---|
-| `--fps-text` | `#E8ECF4` | 14.5:1 |
-| `--fps-text-secondary` | `#A9B2C6` | 8.1:1 |
-| `--fps-text-muted` | `#7C869C` | 4.7:1 (axis ticks, captions — still ≥ 4.5) |
-| `--fps-grid` | `#1E2638` | gridlines (decorative) |
-| `--fps-axis` | `#2A3347` | baseline / axis rule (decorative) |
+| `--fps-text` | `#1C2230` | 13.7:1 · 11.8:1 |
+| `--fps-text-secondary` | `#3F4859` | 7.9:1 · 6.8:1 |
+| `--fps-text-muted` | `#566070` | 5.5:1 · 4.7:1 (axis ticks, captions — still ≥ 4.5; under an ambient glow the plane darkens to `#C6D3E6` and this drops to 4.2:1, so a caption that sits on the bare plane uses `--fps-text-secondary`) |
+| `--fps-grid` | `#D6DBE4` | gridlines (decorative) |
+| `--fps-axis` | `#B8C1CE` | baseline / axis rule (decorative) |
 
 - **Typeface:** the desk's Inter (`InterVariable, Inter, system-ui, sans-serif`)
   inherited into the shadow root — no extra font download. No display or
@@ -202,7 +233,7 @@ computed against a zero or negative base (show "new" instead of `+∞%`).
 | Pipeline stages (the existing Overview tiles) | 4 | 12 | 12 |
 
 Below the bento the page keeps its existing blocks (Job Tracker, quick list),
-re-themed by the FPS Midnight desk theme — their content and behaviour are
+re-themed by the FPS Pearl desk theme — their content and behaviour are
 unchanged.
 
 ## 9. Desk integration (how the theme reaches ERPNext)
@@ -235,26 +266,33 @@ Two independent pieces, both presentation only.
    Accounts User / Accounts Manager / System Manager) plus the existing
    `pipeline.get_overview` for the stage strip.
 
-**B. FPS Midnight — every page under the FPS tile.**
+**B. FPS Pearl — every page under the FPS tile.**
 
-1. `public/js/fps_midnight.js` (via `app_include_js`) only toggles
-   `html[data-fps-theme="midnight"]`. It is on while the active sidebar is the
+1. `public/js/fps_theme.js` (via `app_include_js`) only toggles
+   `html[data-fps-theme="pearl"]`. It is on while the active sidebar is the
    FPS sidebar ("FPS", or a per-user "FPS-<email>" copy) or the route is one of
    the FPS workspaces / Payment Receipts. The sidebar — not the URL — is what
    "under the FPS tile" means in v16: Sales Invoice opened from the FPS tile is
-   dark, the same list opened from Accounting is not.
-2. `public/css/fps_midnight.css` (via `app_include_css`) is scoped entirely under
+   Pearl, the same list opened from Accounting is stock ERPNext.
+2. `public/css/fps_theme.css` (via `app_include_css`) is scoped entirely under
    that attribute. It re-points Frappe's own CSS variables to these tokens (they
    also inherit into the Job Tracker and Customs Tracker blocks), keeps every
    sticky or layered surface opaque, and uses real `backdrop-filter` glass only
    on workspace widgets — never on forms, grids, list/report views or anything
    that hosts a dropdown.
-3. Printing is untouched: print previews restore the light tokens, and print
+3. Printing is untouched: print previews restore the stock tokens, and print
    iframes / PDFs never load desk CSS at all.
 4. Colours stored in records (number-card and chart colours) are never changed;
    the theme only lifts known low-contrast values on screen.
-5. Both files are versioned with `?v=N` in `hooks.py`. Bump it on every change —
+5. Both files are versioned with `?v=N` in `hooks.py`
+   (`fps_theme.css?v=1`, `fps_theme.js?v=1`). Bump it on every change —
    `/assets` is cached for a year.
+6. The attribute name is palette-neutral on purpose; its value names the
+   palette. The previous palette, "Midnight" (plane `#0B0F19`, neon accents,
+   files `fps_midnight.css/js`), is preserved in git history (commit `896a324`)
+   and can be restored by swapping the two token blocks — the `:host, .fps-cc`
+   block in `dashboard/src/styles/theme.css` and the `html[data-fps-theme]`
+   token rule in `fps_theme.css` — and bumping `?v=`.
 
 ## 10. Guardrails for future changes (read before prompting)
 
@@ -262,6 +300,9 @@ Two independent pieces, both presentation only.
   methods; quick actions only *navigate* (open a filtered list, a report, or a
   blank "new" form that the user saves themselves).
 - Don't hard-code a colour in a component. Use a token; add a token here first.
+- Don't change a token in one sheet only: `theme.css` and `fps_theme.css`
+  carry the same `--fps-*` values. Change both in one commit, re-validate the
+  chart slots on the new card colour, and bump `?v=`.
 - Don't add a 5th chart series colour, a second y-axis, or a pie/donut.
 - Don't show money to users without an Accounts role — the API omits those
   KPIs, and the UI must render whatever subset it receives without gaps.

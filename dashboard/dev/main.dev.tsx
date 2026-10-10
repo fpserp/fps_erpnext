@@ -59,14 +59,15 @@ const viewer: Viewer = params.get("viewer") === "ops" ? "ops" : "finance";
   document.head.append(style);
 }
 
-/* ---- host-page CSS: the app's real FPS Midnight desk theme ---------------- */
+/* ---- host-page CSS: the app's real FPS Pearl desk theme ------------------- */
 
-// fps_midnight.css (hooks.py app_include_css) scopes every rule under
-// html[data-fps-theme="midnight"], which public/js/fps_midnight.js sets on the
-// live desk while the FPS sidebar or an FPS workspace route is active. The
-// harness is always "on the FPS workspace" (body[data-route="Workspaces/FPS"]),
-// so it sets the same attribute directly instead of loading that script.
-const hostCss = import.meta.glob<string>("../../fps_erpnext/public/css/fps_midnight.css", {
+// fps_theme.css (hooks.py app_include_css) scopes every rule under
+// html[data-fps-theme="pearl"], which public/js/fps_theme.js sets on the live
+// desk while the FPS sidebar or an FPS workspace route is active. The harness
+// is always "on the FPS workspace" (body[data-route="Workspaces/FPS"]), so it
+// sets the same attribute directly instead of loading that script. The
+// attribute's value names the palette; it must match the sheet's selector.
+const hostCss = import.meta.glob<string>("../../fps_erpnext/public/css/fps_theme.css", {
   query: "?url",
   import: "default",
   eager: true,
@@ -78,7 +79,7 @@ if (hostCssUrl) {
   link.href = hostCssUrl;
   link.setAttribute("data-fps-dev", "host-css");
   document.head.append(link);
-  document.documentElement.setAttribute("data-fps-theme", "midnight");
+  document.documentElement.setAttribute("data-fps-theme", "pearl");
 } else {
   document.body.classList.add("fps-dev-emulate-host");
 }

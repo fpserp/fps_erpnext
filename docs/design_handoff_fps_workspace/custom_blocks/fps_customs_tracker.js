@@ -12,8 +12,9 @@
 // THEME. This block renders in a shadow root, which the desk stylesheets
 // cannot reach -- only inherited CSS custom properties cross into it. The
 // colours live in fps_customs_tracker.css as var(--fps-*, <light colour>):
-// the FPS Midnight theme (public/css/fps_midnight.css) supplies dark-safe
-// values; anywhere else the fallback is the block's original light colour.
+// the FPS desk theme (public/css/fps_theme.css) supplies values stepped for
+// its own surfaces; anywhere else the fallback is the block's original light
+// colour.
 //
 // LIVE REFRESH. Polls every 30s for new/changed rows -- see fps_overview.js
 // for why the interval checks the block's own node is still attached before

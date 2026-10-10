@@ -1,7 +1,7 @@
-// FPS Midnight -- decides when the dark FPS desk theme is on.
+// FPS Pearl -- decides when the FPS desk theme is on.
 //
-// It sets html[data-fps-theme="midnight"] while the viewer is "under the FPS
-// app tile" and removes it everywhere else; css/fps_midnight.css scopes every
+// It sets html[data-fps-theme="pearl"] while the viewer is "under the FPS
+// app tile" and removes it everywhere else; css/fps_theme.css scopes every
 // rule under that attribute. That is ALL this file does: no frappe.call, no
 // frappe.db, no writes of any kind, nothing sent anywhere.
 //
@@ -36,8 +36,13 @@
 	"use strict";
 
 	var ATTR = "data-fps-theme";
-	var VALUE = "midnight";
-	var STORE_KEY = "fps_midnight_last";
+	// The VALUE names the palette the stylesheet carries ("pearl": light plane,
+	// off-white glass, slate ink). A new palette is a new value plus a new
+	// token block in css/fps_theme.css, never an edit to the user's own theme.
+	var VALUE = "pearl";
+	// Named after the file, not the palette: the stored value is only
+	// {url, on}, so a palette change never invalidates it.
+	var STORE_KEY = "fps_theme_last";
 
 	// "FPS", or a per-user copy such as "FPS-ops@fastplanet.ae".
 	var FPS_SIDEBAR = /^fps(-[^\s@]+@\S+)?$/i;

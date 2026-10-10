@@ -1,10 +1,11 @@
 # FPS Command Center (`dashboard/`)
 
-The dark "AI-look" executive dashboard on the FPS home workspace in ERPNext
-(Workspace **FPS**, `/desk/fps`). It is a React 19 + shadcn/ui + Tailwind v4 +
-recharts app, prebuilt into **one** ES module and mounted inside the existing
-Custom HTML Block **FPS Overview**. Design tokens and rules: `../DESIGN.md`.
-Payload contract: `src/types/dashboard.ts`.
+The "AI-look" executive dashboard on the FPS home workspace in ERPNext
+(Workspace **FPS**, `/desk/fps`), in the **FPS Pearl** finish: a matt
+blue-grey plane, off-white glass cards, slate ink. It is a React 19 +
+shadcn/ui + Tailwind v4 + recharts app, prebuilt into **one** ES module and
+mounted inside the existing Custom HTML Block **FPS Overview**. Design tokens
+and rules: `../DESIGN.md`. Payload contract: `src/types/dashboard.ts`.
 
 ## The presentation-only rule
 
@@ -23,6 +24,28 @@ never sends mail or messages.
   method, POST) to `src/lib/frappe.ts`. A change that needs a write is out of
   scope and needs its own review.
 
+## Switching palettes
+
+The theme is palette-neutral: the `data-fps-theme` attribute stays, its
+**value** names the palette (`pearl` today), and the files keep their names
+(`fps_theme.css` / `fps_theme.js`). The tokens live in **two** files that must
+carry the same `--fps-*` names and values, because the dashboard's shadow roots
+and the desk around them cannot see each other's CSS:
+
+- `src/styles/theme.css` — the `:host, .fps-cc` block, compiled into the
+  bundle and adopted by `<fps-command-center>` and `<fps-cc-portal>`;
+- `../fps_erpnext/public/css/fps_theme.css` — the `html[data-fps-theme="pearl"]`
+  token rule for every page under the FPS tile.
+
+To change the palette: edit both token blocks in one commit, re-run the chart
+slots through the dataviz validator against the new effective card colour
+(surface-1 over the plane; `--mode light` or `dark` to match
+`color-scheme`), update `../DESIGN.md` §1, §2, §4, §5 with the new numbers,
+rebuild (`npm run build` stamps a new `?v=` into the block loader) and bump
+`?v=` on `fps_theme.css` and `fps_theme.js` in `hooks.py` — `/assets` is cached
+for a year. The previous palette, Midnight (plane `#0B0F19`), is in git history
+(commit 896a324) and comes back by swapping the two token blocks.
+
 ## Architecture
 
 ```
@@ -33,12 +56,12 @@ Workspace FPS  →  Custom HTML Block "FPS Overview"
                           │    └─ <div data-fps="cc-root">      ← mount point (its placeholder is swapped out while mounted)
                           │         └─ <fps-command-center>     ← our custom element, OWN open shadow root
                           │              #shadow-root: adopted CSS (or <style>), keydown guard
-                          │                └─ <div class="fps-cc dark …">   ← app root (React)
+                          │                └─ <div class="fps-cc …">        ← app root (React)
                           └─ <style> block CSS, <script> block loader
 document.body
   └─ <fps-cc-portal style="position:fixed;top:0;left:0;width:0;height:0;overflow:visible;z-index:1030">
        #shadow-root: same CSS, keydown guard
-         └─ <div class="fps-cc dark fps-cc-portal …">   ← Radix portal container (drawer, tooltips)
+         └─ <div class="fps-cc fps-cc-portal …">        ← Radix portal container (drawer, tooltips)
 document.head: untouched (no @property registrations, no styles)
 ```
 
@@ -106,7 +129,7 @@ dashboard never renders in that root, and never touches it:
    z-index — can paint above the desk's sticky page head (6), navbar (1019) or
    sidebar (1020). Radix portals (the drawer, tooltips) therefore render into
    ONE `<fps-cc-portal>` appended to `document.body`, with its own open shadow
-   root, the same stylesheet and a `<div class="fps-cc dark fps-cc-portal">`
+   root, the same stylesheet and a `<div class="fps-cc fps-cc-portal">`
    container (`usePortalContainer()`). Its inline style
    (`position:fixed; top:0; left:0; width:0; height:0; overflow:visible;
    z-index:1030`) keeps it out of the body's flex row and stacks it above the
@@ -268,7 +291,7 @@ npm run dev        # http://localhost:5199
 
 `index.html` → `dev/main.dev.tsx` installs `dev/mock-frappe.ts` as
 `window.frappe` and builds a page that looks like the desk around the block:
-the `#0B0F19` plane, a fake 220 px sidebar (hidden under 768 px) and sticky
+the `#D9DEE7` Pearl plane, a fake 220 px sidebar (hidden under 768 px) and sticky
 navbar (`dev/desk-shell.css`), the real workspace wrappers including
 `.codex-editor`, and a custom element with an **open shadow root whose first
 child is** `<link rel="stylesheet" href="/dev-vendor/desk.bundle.css">`, then
@@ -294,9 +317,9 @@ off at any width.
   devDependency (latin + latin-ext, wght + opsz axes). It is imported only from
   `dev/`, never by `src/`, so it never reaches the bundle.
 - The harness loads the app's real host-page theme,
-  `fps_erpnext/public/css/fps_midnight.css`, and switches it on the way
-  `public/js/fps_midnight.js` does on the live desk
-  (`html[data-fps-theme="midnight"]`); if the file is missing it emulates it.
+  `fps_erpnext/public/css/fps_theme.css`, and switches it on the way
+  `public/js/fps_theme.js` does on the live desk
+  (`html[data-fps-theme="pearl"]`); if the file is missing it emulates it.
 - Toolbar (outside the shadow root): viewer finance/ops, **Leave FPS route** /
   Return (hides the page and fires router `change`, then reports whether the
   drawer and any tooltip closed), remount (re-runs the block script on a new
@@ -359,7 +382,7 @@ dashboard/
 └─ src/
    ├─ main.tsx             mount()/version: <fps-command-center>, portal host, keydown guard, registry
    ├─ types/dashboard.ts   payload contract with fps_erpnext/api/command_center.py
-   ├─ styles/theme.css     Tailwind v4 theme = DESIGN.md tokens
+   ├─ styles/theme.css     Tailwind v4 theme = DESIGN.md tokens (Pearl; twin of ../fps_erpnext/public/css/fps_theme.css)
    ├─ lib/frappe.ts        read-only desk bridge (call, navigate, newDoc, roles, routes)
    ├─ lib/format.ts        number/date formatting (en-US, U+2212, AED 12.9K)
    ├─ lib/shadow.tsx       ShadowProvider, usePortalContainer, useHostVisible, LayerDismissProvider

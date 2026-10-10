@@ -4,7 +4,7 @@
 
    THEME. Shadow DOM: only inherited custom properties reach this stylesheet.
    Every colour reads a desk variable (var(--card-bg), var(--text-color) ...)
-   or an FPS Midnight bridge token (--fps-*, set by fps_midnight.css), each
+   or an FPS theme bridge token (--fps-*, set by public/css/fps_theme.css), each
    with this block's original light value as the fallback. On the FPS
    workspace the glass widget box is the card, so --fps-block-bg/-border turn
    this block's own fill and border off. */
@@ -15,7 +15,8 @@
 	background: var(--fps-block-bg, var(--card-bg, #fff));
 	overflow: hidden;
 	/* Native <select> popups and the search clear button follow this.
-	   Inherits "dark" from the midnight theme; unset (so inherited) elsewhere. */
+	   Follows the FPS theme's --fps-color-scheme (light under FPS Pearl); with
+	   no theme the var is unset, so it inherits. */
 	color-scheme: var(--fps-color-scheme);
 }
 
@@ -140,8 +141,8 @@
      done  the status beside it says Completed / Not Applicable
      none  no clearance date, so no clock to run
 
-   warn/late use the same tones as the status pills: a tinted fill with light
-   ink under the midnight theme (>= 6.5:1), the old light pairs elsewhere. */
+   warn/late use the same tones as the status pills: a tinted fill with deep
+   ink under the FPS theme (>= 5:1 under Pearl), the old light pairs elsewhere. */
 .fps-ct-due {
 	font-family: var(--font-stack-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
 	font-size: 11.5px;
@@ -249,8 +250,8 @@
 	color: var(--fps-pill-fg, #475569);
 }
 
-/* Status tones (same set as the Job Tracker). Midnight: a tinted translucent
-   fill with light ink. Fallbacks: the original light pairs. */
+/* Status tones (same set as the Job Tracker). Under the FPS theme: a tinted
+   translucent fill with deep ink (Pearl). Fallbacks: the original light pairs. */
 .fps-tone-orange {
 	--fps-pill-bg: var(--fps-tone-orange-bg, #fff7ed);
 	--fps-pill-fg: var(--fps-tone-orange-fg, #b45309);

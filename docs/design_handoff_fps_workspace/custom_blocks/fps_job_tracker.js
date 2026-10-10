@@ -6,9 +6,9 @@
 //
 // THEME. This block renders in a shadow root, which the desk stylesheets
 // cannot reach -- only inherited CSS custom properties cross into it. So the
-// colours below are var(--fps-*, <light colour>): under the FPS Midnight theme
-// (public/css/fps_midnight.css) the --fps-* tokens supply dark-safe values;
-// anywhere else the fallback is the block's original light colour.
+// colours below are var(--fps-*, <light colour>): under the FPS desk theme
+// (public/css/fps_theme.css) the --fps-* tokens supply values stepped for its
+// own surfaces; anywhere else the fallback is the block's original light colour.
 //
 // LIVE REFRESH. Polls every 30s -- see fps_overview.js for why the interval
 // checks the block's own node is still attached before each tick rather than
@@ -28,8 +28,8 @@
 	// Customer palette. Deliberately distinct from the status hues, which
 	// carry fixed meanings -- customer identity and job status must not be
 	// confusable for one another. Slot order is unchanged, so a customer keeps
-	// its slot; the midnight values are the same hue families lifted to >= 5.8:1
-	// on the dark card.
+	// its slot; the theme values are the same hue families, stepped to read on
+	// the theme's card (>= 4.5:1 under Pearl).
 	var PALETTE = [
 		"var(--fps-cust-1, #0B4FE0)", "var(--fps-cust-2, #22D3EE)",
 		"var(--fps-cust-3, #8F4CFF)", "var(--fps-cust-4, #0EA5E9)",

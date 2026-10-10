@@ -98,10 +98,11 @@ const PORTAL_TAG = "fps-cc-portal";
  * through shadow boundaries: tracking and alignment are reset to the design's,
  * and the optical size is pinned to the desk's so Inter renders identically
  * inside and outside the dashboard (Tailwind's preflight would reset it to
- * "normal" on :host).
+ * "normal" on :host). No `dark` class: Pearl is a light scheme (theme.css sets
+ * color-scheme: light), so shadcn's dark: variants must stay off.
  */
-const APP_ROOT_CLASS = "fps-cc dark tracking-normal text-start [font-variation-settings:'opsz'_24]";
-const PORTAL_ROOT_CLASS = "fps-cc dark fps-cc-portal tracking-normal text-start [font-variation-settings:'opsz'_24]";
+const APP_ROOT_CLASS = "fps-cc tracking-normal text-start [font-variation-settings:'opsz'_24]";
+const PORTAL_ROOT_CLASS = "fps-cc fps-cc-portal tracking-normal text-start [font-variation-settings:'opsz'_24]";
 
 /** Inline, so no desk stylesheet can move it: fixed, no box, above the chrome, below modals. */
 const PORTAL_HOST_STYLE = "position:fixed;top:0;left:0;width:0;height:0;overflow:visible;z-index:1030";

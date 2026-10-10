@@ -7,6 +7,12 @@
  * also why the variables hang off :host (the shadow hosts) and .fps-cc (the
  * app and portal roots) instead of :root.
  *
+ * Palette: FPS Pearl (DESIGN.md). The same --fps-* names and values sit in
+ * fps_erpnext/public/css/fps_theme.css for the desk around the dashboard, so
+ * the two render as one material: change a value in both files, in one
+ * commit. The previous palette (Midnight, plane #0b0f19) is in git history
+ * (commit 896a324) and comes back by swapping this token block and that one.
+ *
  * Class detection: source(none) turns Tailwind's automatic scan of the Vite
  * root off (it would read dev/, scripts/ and build output too); the only
  * source is src/ (this file's parent folder).
@@ -20,38 +26,41 @@
 
 @source "../";
 
+/* Kept for shadcn's dark: variants; no root carries .dark, so they stay off. */
 @custom-variant dark (&:is(.dark *));
 
 :host,
 .fps-cc {
   /* 1. Baseline and surfaces */
-  --fps-bg: #0b0f19;
-  --fps-surface-1: rgba(17, 23, 38, 0.62);
-  --fps-surface-2: rgba(24, 31, 50, 0.72);
-  --fps-surface-solid: #111726;
-  --fps-surface-inset: rgba(255, 255, 255, 0.03);
-  --fps-border: rgba(255, 255, 255, 0.08);
-  --fps-border-strong: rgba(255, 255, 255, 0.14);
-  --fps-highlight: rgba(255, 255, 255, 0.06);
+  --fps-bg: #d9dee7;
+  --fps-surface-1: rgba(247, 248, 251, 0.62);
+  --fps-surface-2: rgba(255, 255, 255, 0.78);
+  --fps-surface-solid: #f7f8fb;
+  --fps-surface-inset: rgba(28, 34, 48, 0.03);
+  --fps-border: rgba(28, 34, 48, 0.1);
+  --fps-border-strong: rgba(28, 34, 48, 0.18);
+  --fps-highlight: rgba(255, 255, 255, 0.7);
+  /* The drawer's page scrim: slate, not black, so the plane stays pearl under it. */
+  --fps-backdrop: rgba(42, 50, 66, 0.45);
 
-  /* 4. Executive neon palette (validated, see DESIGN.md §4) */
-  --fps-electric: #3293fc;
-  --fps-electric-ui: #5aa8ff;
-  --fps-mint: #34d399;
-  --fps-violet: #a78bfa;
-  --fps-violet-series: #7d40c8;
-  --fps-cyan: #1d97a3;
-  --fps-amber-series: #c8800d;
-  --fps-rose: #fb7185;
-  --fps-amber: #fbbf24;
-  --fps-series-other: #4b5468;
+  /* 4. Executive palette, Pearl steps (validated on the glass card #eceef3, see DESIGN.md §4) */
+  --fps-electric: #1d6fd8;
+  --fps-electric-ui: #1456b8;
+  --fps-mint: #0d6e48;
+  --fps-violet: #6d4acb;
+  --fps-violet-series: #6d1f9d;
+  --fps-cyan: #008f90;
+  --fps-amber-series: #a26000;
+  --fps-rose: #b3243e;
+  --fps-amber: #8a5007;
+  --fps-series-other: #6b7587;
 
   /* 5. Ink */
-  --fps-text: #e8ecf4;
-  --fps-text-secondary: #a9b2c6;
-  --fps-text-muted: #7c869c;
-  --fps-grid: #1e2638;
-  --fps-axis: #2a3347;
+  --fps-text: #1c2230;
+  --fps-text-secondary: #3f4859;
+  --fps-text-muted: #566070;
+  --fps-grid: #d6dbe4;
+  --fps-axis: #b8c1ce;
 
   /* shadcn/ui semantic variables, mapped onto the FPS tokens */
   --radius: 1rem;
@@ -62,12 +71,12 @@
   --popover: var(--fps-surface-2);
   --popover-foreground: var(--fps-text);
   --primary: var(--fps-electric);
-  --primary-foreground: #04101f;
-  --secondary: rgba(255, 255, 255, 0.06);
+  --primary-foreground: #ffffff;
+  --secondary: rgba(28, 34, 48, 0.06);
   --secondary-foreground: var(--fps-text);
-  --muted: rgba(255, 255, 255, 0.04);
+  --muted: rgba(28, 34, 48, 0.04);
   --muted-foreground: var(--fps-text-secondary);
-  --accent: rgba(90, 168, 255, 0.12);
+  --accent: rgba(29, 111, 216, 0.1);
   --accent-foreground: var(--fps-text);
   --destructive: var(--fps-rose);
   --border: var(--fps-border);
@@ -79,7 +88,7 @@
   --chart-4: var(--fps-amber-series);
   --chart-5: var(--fps-series-other);
 
-  color-scheme: dark;
+  color-scheme: light;
   color: var(--fps-text);
   font-family: InterVariable, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   font-feature-settings: "cv11", "ss01";
@@ -117,6 +126,7 @@
   --color-surface-raised: var(--fps-surface-2);
   --color-surface-solid: var(--fps-surface-solid);
   --color-surface-inset: var(--fps-surface-inset);
+  --color-backdrop: var(--fps-backdrop);
   --color-hairline: var(--fps-border);
   --color-hairline-strong: var(--fps-border-strong);
   --color-electric: var(--fps-electric);
@@ -145,14 +155,19 @@
   --ease-fps: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* 2. Glass — the one material every card, banner and drawer is made of. */
+/*
+ * 2. Glass — the one material every card, banner and drawer is made of. The
+ * shadows are slate (the ink colour), never black: on a light plane a black
+ * glow reads as dirt. Raised glass carries the desk's pop shadow so the
+ * drawer and tooltips match the desk's own popups.
+ */
 @utility glass {
   background: var(--fps-surface-1);
   backdrop-filter: blur(12px) saturate(140%);
   border: 1px solid var(--fps-border);
   box-shadow:
     inset 0 1px 0 var(--fps-highlight),
-    0 8px 24px rgba(0, 0, 0, 0.32);
+    0 8px 24px rgba(28, 34, 48, 0.08);
 }
 
 @utility glass-raised {
@@ -161,7 +176,8 @@
   border: 1px solid var(--fps-border-strong);
   box-shadow:
     inset 0 1px 0 var(--fps-highlight),
-    0 16px 48px rgba(0, 0, 0, 0.48);
+    0 16px 40px rgba(28, 34, 48, 0.16),
+    0 2px 8px rgba(28, 34, 48, 0.08);
 }
 
 @supports not (backdrop-filter: blur(1px)) {

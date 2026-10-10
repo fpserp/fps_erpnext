@@ -6,7 +6,7 @@
 
    THEME. Shadow DOM: only inherited custom properties reach this stylesheet.
    Every colour reads a desk variable (var(--card-bg), var(--text-color) ...)
-   or an FPS Midnight bridge token (--fps-*, set by fps_midnight.css), each
+   or an FPS theme bridge token (--fps-*, set by public/css/fps_theme.css), each
    with this block's original light value as the fallback. On the FPS
    workspace the glass widget box is the card, so --fps-block-bg/-border turn
    this block's own fill and border off. */
@@ -16,7 +16,8 @@
 	border-radius: var(--fps-block-radius, 10px);
 	background: var(--fps-block-bg, var(--card-bg, #fff));
 	overflow: hidden;
-	/* Inherits "dark" from the midnight theme; unset (so inherited) elsewhere. */
+	/* Follows the FPS theme's --fps-color-scheme (light under FPS Pearl); with
+	   no theme the var is unset, so it inherits. */
 	color-scheme: var(--fps-color-scheme);
 }
 
@@ -172,8 +173,9 @@ td.fps-jt-cust {
 	color: var(--fps-pill-fg, #475569);
 }
 
-/* Stage tones. Midnight: a tinted translucent fill with light ink (>= 6.3:1
-   on the card and on a hovered row). Fallbacks: the original light pairs. */
+/* Stage tones. Under the FPS theme: a tinted translucent fill with deep ink
+   (>= 5:1 on the card and on a hovered row under Pearl). Fallbacks: the
+   original light pairs. */
 .fps-tone-blue {
 	--fps-pill-bg: var(--fps-tone-blue-bg, #eff6ff);
 	--fps-pill-fg: var(--fps-tone-blue-fg, #1d4ed8);
