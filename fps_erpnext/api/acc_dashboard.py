@@ -317,7 +317,10 @@ def _read_gl(company, as_of, statements=None):
 
 def _gl_sums(company, accounts, *, to_date, from_date=None, by_voucher_type=False):
 	"""{account: {"debit", "credit"}} from GL Entry, cancelled entries excluded.
-	by_voucher_type adds "voucher_types": {voucher_type: {"debit", "credit"}}."""
+	by_voucher_type adds "voucher_types": {voucher_type: {"debit", "credit"}} to
+	every requested account, empty (and zero sums) for one with no rows in the
+	window: vat_figures splits by voucher type only when every VAT row has the
+	split, and on 14 Oct 2026 Sales Taxes Receivables had no rows in the quarter."""
 	if not accounts:
 		return {}
 	from frappe.query_builder.functions import Sum
@@ -334,7 +337,8 @@ def _gl_sums(company, accounts, *, to_date, from_date=None, by_voucher_type=Fals
 	)
 	if from_date:
 		query = query.where(gle.posting_date >= from_date)
-	out = {}
+	out = ({a: {"debit": 0, "credit": 0, "voucher_types": {}} for a in accounts}
+	       if by_voucher_type else {})
 	for r in query.groupby(*columns).run(as_dict=True):
 		s = out.setdefault(r.get("account"), {"debit": 0, "credit": 0})
 		s["debit"] += r.get("debit") or 0

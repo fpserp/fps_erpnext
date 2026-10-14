@@ -14,12 +14,15 @@ the drawer, the role gate of fps_erpnext/api/acc_dashboard.py (with a stand-in
 frappe), and drift checks against dashboard/src/types/acc.ts.
 """
 
+import contextlib
 import json
 import os
 import re
 import sys
+import types
 import unittest
 from datetime import date
+from unittest import mock
 
 if __package__ in (None, ""):
 	sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
@@ -1056,6 +1059,80 @@ class TestMetricDetail(unittest.TestCase):
 # The API module: role gate, cache, reads (stand-in frappe)
 # --------------------------------------------------------------------------
 
+class FakeGlField:
+	"""A GL Entry column in a frappe.qb condition: (op, field, value)."""
+
+	def __init__(self, name):
+		self.name = name
+
+	def __eq__(self, value):
+		return ("=", self.name, value)
+
+	def __le__(self, value):
+		return ("<=", self.name, value)
+
+	def __ge__(self, value):
+		return (">=", self.name, value)
+
+	def isin(self, values):
+		return ("in", self.name, list(values))
+
+	def as_(self, alias):
+		return self
+
+	__hash__ = object.__hash__
+
+
+class FakeGlQuery:
+	"""frappe.qb over GL Entry rows, for _gl_sums: applies each condition to the
+	rows that have its field and sums debit / credit per GROUP BY key, as SQL
+	would. Every other table has no rows."""
+
+	OPS = {"=": lambda a, b: a == b, "<=": lambda a, b: a <= b, ">=": lambda a, b: a >= b,
+	       "in": lambda a, b: a in b}
+
+	def __init__(self, rows):
+		self.rows, self.conditions, self.group = rows, [], []
+
+	def select(self, *columns):
+		return self
+
+	def where(self, condition):
+		self.conditions.append(condition)
+		return self
+
+	def groupby(self, *columns):
+		self.group = [c.name for c in columns]
+		return self
+
+	def run(self, as_dict=False):
+		out = {}
+		for r in self.rows:
+			if all(self.OPS[op](r[f], v) for op, f, v in self.conditions if f in r):
+				key = tuple(r.get(c) for c in self.group)
+				s = out.setdefault(key, dict(zip(self.group, key), debit=0, credit=0))
+				s["debit"] += r["debit"]
+				s["credit"] += r["credit"]
+		return list(out.values())
+
+
+@contextlib.contextmanager
+def gl_entries(api, rows):
+	"""Run the module's real _gl_sums against these GL Entry rows."""
+	functions = types.ModuleType("frappe.query_builder.functions")
+	functions.Sum = functions.Count = lambda field: field
+	builder = types.ModuleType("frappe.query_builder")
+	builder.functions = functions
+	api.frappe.qb = types.SimpleNamespace(
+		DocType=lambda doctype: types.SimpleNamespace(
+			doctype=doctype, **{f: FakeGlField(f) for f in ("account", "voucher_type", "debit", "credit",
+			                                                "company", "is_cancelled", "posting_date")}),
+		from_=lambda table: FakeGlQuery(rows if table.doctype == "GL Entry" else []))
+	with mock.patch.dict(sys.modules, {"frappe.query_builder": builder,
+	                                   "frappe.query_builder.functions": functions}):
+		yield
+
+
 class TestApiGate(unittest.TestCase):
 	def setUp(self):
 		from fps_erpnext.tests import fake_frappe
@@ -1129,6 +1206,38 @@ class TestApiGate(unittest.TestCase):
 			self.assertIs(again, p)    # served from the cache the second time
 			self.assertIn(("cache_set", "fps_acc_dashboard:v1:dashboard:30d", user), fake.calls)
 			self.assertEqual(sum(1 for c in fake.calls if c[0] == "cache_set"), 1)
+
+	def test_vat_input_account_without_rows_still_splits_by_voucher_type(self):
+		# 14 Oct 2026 live: the quarter's one input VAT posting (AED 99,
+		# FPS/PI/2610/461) sat on "VAT 5%" and Sales Taxes Receivables had no GL
+		# rows in the quarter. Its row must still carry an (empty) voucher-type
+		# split, or vat_figures falls back to the account split: Input VAT AED 0,
+		# the 99 netted into output, and "No input VAT is posted".
+		vat, receivables = "VAT 5% - TC", "Sales Taxes Receivables - TC"
+		rows = [{"account": vat, "voucher_type": "Sales Invoice", "posting_date": d("2026-08-31"),
+		         "debit": 0, "credit": 24254.95},
+		        {"account": vat, "voucher_type": "Purchase Invoice", "posting_date": d("2026-09-30"),
+		         "debit": 99, "credit": 0},
+		        # Before the quarter: not a row in the window.
+		        {"account": receivables, "voucher_type": "Purchase Invoice", "posting_date": d("2026-06-30"),
+		         "debit": 500, "credit": 0}]
+		fake = self.fake("agam@example.com", ["Accounts Manager"])
+		with fake.installed() as mods:
+			api = mods["acc_dashboard"]
+			api._purchase_totals = lambda company, from_date, to_date: {"count": 265, "net": 277918.65, "tax": 99}
+			with gl_entries(api, rows):
+				sums = api._gl_sums(COMPANY, [vat, receivables], from_date=d("2026-07-01"),
+				                    to_date=d("2026-09-30"), by_voucher_type=True)
+				p = api.get_dashboard("30d")
+		self.assertEqual(sums[receivables], {"debit": 0, "credit": 0, "voucher_types": {}})
+		self.assertEqual(sums[vat]["voucher_types"], {"Sales Invoice": {"debit": 0, "credit": 24254.95},
+		                                              "Purchase Invoice": {"debit": 99, "credit": 0}})
+		card = by_key(p["balances"])["vat"]
+		self.assertEqual(card["value"], 24155.95)    # the net is the same either way
+		self.assertEqual(card["context"][:2], [{"label": "Output VAT", "value": "AED 24.3K"},
+		                                       {"label": "Input VAT", "value": "AED 99"}])
+		self.assertTrue(card["caveat"].startswith("Only AED 99 of input VAT is posted in ERPNext for "
+		                                          "Jul–Sep 2026, on 265 purchase bills"), card["caveat"])
 
 	def test_metric_detail(self):
 		fake = self.fake("abhishek@example.com", ["Accounts Manager"])
