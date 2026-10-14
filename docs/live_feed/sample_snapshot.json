@@ -1,0 +1,1627 @@
+{
+ "state": "ready",
+ "user": {
+  "name": "viewer@example.com",
+  "full_name": "Sample Viewer"
+ },
+ "poll": {
+  "meta_method": "fps_erpnext.api.feed.get_feed_meta",
+  "check_every_seconds": 600,
+  "building_every_seconds": 10
+ },
+ "meta": {
+  "now": "2026-10-14 12:37:05",
+  "generated_at": "2026-10-14 12:00:05",
+  "slot": "12:00",
+  "slot_id": "2026-10-14 12:00",
+  "updated_label": "12:00",
+  "next_slot": "16:00",
+  "next_at": "2026-10-14 16:00:00",
+  "late": false,
+  "time_zone": "Asia/Dubai"
+ },
+ "snapshot": {
+  "version": 1,
+  "generated_at": "2026-10-14 12:00:05",
+  "slot": "12:00",
+  "slot_id": "2026-10-14 12:00",
+  "next_slot": "16:00",
+  "updated_label": "12:00",
+  "as_of": "2026-10-14",
+  "period": "7d",
+  "time_zone": "Asia/Dubai",
+  "since": "2026-10-13 12:00:05",
+  "since_label": "since 12:00 yesterday",
+  "sections": [
+   {
+    "key": "ops",
+    "title": "Operations",
+    "definition": "Operations from the FPS OPS Dashboard: its alerts (last 7 days), the jobs opened, job updates, customs clearances and deliveries since the previous update. No money.",
+    "chips": [
+     {
+      "key": "open_jobs",
+      "label": "Open jobs",
+      "value": 5,
+      "display": "5",
+      "unit": "count",
+      "tone": "neutral",
+      "definition": "Job Orders not Closed, Completed or Invoiced, cancelled ones left out.",
+      "detail": [
+       {
+        "label": "Open jobs",
+        "value": "5"
+       },
+       {
+        "label": "Pipeline",
+        "value": "2 past ETA"
+       },
+       {
+        "label": "Pipeline",
+        "value": "2 with no ETA"
+       },
+       {
+        "label": "Pipeline",
+        "value": "21 PODs on file"
+       }
+      ],
+      "doctype": "Job Order",
+      "route": "/app/job-order?x=open",
+      "fingerprint": "57a3bd07edf1",
+      "changed": true,
+      "since_previous": 1,
+      "since_previous_display": "+1",
+      "can_open": true
+     },
+     {
+      "key": "in_progress",
+      "label": "In progress",
+      "value": 3,
+      "display": "3",
+      "unit": "count",
+      "tone": "neutral",
+      "definition": "Job Orders at stage In Progress.",
+      "detail": [
+       {
+        "label": "In progress",
+        "value": "3"
+       }
+      ],
+      "doctype": "Job Order",
+      "route": "/app/job-order?fps_stage=In%20Progress",
+      "fingerprint": "faaaf366b44f",
+      "changed": false,
+      "can_open": true
+     },
+     {
+      "key": "customs_open",
+      "label": "Customs not cleared",
+      "value": 1,
+      "display": "1",
+      "unit": "count",
+      "tone": "neutral",
+      "definition": "Customs Trackers whose status is not Cleared.",
+      "detail": [
+       {
+        "label": "Customs not cleared",
+        "value": "1"
+       }
+      ],
+      "doctype": "Customs Tracker",
+      "route": "/app/customs-tracker?x=open",
+      "fingerprint": "d9c15ccd1262",
+      "changed": false,
+      "can_open": true
+     },
+     {
+      "key": "awaiting_invoice",
+      "label": "Awaiting invoice",
+      "value": 1,
+      "display": "1",
+      "unit": "count",
+      "tone": "warning",
+      "definition": "Job Orders at stage Delivered: the work is done, the invoice is not.",
+      "detail": [
+       {
+        "label": "Awaiting invoice",
+        "value": "1"
+       }
+      ],
+      "doctype": "Job Order",
+      "route": "/app/job-order?fps_stage=Delivered",
+      "fingerprint": "89fff98da7e1",
+      "changed": false,
+      "can_open": true
+     },
+     {
+      "key": "past_eta",
+      "label": "Past ETA",
+      "value": 2,
+      "display": "2",
+      "unit": "count",
+      "tone": "warning",
+      "definition": "Open jobs whose ETA has passed. Move the job on or update its ETA.",
+      "detail": [
+       {
+        "label": "Open jobs past ETA",
+        "value": "2"
+       },
+       {
+        "label": "Oldest",
+        "value": "FPS/JO/2609/041 · ETA 5 Sep"
+       },
+       {
+        "label": "Open jobs with no ETA",
+        "value": "2"
+       }
+      ],
+      "doctype": "Job Order",
+      "route": "/app/job-order?fps_stage=%5B%22not%20in%22%2C%5B%22Closed%22%2C%22Completed%22%2C%22Invoiced%22%5D%5D&eta=%5B%22between%22%2C%5B%222000-01-01%22%2C%222026-10-13%22%5D%5D&docstatus=%5B%22%3C%22%2C2%5D",
+      "fingerprint": "e79513623b53",
+      "changed": false,
+      "can_open": true
+     },
+     {
+      "key": "enquiries_7d",
+      "label": "New enquiries",
+      "value": 4,
+      "display": "4",
+      "unit": "count",
+      "tone": "positive",
+      "sub": "Last 7 days",
+      "delta": {
+       "pct": 300.0,
+       "text": "+300%",
+       "previous": 1,
+       "previous_display": "1",
+       "label": "vs previous 7 days",
+       "tone": "positive"
+      },
+      "definition": "Enquiries logged in FPS Enquiry, by enquiry date. Cancelled bot-line duplicates are left out.",
+      "detail": [
+       {
+        "label": "Last 7 days",
+        "value": "4"
+       },
+       {
+        "label": "Previous 7 days",
+        "value": "1"
+       },
+       {
+        "label": "Open now",
+        "value": "6"
+       },
+       {
+        "label": "Quoted",
+        "value": "2"
+       }
+      ],
+      "doctype": "FPS Enquiry",
+      "route": "/app/fps-enquiry",
+      "fingerprint": "7c545a5f1e0d",
+      "changed": false,
+      "can_open": true
+     }
+    ],
+    "items": [
+     {
+      "key": "ins:ops:customs_docs",
+      "kind": "insight",
+      "severity": "critical",
+      "title": "1 document submission is past the Dubai Customs deadline",
+      "note": "Oldest deadline 1 Oct (FPS/CT/2609/041); none other falls due in the next 14 days. Dubai Customs fines late originals every day until they are submitted.",
+      "detail": [
+       {
+        "label": "Past the deadline",
+        "value": "1"
+       },
+       {
+        "label": "Due in the next 14 days",
+        "value": "0"
+       }
+      ],
+      "records": [
+       {
+        "title": "Harbour Trading (sample)",
+        "subtitle": "FPS/CT/2609/041 · Docs due 1 Oct, 13 days ago",
+        "group": "Past deadline",
+        "doctype": "Customs Tracker",
+        "name": "FPS/CT/2609/041",
+        "route": "/app/customs-tracker/FPS%2FCT%2F2609%2F041",
+        "can_open": true
+       }
+      ],
+      "doctype": "Customs Tracker",
+      "route": "/app/customs-tracker?fps_doc_submission=%5B%22in%22%2C%5B%22Pending%22%5D%5D&fps_doc_deadline=%5B%22%3C%3D%22%2C%222026-10-14%22%5D",
+      "fingerprint": "a54e430048c2",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "ins:ops:customs_mofa",
+      "kind": "insight",
+      "severity": "warning",
+      "title": "1 MOFA attestation falls due in the next 14 days",
+      "note": "Next: FPS/CT/2610/052, due 28 Oct. Attestation is due 14 days after clearance.",
+      "detail": [
+       {
+        "label": "Past the deadline",
+        "value": "0"
+       },
+       {
+        "label": "Due in the next 14 days",
+        "value": "1"
+       }
+      ],
+      "records": [
+       {
+        "title": "Desert Metals (sample)",
+        "subtitle": "FPS/CT/2610/052 · MOFA due 28 Oct, in 14 days",
+        "group": "Due soon",
+        "doctype": "Customs Tracker",
+        "name": "FPS/CT/2610/052",
+        "route": "/app/customs-tracker/FPS%2FCT%2F2610%2F052",
+        "can_open": true
+       }
+      ],
+      "doctype": "Customs Tracker",
+      "route": "/app/customs-tracker?fps_mofa_status=%5B%22in%22%2C%5B%22Pending%22%2C%22Under%20Process%22%2C%22Under%20Client%22%5D%5D&fps_mofa_deadline=%5B%22%3C%3D%22%2C%222026-10-28%22%5D",
+      "fingerprint": "305b8f4bae46",
+      "is_new": true,
+      "can_open": true
+     },
+     {
+      "key": "ins:ops:jobs_past_eta",
+      "kind": "insight",
+      "severity": "warning",
+      "title": "2 open jobs are past their ETA",
+      "note": "Oldest ETA 5 Sep on FPS/JO/2609/041. Move the job on or update its ETA.",
+      "detail": [
+       {
+        "label": "Open jobs past ETA",
+        "value": "2"
+       }
+      ],
+      "records": [
+       {
+        "title": "Harbour Trading (sample)",
+        "subtitle": "FPS/JO/2609/041 · ETA 5 Sep · In Progress",
+        "doctype": "Job Order",
+        "name": "FPS/JO/2609/041",
+        "route": "/app/job-order/FPS%2FJO%2F2609%2F041",
+        "can_open": true
+       },
+       {
+        "title": "Desert Metals (sample)",
+        "subtitle": "FPS/JO/2610/052 · ETA 10 Oct · In Progress",
+        "doctype": "Job Order",
+        "name": "FPS/JO/2610/052",
+        "route": "/app/job-order/FPS%2FJO%2F2610%2F052",
+        "can_open": true
+       }
+      ],
+      "doctype": "Job Order",
+      "route": "/app/job-order?fps_stage=%5B%22not%20in%22%2C%5B%22Closed%22%2C%22Completed%22%2C%22Invoiced%22%5D%5D&eta=%5B%22between%22%2C%5B%222000-01-01%22%2C%222026-10-13%22%5D%5D&docstatus=%5B%22%3C%22%2C2%5D",
+      "fingerprint": "810681159c73",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "ct:FPS/CT/2610/052:cleared",
+      "kind": "customs",
+      "severity": "positive",
+      "tag": "Cleared",
+      "title": "Desert Metals (sample)",
+      "subtitle": "FPS/CT/2610/052 · FZ to Local · BOE 101018000077",
+      "at": "2026-10-14 11:20:02",
+      "detail": [
+       {
+        "label": "Also logged",
+        "value": "Customs released - BOE 101018000077"
+       },
+       {
+        "label": "Customs Tracker",
+        "value": "FPS/CT/2610/052"
+       },
+       {
+        "label": "Job Order",
+        "value": "FPS/JO/2610/052"
+       },
+       {
+        "label": "Customer",
+        "value": "Desert Metals (sample)"
+       },
+       {
+        "label": "Type",
+        "value": "FZ to Local"
+       },
+       {
+        "label": "BOE",
+        "value": "101018000077"
+       },
+       {
+        "label": "Declared",
+        "value": "13 Oct"
+       },
+       {
+        "label": "Cleared",
+        "value": "14 Oct"
+       },
+       {
+        "label": "Original documents",
+        "value": "Pending · due 12 Nov"
+       },
+       {
+        "label": "MOFA",
+        "value": "Pending · due 28 Oct"
+       }
+      ],
+      "doctype": "Customs Tracker",
+      "name": "FPS/CT/2610/052",
+      "route": "/app/customs-tracker/FPS%2FCT%2F2610%2F052",
+      "fingerprint": "639837bfd518",
+      "is_new": true,
+      "can_open": true
+     },
+     {
+      "key": "jo:FPS/JO/2610/058",
+      "kind": "job",
+      "severity": "info",
+      "tag": "New job",
+      "title": "Harbour Trading (sample)",
+      "subtitle": "FPS/JO/2610/058 · Freight forwarding · PO 4410",
+      "at": "2026-10-14 10:12:40",
+      "detail": [
+       {
+        "label": "Job Order",
+        "value": "FPS/JO/2610/058"
+       },
+       {
+        "label": "Customer",
+        "value": "Harbour Trading (sample)"
+       },
+       {
+        "label": "Service line",
+        "value": "Freight forwarding"
+       },
+       {
+        "label": "Stage",
+        "value": "New"
+       },
+       {
+        "label": "Client reference",
+        "value": "PO 4410"
+       },
+       {
+        "label": "Job date",
+        "value": "14 Oct"
+       },
+       {
+        "label": "ETA",
+        "value": "30 Oct"
+       },
+       {
+        "label": "Opened",
+        "value": "14 Oct, 10:12"
+       },
+       {
+        "label": "Status",
+        "value": "Draft"
+       },
+       {
+        "label": "Also logged",
+        "value": "Job opened; Customs entry opened"
+       }
+      ],
+      "doctype": "Job Order",
+      "name": "FPS/JO/2610/058",
+      "route": "/app/job-order/FPS%2FJO%2F2610%2F058",
+      "fingerprint": "77ba395a9f4d",
+      "is_new": true,
+      "can_open": true
+     },
+     {
+      "key": "jo:FPS/JO/2610/057",
+      "kind": "job",
+      "severity": "info",
+      "tag": "New job",
+      "title": "Desert Metals (sample)",
+      "subtitle": "FPS/JO/2610/057 · Customs clearance",
+      "at": "2026-10-14 09:05:11",
+      "detail": [
+       {
+        "label": "Job Order",
+        "value": "FPS/JO/2610/057"
+       },
+       {
+        "label": "Customer",
+        "value": "Desert Metals (sample)"
+       },
+       {
+        "label": "Service line",
+        "value": "Customs clearance"
+       },
+       {
+        "label": "Stage",
+        "value": "In Progress"
+       },
+       {
+        "label": "Job date",
+        "value": "14 Oct"
+       },
+       {
+        "label": "Opened",
+        "value": "14 Oct, 09:05"
+       },
+       {
+        "label": "Status",
+        "value": "Draft"
+       },
+       {
+        "label": "Also logged",
+        "value": "Job opened"
+       }
+      ],
+      "doctype": "Job Order",
+      "name": "FPS/JO/2610/057",
+      "route": "/app/job-order/FPS%2FJO%2F2610%2F057",
+      "fingerprint": "bd722a4115ff",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "upd:u-0097",
+      "kind": "update",
+      "severity": "warning",
+      "title": "On hold: waiting for the consignee's documents",
+      "subtitle": "FPS/JO/2609/041 · Harbour Trading (sample)",
+      "at": "2026-10-13 16:45:00",
+      "detail": [
+       {
+        "label": "Job Order",
+        "value": "FPS/JO/2609/041"
+       },
+       {
+        "label": "Customer",
+        "value": "Harbour Trading (sample)"
+       },
+       {
+        "label": "Milestone",
+        "value": "On hold"
+       },
+       {
+        "label": "Update",
+        "value": "On hold: waiting for the consignee's documents"
+       },
+       {
+        "label": "Event date",
+        "value": "13 Oct"
+       },
+       {
+        "label": "Logged",
+        "value": "13 Oct, 16:45"
+       },
+       {
+        "label": "Source",
+        "value": "Manual"
+       },
+       {
+        "label": "Job stage",
+        "value": "In Progress"
+       }
+      ],
+      "doctype": "Job Order",
+      "name": "FPS/JO/2609/041",
+      "route": "/app/job-order/FPS%2FJO%2F2609%2F041",
+      "fingerprint": "0532953e207b",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "pod:FPS/POD/2610/021",
+      "kind": "delivery",
+      "severity": "positive",
+      "tag": "Delivered",
+      "title": "Gulf Cooling (sample)",
+      "subtitle": "FPS/POD/2610/021 · FPS/JO/2610/047 · PO 7781",
+      "at": "2026-10-13 15:02:10",
+      "detail": [
+       {
+        "label": "Also logged",
+        "value": "Delivered to the consignee"
+       },
+       {
+        "label": "Proof of Delivery",
+        "value": "FPS/POD/2610/021"
+       },
+       {
+        "label": "Job Order",
+        "value": "FPS/JO/2610/047"
+       },
+       {
+        "label": "Customer",
+        "value": "Gulf Cooling (sample)"
+       },
+       {
+        "label": "Movement",
+        "value": "Local"
+       },
+       {
+        "label": "Client reference",
+        "value": "PO 7781"
+       },
+       {
+        "label": "POD date",
+        "value": "13 Oct"
+       },
+       {
+        "label": "Status",
+        "value": "Draft"
+       }
+      ],
+      "doctype": "Proof of Delivery",
+      "name": "FPS/POD/2610/021",
+      "route": "/app/proof-of-delivery/FPS%2FPOD%2F2610%2F021",
+      "fingerprint": "8a3e2a531398",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "upd:u-0095",
+      "kind": "update",
+      "severity": "info",
+      "title": "BOE 101018000077 filed (FZ to Local)",
+      "subtitle": "FPS/JO/2610/052 · Desert Metals (sample)",
+      "at": "2026-10-13 11:10:00",
+      "detail": [
+       {
+        "label": "Job Order",
+        "value": "FPS/JO/2610/052"
+       },
+       {
+        "label": "Customer",
+        "value": "Desert Metals (sample)"
+       },
+       {
+        "label": "Milestone",
+        "value": "BOE"
+       },
+       {
+        "label": "Update",
+        "value": "BOE 101018000077 filed (FZ to Local)"
+       },
+       {
+        "label": "Event date",
+        "value": "13 Oct"
+       },
+       {
+        "label": "Logged",
+        "value": "13 Oct, 11:10"
+       },
+       {
+        "label": "Source",
+        "value": "System"
+       },
+       {
+        "label": "Job stage",
+        "value": "In Progress"
+       }
+      ],
+      "doctype": "Job Order",
+      "name": "FPS/JO/2610/052",
+      "route": "/app/job-order/FPS%2FJO%2F2610%2F052",
+      "fingerprint": "7c5330cba5e3",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "ins:ops:delivered_not_invoiced",
+      "kind": "insight",
+      "severity": "info",
+      "title": "1 delivered job is waiting to be invoiced",
+      "note": "Oldest: FPS/JO/2610/047, opened 5 Oct. The next step on it is the invoice.",
+      "detail": [
+       {
+        "label": "Delivered, not invoiced",
+        "value": "1"
+       }
+      ],
+      "records": [
+       {
+        "title": "Gulf Cooling (sample)",
+        "subtitle": "FPS/JO/2610/047 · opened 5 Oct",
+        "doctype": "Job Order",
+        "name": "FPS/JO/2610/047",
+        "route": "/app/job-order/FPS%2FJO%2F2610%2F047",
+        "can_open": true
+       }
+      ],
+      "doctype": "Job Order",
+      "route": "/app/job-order?fps_stage=Delivered",
+      "fingerprint": "2f045f88d382",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "ins:ops:quotation_drafts",
+      "kind": "insight",
+      "severity": "info",
+      "title": "5 quotations still in draft",
+      "note": "Dated in the last 30 days, the oldest 2 Oct; 3 are more than 7 days old.",
+      "detail": [
+       {
+        "label": "Drafts, last 30 days",
+        "value": "5"
+       }
+      ],
+      "records": [
+       {
+        "title": "Harbour Trading (sample)",
+        "subtitle": "FPS/QT/2610/040 · dated 2 Oct",
+        "doctype": "Quotation",
+        "name": "FPS/QT/2610/040",
+        "route": "/app/quotation/FPS%2FQT%2F2610%2F040",
+        "can_open": true
+       },
+       {
+        "title": "Desert Metals (sample)",
+        "subtitle": "FPS/QT/2610/041 · dated 4 Oct",
+        "doctype": "Quotation",
+        "name": "FPS/QT/2610/041",
+        "route": "/app/quotation/FPS%2FQT%2F2610%2F041",
+        "can_open": true
+       },
+       {
+        "title": "Gulf Cooling (sample)",
+        "subtitle": "FPS/QT/2610/042 · dated 6 Oct",
+        "doctype": "Quotation",
+        "name": "FPS/QT/2610/042",
+        "route": "/app/quotation/FPS%2FQT%2F2610%2F042",
+        "can_open": true
+       },
+       {
+        "title": "Old Port Logistics (sample)",
+        "subtitle": "FPS/QT/2610/043 · dated 8 Oct",
+        "doctype": "Quotation",
+        "name": "FPS/QT/2610/043",
+        "route": "/app/quotation/FPS%2FQT%2F2610%2F043",
+        "can_open": true
+       },
+       {
+        "title": "Harbour Trading (sample)",
+        "subtitle": "FPS/QT/2610/044 · dated 10 Oct",
+        "doctype": "Quotation",
+        "name": "FPS/QT/2610/044",
+        "route": "/app/quotation/FPS%2FQT%2F2610%2F044",
+        "can_open": true
+       }
+      ],
+      "doctype": "Quotation",
+      "route": "/app/quotation?docstatus=0&transaction_date=%5B%22between%22%2C%5B%222026-09-15%22%2C%222026-10-14%22%5D%5D",
+      "fingerprint": "d4b952d4c668",
+      "is_new": false,
+      "can_open": true
+     }
+    ],
+    "more": [],
+    "counts": {
+     "critical": 1,
+     "warning": 3,
+     "info": 5,
+     "positive": 2,
+     "new": 3
+    },
+    "detail": [
+     {
+      "label": "Alerts",
+      "value": "5"
+     },
+     {
+      "label": "Critical",
+      "value": "1"
+     },
+     {
+      "label": "Warnings",
+      "value": "3"
+     },
+     {
+      "label": "Events since 12:00 yesterday",
+      "value": "5"
+     },
+     {
+      "label": "Earlier job updates shown",
+      "value": "1"
+     },
+     {
+      "label": "Dashboard period",
+      "value": "Last 7 days"
+     }
+    ]
+   },
+   {
+    "key": "acc",
+    "title": "Accounts",
+    "definition": "Accounts from the FPS ACC Dashboard: its alerts, the invoices submitted and receipts booked since the previous update, the most overdue customers and suppliers, and the bank statements.",
+    "chips": [
+     {
+      "key": "receivables",
+      "label": "Receivables",
+      "value": 78525.5,
+      "display": "AED 78.5K",
+      "unit": "currency",
+      "tone": "warning",
+      "sub": "AED 65.4K overdue",
+      "definition": "Outstanding on submitted sales invoices less customer receipts not yet allocated to an invoice, credit notes netted, the invoices carried over from Fresa included. Overdue is net of each customer's own credits, so it can exceed the total when some customers are in credit.",
+      "detail": [
+       {
+        "label": "Total",
+        "value": "AED 78,525.50"
+       },
+       {
+        "label": "Overdue",
+        "value": "AED 65.4K"
+       },
+       {
+        "label": "Open invoices",
+        "value": "5"
+       },
+       {
+        "label": "Less unallocated receipts",
+        "value": "AED 9K"
+       },
+       {
+        "label": "Drafts waiting",
+        "value": "1 · AED 7.6K"
+       },
+       {
+        "label": "Owed by the customers who owe",
+        "value": "AED 78,525.50"
+       }
+      ],
+      "doctype": "Sales Invoice",
+      "route": "/app/query-report/FPS%20Customer%20Receivables",
+      "fingerprint": "cc814e71d53b",
+      "changed": true,
+      "since_previous": 13125.0,
+      "since_previous_display": "+AED 13.1K",
+      "can_open": true
+     },
+     {
+      "key": "payables",
+      "label": "Payables",
+      "value": 22075.0,
+      "display": "AED 22.1K",
+      "unit": "currency",
+      "tone": "neutral",
+      "sub": "AED 20.5K overdue",
+      "definition": "Outstanding on submitted purchase invoices less supplier payments not yet allocated to a bill, debit notes netted. Overdue is net of each supplier's own debit notes and payments on account, so it can exceed the total when some suppliers are in credit.",
+      "detail": [
+       {
+        "label": "Total",
+        "value": "AED 22,075.00"
+       },
+       {
+        "label": "Overdue",
+        "value": "AED 20.5K"
+       },
+       {
+        "label": "Open bills",
+        "value": "3"
+       },
+       {
+        "label": "Less unallocated payments",
+        "value": "AED 0"
+       },
+       {
+        "label": "Draft bills",
+        "value": "1"
+       },
+       {
+        "label": "Owed to the suppliers we owe",
+        "value": "AED 22,075.00"
+       }
+      ],
+      "doctype": "Purchase Invoice",
+      "route": "/app/query-report/Accounts%20Payable",
+      "fingerprint": "dd641e2f6c97",
+      "changed": false,
+      "can_open": true
+     },
+     {
+      "key": "cash",
+      "label": "Cash & bank",
+      "value": 392600.0,
+      "display": "AED 392.6K",
+      "unit": "currency",
+      "tone": "critical",
+      "sub": "Books above statements AED 11K",
+      "definition": "General Ledger balance of every bank and cash account, up to today, checked against each bank's latest statement at its closing date.",
+      "note": "ERPNext's ADCB balance on 30 Sep is AED 11K above its bank statement (AED 380K), so this figure is not the bank position until the ledger is reconciled.",
+      "detail": [
+       {
+        "label": "Book balance",
+        "value": "AED 392,600.00"
+       },
+       {
+        "label": "ADCB - Current Account",
+        "value": "AED 392K"
+       },
+       {
+        "label": "Bank statements, 30 Sep",
+        "value": "AED 380K"
+       },
+       {
+        "label": "Books above statements",
+        "value": "AED 11K"
+       },
+       {
+        "label": "Qashio card liability",
+        "value": "AED 1.5K"
+       }
+      ],
+      "doctype": "GL Entry",
+      "route": "/app/query-report/General%20Ledger?company=SAMPLE%20COMPANY&to_date=2026-10-14&account=%5B%22ADCB%20-%20Current%20Account%20-%20SC%22%2C%22Petty%20Cash%20-%20SC%22%5D&group_by=Group%20by%20Account",
+      "fingerprint": "16a99022e050",
+      "changed": false,
+      "can_open": true
+     },
+     {
+      "key": "vat",
+      "label": "VAT Jul–Sep 2026",
+      "value": 5100.0,
+      "display": "AED 5.1K",
+      "unit": "currency",
+      "tone": "warning",
+      "sub": "Due 28 Oct 2026 · 14 days",
+      "definition": "Output VAT (sales invoices) less input VAT (purchase invoices) posted to the VAT accounts in the quarter; positive means payable. Journal and payment postings are left out. UAE VAT Stagger 3, return due on the 28th of the month after the quarter.",
+      "note": "From ERPNext postings; the return filed on EmaraTax may differ.",
+      "detail": [
+       {
+        "label": "Net VAT",
+        "value": "AED 5,100.00"
+       },
+       {
+        "label": "Output VAT",
+        "value": "AED 6.2K"
+       },
+       {
+        "label": "Input VAT",
+        "value": "AED 1.1K"
+       },
+       {
+        "label": "Due date",
+        "value": "28 Oct 2026 · 14 days"
+       }
+      ],
+      "doctype": "GL Entry",
+      "route": "/app/query-report/General%20Ledger?company=SAMPLE%20COMPANY&from_date=2026-07-01&to_date=2026-09-30&account=%5B%22VAT%205%25%20-%20SC%22%2C%22Sales%20Taxes%20Receivables%20-%20SC%22%5D&group_by=Group%20by%20Account",
+      "fingerprint": "a74d17c662e0",
+      "changed": false,
+      "can_open": true
+     },
+     {
+      "key": "invoiced_7d",
+      "label": "Invoiced, 7 days",
+      "value": 27500.0,
+      "display": "AED 27.5K",
+      "unit": "currency",
+      "tone": "neutral",
+      "delta": {
+       "pct": null,
+       "text": "new",
+       "previous": 0.0,
+       "previous_display": "AED 0",
+       "label": "vs previous 7 days",
+       "tone": "neutral"
+      },
+      "definition": "Net value (before VAT) of submitted sales invoices, by posting date, credit notes included. Payment requests and drafts are left out.",
+      "detail": [
+       {
+        "label": "Last 7 days",
+        "value": "AED 27,500.00"
+       },
+       {
+        "label": "Previous 7 days",
+        "value": "AED 0.00"
+       },
+       {
+        "label": "Drafts waiting",
+        "value": "1 · AED 7.6K"
+       },
+       {
+        "label": "Latest posting date",
+        "value": "13 Oct"
+       },
+       {
+        "label": "Submitted since 12:00 yesterday",
+        "value": "1 · AED 13.1K with VAT"
+       }
+      ],
+      "doctype": "Sales Invoice",
+      "route": "/app/sales-invoice?docstatus=1",
+      "fingerprint": "5d8727dd310c",
+      "changed": false,
+      "can_open": true
+     },
+     {
+      "key": "collected_7d",
+      "label": "Collected, 7 days",
+      "value": 15750.0,
+      "display": "AED 15.8K",
+      "unit": "currency",
+      "tone": "neutral",
+      "delta": {
+       "pct": null,
+       "text": "new",
+       "previous": 0.0,
+       "previous_display": "AED 0",
+       "label": "vs previous 7 days",
+       "tone": "neutral"
+      },
+      "definition": "Customer receipts (submitted Payment Entries of type Receive), by posting date.",
+      "detail": [
+       {
+        "label": "Last 7 days",
+        "value": "AED 15,750.00"
+       },
+       {
+        "label": "Previous 7 days",
+        "value": "AED 0.00"
+       },
+       {
+        "label": "Outstanding AR",
+        "value": "AED 78.5K"
+       },
+       {
+        "label": "Receipts",
+        "value": "1"
+       }
+      ],
+      "doctype": "Payment Entry",
+      "route": "/app/payment-entry?payment_type=Receive&docstatus=1",
+      "fingerprint": "1aca25624506",
+      "changed": false,
+      "can_open": true
+     }
+    ],
+    "items": [
+     {
+      "key": "cash:statement_gap",
+      "kind": "cash",
+      "severity": "critical",
+      "title": "Books differ from the bank statement",
+      "subtitle": "Books above statements AED 11K",
+      "note": "ERPNext's ADCB balance on 30 Sep is AED 11K above its bank statement (AED 380K), so this figure is not the bank position until the ledger is reconciled.",
+      "detail": [
+       {
+        "label": "Book balance",
+        "value": "AED 392,600.00"
+       },
+       {
+        "label": "ADCB - Current Account",
+        "value": "AED 392K"
+       },
+       {
+        "label": "Bank statements, 30 Sep",
+        "value": "AED 380K"
+       },
+       {
+        "label": "Books above statements",
+        "value": "AED 11K"
+       },
+       {
+        "label": "Qashio card liability",
+        "value": "AED 1.5K"
+       }
+      ],
+      "doctype": "GL Entry",
+      "route": "/app/query-report/General%20Ledger?company=SAMPLE%20COMPANY&to_date=2026-10-14&account=%5B%22ADCB%20-%20Current%20Account%20-%20SC%22%2C%22Petty%20Cash%20-%20SC%22%5D&group_by=Group%20by%20Account",
+      "fingerprint": "e1e11df1fc46",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "ins:acc:vat_due",
+      "kind": "insight",
+      "severity": "warning",
+      "title": "VAT return Jul–Sep 2026 due in 14 days",
+      "note": "Net VAT AED 5.1K from ERPNext postings (output AED 6.2K, input AED 1.1K), due 28 Oct 2026. File and pay on EmaraTax; the return filed there may differ.",
+      "detail": [
+       {
+        "label": "Net VAT",
+        "value": "AED 5,100.00"
+       },
+       {
+        "label": "Output VAT",
+        "value": "AED 6.2K"
+       },
+       {
+        "label": "Input VAT",
+        "value": "AED 1.1K"
+       },
+       {
+        "label": "Due date",
+        "value": "28 Oct 2026 · 14 days"
+       }
+      ],
+      "doctype": "GL Entry",
+      "route": "/app/query-report/General%20Ledger?company=SAMPLE%20COMPANY&from_date=2026-07-01&to_date=2026-09-30&account=%5B%22VAT%205%25%20-%20SC%22%2C%22Sales%20Taxes%20Receivables%20-%20SC%22%5D&group_by=Group%20by%20Account",
+      "fingerprint": "88c758d6c636",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "ins:acc:unallocated_receipts",
+      "kind": "insight",
+      "severity": "warning",
+      "title": "AED 9K received but not matched to invoices",
+      "note": "1 customer receipt carries an unallocated amount (Harbour Trading (sample), FPS/PR/2609/029). Until it is allocated, the invoices it pays still read as outstanding.",
+      "detail": [
+       {
+        "label": "Unallocated",
+        "value": "AED 9,000.00"
+       },
+       {
+        "label": "Receipts",
+        "value": "1"
+       }
+      ],
+      "records": [
+       {
+        "title": "Harbour Trading (sample)",
+        "subtitle": "FPS/PR/2609/029 · posted 21 Sep",
+        "value": "AED 9K",
+        "doctype": "Payment Entry",
+        "name": "FPS/PR/2609/029",
+        "route": "/app/payment-entry/FPS%2FPR%2F2609%2F029",
+        "can_open": true
+       }
+      ],
+      "doctype": "Payment Entry",
+      "route": "/app/payment-entry?payment_type=Receive&docstatus=1&unallocated_amount=%5B%22%3E%22%2C0%5D",
+      "fingerprint": "d4597203ddf1",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "bank:statements",
+      "kind": "bank",
+      "severity": "warning",
+      "title": "Bank statements behind for WIO, Qashio – General and Qashio – Government",
+      "note": "WIO: Jul–Sep missing; Qashio – General: Jul–Sep missing; Qashio – Government: Jun–Sep missing. Last month was Sep 2026.",
+      "detail": [
+       {
+        "label": "ADCB",
+        "value": "Sep 2026 · In Progress"
+       },
+       {
+        "label": "WIO",
+        "value": "Jun 2026 · Reconciled · 3 months behind"
+       },
+       {
+        "label": "Qashio – General",
+        "value": "Jun 2026 · Reconciled · 3 months behind"
+       },
+       {
+        "label": "Qashio – Government",
+        "value": "No statement · Missing · 4 months behind"
+       }
+      ],
+      "records": [
+       {
+        "title": "ADCB",
+        "subtitle": "Sep 2026 · In Progress",
+        "value": "AED 380K",
+        "doctype": "FPS Bank Statement",
+        "name": "FPS-BST-ADCB-2609",
+        "route": "/app/fps-bank-statement/FPS-BST-ADCB-2609",
+        "can_open": true
+       },
+       {
+        "title": "WIO",
+        "subtitle": "Jul–Sep missing",
+        "value": "AED 2.1K",
+        "doctype": "FPS Bank Statement",
+        "name": "FPS-BST-WIO-2606",
+        "route": "/app/fps-bank-statement/FPS-BST-WIO-2606",
+        "can_open": true
+       },
+       {
+        "title": "Qashio – General",
+        "subtitle": "Jul–Sep missing",
+        "value": "AED 1.8K",
+        "doctype": "FPS Bank Statement",
+        "name": "FPS-BST-QGEN-2606",
+        "route": "/app/fps-bank-statement/FPS-BST-QGEN-2606",
+        "can_open": true
+       },
+       {
+        "title": "Qashio – Government",
+        "subtitle": "Jun–Sep missing",
+        "doctype": "FPS Bank Statement",
+        "route": "/app/fps-bank-statement?bank_code=QGOV",
+        "can_open": true
+       }
+      ],
+      "doctype": "FPS Bank Statement",
+      "route": "/app/fps-bank-statement",
+      "fingerprint": "02db349fb87a",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "si:FPS/INV/2610/071",
+      "kind": "invoice",
+      "severity": "positive",
+      "tag": "Invoice",
+      "title": "Harbour Trading (sample)",
+      "subtitle": "FPS/INV/2610/071 · FPS/JO/2609/041 · due 12 Nov",
+      "amount": 13125.0,
+      "amount_display": "AED 13.1K",
+      "at": "2026-10-14 11:42:09",
+      "detail": [
+       {
+        "label": "Invoice",
+        "value": "FPS/INV/2610/071"
+       },
+       {
+        "label": "Customer",
+        "value": "Harbour Trading (sample)"
+       },
+       {
+        "label": "Job Order",
+        "value": "FPS/JO/2609/041"
+       },
+       {
+        "label": "Posting date",
+        "value": "13 Oct"
+       },
+       {
+        "label": "Due date",
+        "value": "12 Nov"
+       },
+       {
+        "label": "Net",
+        "value": "AED 12,500.00"
+       },
+       {
+        "label": "Grand total",
+        "value": "AED 13,125.00"
+       },
+       {
+        "label": "Outstanding",
+        "value": "AED 13,125.00"
+       },
+       {
+        "label": "Status",
+        "value": "Unpaid"
+       },
+       {
+        "label": "Submitted",
+        "value": "14 Oct, 11:42"
+       }
+      ],
+      "doctype": "Sales Invoice",
+      "name": "FPS/INV/2610/071",
+      "route": "/app/sales-invoice/FPS%2FINV%2F2610%2F071",
+      "fingerprint": "82737b62f50f",
+      "is_new": true,
+      "can_open": true
+     },
+     {
+      "key": "pe:FPS/PR/2610/034",
+      "kind": "receipt",
+      "severity": "positive",
+      "tag": "Received",
+      "title": "Desert Metals (sample)",
+      "subtitle": "FPS/PR/2610/034 · Bank Transfer · Ref TT-88412",
+      "amount": 15750.0,
+      "amount_display": "AED 15.8K",
+      "at": "2026-10-14 11:05:40",
+      "detail": [
+       {
+        "label": "Receipt",
+        "value": "FPS/PR/2610/034"
+       },
+       {
+        "label": "From",
+        "value": "Desert Metals (sample)"
+       },
+       {
+        "label": "Amount",
+        "value": "AED 15,750.00"
+       },
+       {
+        "label": "Posting date",
+        "value": "14 Oct"
+       },
+       {
+        "label": "Booked",
+        "value": "14 Oct, 11:05"
+       },
+       {
+        "label": "Mode",
+        "value": "Bank Transfer"
+       },
+       {
+        "label": "Reference",
+        "value": "TT-88412"
+       }
+      ],
+      "doctype": "Payment Entry",
+      "name": "FPS/PR/2610/034",
+      "route": "/app/payment-entry/FPS%2FPR%2F2610%2F034",
+      "fingerprint": "a9ecadfc95b3",
+      "is_new": true,
+      "can_open": true
+     },
+     {
+      "key": "odc:Harbour Trading (sample)",
+      "kind": "overdue_customer",
+      "severity": "warning",
+      "title": "Harbour Trading (sample)",
+      "subtitle": "1 invoice past due · oldest 19 days",
+      "amount": 33000.0,
+      "amount_display": "AED 33K",
+      "detail": [
+       {
+        "label": "Past due (net of credits)",
+        "value": "AED 33,000.00"
+       },
+       {
+        "label": "Total outstanding",
+        "value": "AED 46,125.00"
+       },
+       {
+        "label": "Open invoices",
+        "value": "2"
+       },
+       {
+        "label": "Oldest past due",
+        "value": "19 days"
+       }
+      ],
+      "records": [
+       {
+        "title": "FPS/INV/2609/066",
+        "subtitle": "due 25 Sep · 19 days past due",
+        "value": "AED 33K",
+        "doctype": "Sales Invoice",
+        "name": "FPS/INV/2609/066",
+        "route": "/app/sales-invoice/FPS%2FINV%2F2609%2F066",
+        "can_open": true
+       }
+      ],
+      "doctype": "Sales Invoice",
+      "route": "/app/sales-invoice?customer=Harbour%20Trading%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D",
+      "fingerprint": "b12e1e9e8285",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "odc:Desert Metals (sample)",
+      "kind": "overdue_customer",
+      "severity": "warning",
+      "title": "Desert Metals (sample)",
+      "subtitle": "1 invoice past due · oldest 101 days",
+      "amount": 18350.5,
+      "amount_display": "AED 18.4K",
+      "detail": [
+       {
+        "label": "Past due (net of credits)",
+        "value": "AED 18,350.50"
+       },
+       {
+        "label": "Total outstanding",
+        "value": "AED 18,350.50"
+       },
+       {
+        "label": "Open invoices",
+        "value": "1"
+       },
+       {
+        "label": "Oldest past due",
+        "value": "101 days"
+       }
+      ],
+      "records": [
+       {
+        "title": "FPS/INV/2607/031",
+        "subtitle": "due 5 Jul · 101 days past due",
+        "value": "AED 18.4K",
+        "doctype": "Sales Invoice",
+        "name": "FPS/INV/2607/031",
+        "route": "/app/sales-invoice/FPS%2FINV%2F2607%2F031",
+        "can_open": true
+       }
+      ],
+      "doctype": "Sales Invoice",
+      "route": "/app/sales-invoice?customer=Desert%20Metals%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D",
+      "fingerprint": "e6afcced7c89",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "odc:Gulf Cooling (sample)",
+      "kind": "overdue_customer",
+      "severity": "warning",
+      "title": "Gulf Cooling (sample)",
+      "subtitle": "1 invoice past due · oldest 45 days",
+      "amount": 9800.0,
+      "amount_display": "AED 9.8K",
+      "detail": [
+       {
+        "label": "Past due (net of credits)",
+        "value": "AED 9,800.00"
+       },
+       {
+        "label": "Total outstanding",
+        "value": "AED 9,800.00"
+       },
+       {
+        "label": "Open invoices",
+        "value": "1"
+       },
+       {
+        "label": "Oldest past due",
+        "value": "45 days"
+       }
+      ],
+      "records": [
+       {
+        "title": "FPS/INV/2608/044",
+        "subtitle": "due 30 Aug · 45 days past due",
+        "value": "AED 9.8K",
+        "doctype": "Sales Invoice",
+        "name": "FPS/INV/2608/044",
+        "route": "/app/sales-invoice/FPS%2FINV%2F2608%2F044",
+        "can_open": true
+       }
+      ],
+      "doctype": "Sales Invoice",
+      "route": "/app/sales-invoice?customer=Gulf%20Cooling%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D",
+      "fingerprint": "75723cc8dfd1",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "odc:Old Port Logistics (sample)",
+      "kind": "overdue_customer",
+      "severity": "warning",
+      "title": "Old Port Logistics (sample)",
+      "subtitle": "1 invoice past due · oldest 561 days",
+      "amount": 4250.0,
+      "amount_display": "AED 4.3K",
+      "detail": [
+       {
+        "label": "Past due (net of credits)",
+        "value": "AED 4,250.00"
+       },
+       {
+        "label": "Total outstanding",
+        "value": "AED 4,250.00"
+       },
+       {
+        "label": "Open invoices",
+        "value": "1"
+       },
+       {
+        "label": "Oldest past due",
+        "value": "561 days"
+       }
+      ],
+      "records": [
+       {
+        "title": "FPF/INV/25/0112",
+        "subtitle": "due 1 Apr · 561 days past due",
+        "value": "AED 4.3K",
+        "doctype": "Sales Invoice",
+        "name": "FPF/INV/25/0112",
+        "route": "/app/sales-invoice/FPF%2FINV%2F25%2F0112",
+        "can_open": true
+       }
+      ],
+      "doctype": "Sales Invoice",
+      "route": "/app/sales-invoice?customer=Old%20Port%20Logistics%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D",
+      "fingerprint": "c4410c8cefcf",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "ods:Line Haul Carrier (sample)",
+      "kind": "supplier_due",
+      "severity": "warning",
+      "title": "Line Haul Carrier (sample)",
+      "subtitle": "1 bill past due · oldest 24 days",
+      "amount": 14200.0,
+      "amount_display": "AED 14.2K",
+      "detail": [
+       {
+        "label": "Past due (net of credits)",
+        "value": "AED 14,200.00"
+       },
+       {
+        "label": "Total outstanding",
+        "value": "AED 14,200.00"
+       },
+       {
+        "label": "Open bills",
+        "value": "1"
+       },
+       {
+        "label": "Oldest past due",
+        "value": "24 days"
+       }
+      ],
+      "records": [
+       {
+        "title": "FPS/PI/2609/120",
+        "subtitle": "due 20 Sep · 24 days past due",
+        "value": "AED 14.2K",
+        "doctype": "Purchase Invoice",
+        "name": "FPS/PI/2609/120",
+        "route": "/app/purchase-invoice/FPS%2FPI%2F2609%2F120",
+        "can_open": true
+       }
+      ],
+      "doctype": "Purchase Invoice",
+      "route": "/app/purchase-invoice?supplier=Line%20Haul%20Carrier%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D",
+      "fingerprint": "e99c00cca8ce",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "ods:Shipping Line Agent (sample)",
+      "kind": "supplier_due",
+      "severity": "warning",
+      "title": "Shipping Line Agent (sample)",
+      "subtitle": "1 bill past due · oldest 13 days",
+      "amount": 6300.0,
+      "amount_display": "AED 6.3K",
+      "detail": [
+       {
+        "label": "Past due (net of credits)",
+        "value": "AED 6,300.00"
+       },
+       {
+        "label": "Total outstanding",
+        "value": "AED 6,300.00"
+       },
+       {
+        "label": "Open bills",
+        "value": "1"
+       },
+       {
+        "label": "Oldest past due",
+        "value": "13 days"
+       }
+      ],
+      "records": [
+       {
+        "title": "FPS/PI/2609/131",
+        "subtitle": "due 1 Oct · 13 days past due",
+        "value": "AED 6.3K",
+        "doctype": "Purchase Invoice",
+        "name": "FPS/PI/2609/131",
+        "route": "/app/purchase-invoice/FPS%2FPI%2F2609%2F131",
+        "can_open": true
+       }
+      ],
+      "doctype": "Purchase Invoice",
+      "route": "/app/purchase-invoice?supplier=Shipping%20Line%20Agent%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D",
+      "fingerprint": "fc5b82057f50",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "ins:acc:supplier_overdue",
+      "kind": "insight",
+      "severity": "info",
+      "title": "AED 20.5K owed to 2 suppliers is past due",
+      "note": "2 bills; the oldest was due 20 Sep 2026 (FPS/PI/2609/120). Largest: Line Haul Carrier (sample), AED 14.2K.",
+      "detail": [
+       {
+        "label": "Past due, net",
+        "value": "AED 20,500.00"
+       },
+       {
+        "label": "Suppliers",
+        "value": "2"
+       }
+      ],
+      "records": [
+       {
+        "title": "Line Haul Carrier (sample)",
+        "subtitle": "1 bill past due · oldest 24 days",
+        "value": "AED 14.2K",
+        "doctype": "Purchase Invoice",
+        "route": "/app/purchase-invoice?supplier=Line%20Haul%20Carrier%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D",
+        "can_open": true
+       },
+       {
+        "title": "Shipping Line Agent (sample)",
+        "subtitle": "1 bill past due · oldest 13 days",
+        "value": "AED 6.3K",
+        "doctype": "Purchase Invoice",
+        "route": "/app/purchase-invoice?supplier=Shipping%20Line%20Agent%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D",
+        "can_open": true
+       }
+      ],
+      "doctype": "Purchase Invoice",
+      "route": "/app/purchase-invoice?docstatus=1&outstanding_amount=%5B%22%3E%22%2C0%5D&due_date=%5B%22between%22%2C%5B%222000-01-01%22%2C%222026-10-13%22%5D%5D",
+      "fingerprint": "a458b215ff37",
+      "is_new": false,
+      "can_open": true
+     },
+     {
+      "key": "ins:acc:sales_invoice_drafts",
+      "kind": "insight",
+      "severity": "info",
+      "title": "1 sales invoice in draft, worth AED 7.6K",
+      "note": "The oldest, FPS/INV/2610/072, is dated 14 Oct (0 days ago). Drafts are not in receivables or VAT until they are submitted.",
+      "detail": [
+       {
+        "label": "Drafts",
+        "value": "1"
+       },
+       {
+        "label": "Value",
+        "value": "AED 7,600.00"
+       },
+       {
+        "label": "Last invoice submitted",
+        "value": "13 Oct"
+       }
+      ],
+      "records": [
+       {
+        "title": "Gulf Cooling (sample)",
+        "subtitle": "FPS/INV/2610/072 · FPS/JO/2610/047 · dated 14 Oct",
+        "value": "AED 7.6K",
+        "doctype": "Sales Invoice",
+        "name": "FPS/INV/2610/072",
+        "route": "/app/sales-invoice/FPS%2FINV%2F2610%2F072",
+        "can_open": true
+       }
+      ],
+      "doctype": "Sales Invoice",
+      "route": "/app/sales-invoice?docstatus=0",
+      "fingerprint": "74106cf2cb94",
+      "is_new": false,
+      "can_open": true
+     }
+    ],
+    "more": [],
+    "counts": {
+     "critical": 1,
+     "warning": 3,
+     "info": 2,
+     "positive": 2,
+     "new": 2
+    },
+    "detail": [
+     {
+      "label": "Alerts",
+      "value": "6"
+     },
+     {
+      "label": "Critical",
+      "value": "1"
+     },
+     {
+      "label": "Warnings",
+      "value": "3"
+     },
+     {
+      "label": "Events since 12:00 yesterday",
+      "value": "2"
+     },
+     {
+      "label": "Dashboard period",
+      "value": "Last 7 days"
+     }
+    ]
+   }
+  ],
+  "compared_with": "2026-10-14 08:00:04"
+ }
+}

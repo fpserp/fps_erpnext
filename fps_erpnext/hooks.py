@@ -210,9 +210,16 @@ doc_events = {
 # recomputes every open job's stage/progress/next-action from its documents and
 # update log, as the safety net for anything the after_insert path above did
 # not catch (a row removed from the grid, an edit made some other way).
+#
+# The FPS Live Feed (/fps-feed) is a snapshot built four times a day, at 08:00,
+# 12:00, 16:00 and 20:00. Frappe evaluates cron against now_datetime(), i.e. in
+# the System Settings time zone (Asia/Dubai on this site), so these are Dubai
+# hours. Overnight the page keeps showing the 20:00 one. See
+# fps_erpnext/api/feed.py; feed_logic.CRON must match this string (tested).
 scheduler_events = {
     "cron": {
         "*/30 * * * *": ["fps_erpnext.api.jobs.sweep"],
+        "0 8,12,16,20 * * *": ["fps_erpnext.api.feed.build_snapshot"],
     },
 }
 

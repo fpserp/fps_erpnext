@@ -15,4 +15,5 @@ recursive-include fps_erpnext *.png
 recursive-include fps_erpnext *.svg
 recursive-include fps_erpnext *.py
 recursive-include fps_erpnext *.txt
+recursive-include fps_erpnext *.webmanifest
 recursive-exclude fps_erpnext *.pyc

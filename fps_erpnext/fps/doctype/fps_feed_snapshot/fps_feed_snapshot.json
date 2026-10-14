@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-14 20:00:00.000000",
+ "description": "The stored FPS Live Feed (/fps-feed). Written only by fps_erpnext.api.feed.build_snapshot at 08:00, 12:00, 16:00 and 20:00 (Asia/Dubai); the page reads it.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "generated_at",
+  "slot",
+  "snapshot",
+  "previous"
+ ],
+ "fields": [
+  {
+   "fieldname": "generated_at",
+   "fieldtype": "Datetime",
+   "label": "Generated At",
+   "read_only": 1
+  },
+  {
+   "description": "The scheduled slot the snapshot belongs to, e.g. 12:00.",
+   "fieldname": "slot",
+   "fieldtype": "Data",
+   "label": "Slot",
+   "read_only": 1
+  },
+  {
+   "description": "The feed as JSON (docs/live_feed/snapshot.schema.md).",
+   "fieldname": "snapshot",
+   "fieldtype": "Long Text",
+   "label": "Snapshot",
+   "read_only": 1
+  },
+  {
+   "description": "Item keys and value fingerprints of the previous slot's snapshot, as JSON. The page marks an item NEW when its key is not here or its fingerprint changed.",
+   "fieldname": "previous",
+   "fieldtype": "Long Text",
+   "label": "Previous",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-10-14 20:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "FPS Feed Snapshot",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "role": "System Manager"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

@@ -388,3 +388,32 @@ profile; nothing in this theme writes.
   loader (`scripts/sync-block.mjs` does this).
 - Each layout component has a `*.meta.ts` file listing its permitted props,
   variants and layout limits. Change the meta file and the component together.
+
+## 11. FPS Live Feed page (`/fps-feed`, phone)
+
+A www page outside the desk (`fps_erpnext/www/fps-feed.html`,
+`public/feed/fps-feed.css`): the same Pearl / Matte Black tokens under short
+names (`--bg`, `--surface-1`, …; a test keeps them equal to `theme.css`),
+chosen by `prefers-color-scheme`. Tokens that exist on this page only:
+
+| Token | Pearl | Matte Black | Use |
+|---|---|---|---|
+| `--tint-critical / -warning / -positive / -info / -violet` | state colour at 9–10 % | at 13–14 % | icon wells, callouts, tags |
+| `--new-bg`, `--new-fg` | `#1D6FD8` / `#FFFFFF` | `#3C8DEA` / `#0E1012` | the "NEW" badge and tab counts |
+| `--new-glow` | Electric Blue at 10 % | at 12 % | a NEW card's wash from the top-left (a glow, never a border) |
+| `--on-electric` | `#FFFFFF` | `#0E1012` | text on the Electric Blue button |
+| `--logo-tile` | transparent | `#FFFFFF` | behind the header mark (its deep blue is dim on Matte Black) |
+| `--live`, `--live-ring` | Mint, Mint at 35 % | the same | the LIVE dot and its pulse |
+| `--header-bg` | the plane at 78 % | at 80 % | the sticky header's glass |
+
+Deliberate differences from §2–§7, for a scrolling phone list:
+
+- **Cards are not blurred.** Header, sheet, hint and toast use the 12 px glass
+  blur; the 40-odd feed cards do not — on a flat plane the blur is invisible
+  and costs a compositing layer per card while scrolling on an iPhone (the
+  same reason §9 keeps blur off list views).
+- **Touch targets are 44 px** (iOS): the 32 px LIVE pill and section tabs keep
+  their look and extend their hit area with `::after`; icon buttons are 44 px.
+- **Count-up on the chips' first paint** — SPEC §1 asks for it, §7 forbids it
+  on the dashboards. Off under `prefers-reduced-motion`; the last frame is
+  always the server's figure. The lead decides whether it stays.
