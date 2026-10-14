@@ -35,13 +35,19 @@ export interface MetricCardProps {
   compareLabel: string;
   /** Opens the ActionDrawer for this metric. */
   onOpen: (key: KpiKey) => void;
+  /**
+   * Show the "Finance" chip on money KPIs (default true). The FPS ACC
+   * Dashboard turns it off: every number on that page is money, so the chip
+   * would only repeat itself.
+   */
+  financeChip?: boolean;
   className?: string;
 }
 
 /** Clicks on these never double as "open the card". */
 const INTERACTIVE = "button, a, [role='button'], [data-card-ignore]";
 
-export function MetricCard({ kpi, compareLabel, onOpen, className }: MetricCardProps): React.JSX.Element {
+export function MetricCard({ kpi, compareLabel, onOpen, financeChip = true, className }: MetricCardProps): React.JSX.Element {
   const openRef = React.useRef<HTMLButtonElement>(null);
   const baseId = React.useId();
   const valueId = `${baseId}-value`;
@@ -109,7 +115,7 @@ export function MetricCard({ kpi, compareLabel, onOpen, className }: MetricCardP
           </TooltipContent>
         </Tooltip>
         <span className="ml-auto flex shrink-0 items-center gap-2">
-          {isMoney ? (
+          {isMoney && financeChip ? (
             <span className="rounded-md border border-hairline px-1.5 text-xs leading-5 text-ink-secondary">Finance</span>
           ) : null}
           <button

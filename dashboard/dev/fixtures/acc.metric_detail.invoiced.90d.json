@@ -7,61 +7,61 @@
   "period_label": "Last 13 weeks",
   "compare_label": "vs previous 13 weeks",
   "granularity": "week",
-  "value": 876902.41,
-  "previous": 268863.81,
-  "delta_pct": 226.2,
+  "value": 867426.65,
+  "previous": 256604.87,
+  "delta_pct": 238.0,
   "good_direction": "up",
   "series": [
     {
-      "date": "2026-07-12",
-      "value": 29312.33
+      "date": "2026-07-16",
+      "value": 60683.52
     },
     {
-      "date": "2026-07-19",
-      "value": 84858.68
+      "date": "2026-07-23",
+      "value": 57621.98
     },
     {
-      "date": "2026-07-26",
-      "value": 26601.61
+      "date": "2026-07-30",
+      "value": 14543.15
     },
     {
-      "date": "2026-08-02",
-      "value": 2361.15
+      "date": "2026-08-06",
+      "value": 621962.57
     },
     {
-      "date": "2026-08-09",
-      "value": 621153.21
+      "date": "2026-08-13",
+      "value": 4668.19
     },
     {
-      "date": "2026-08-16",
-      "value": 28466.58
+      "date": "2026-08-20",
+      "value": 23098.39
     },
     {
-      "date": "2026-08-23",
-      "value": 2737.5
+      "date": "2026-08-27",
+      "value": 3437.5
     },
     {
-      "date": "2026-08-30",
+      "date": "2026-09-03",
+      "value": 26362.11
+    },
+    {
+      "date": "2026-09-10",
+      "value": 29224.37
+    },
+    {
+      "date": "2026-09-17",
+      "value": 25824.87
+    },
+    {
+      "date": "2026-09-24",
       "value": 0.0
     },
     {
-      "date": "2026-09-06",
-      "value": 46956.13
-    },
-    {
-      "date": "2026-09-13",
-      "value": 22404.11
-    },
-    {
-      "date": "2026-09-20",
-      "value": 12051.11
-    },
-    {
-      "date": "2026-09-27",
+      "date": "2026-10-01",
       "value": 0.0
     },
     {
-      "date": "2026-10-04",
+      "date": "2026-10-08",
       "value": 0.0,
       "partial": true
     }
@@ -105,19 +105,19 @@
         "value": 25218.09
       },
       {
-        "key": "Customer C",
-        "label": "Customer C",
-        "value": 22068.37
-      },
-      {
         "key": "Customer D",
         "label": "Customer D",
         "value": 19587.87
       },
       {
+        "key": "Customer E",
+        "label": "Customer E",
+        "value": 14761.79
+      },
+      {
         "key": "__other__",
         "label": "Other",
-        "value": 31935.66
+        "value": 29766.48
       }
     ]
   },

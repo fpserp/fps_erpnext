@@ -1,0 +1,100 @@
+{
+  "key": "purchases",
+  "label": "Purchases booked",
+  "unit": "currency",
+  "currency": "AED",
+  "period": "7d",
+  "period_label": "Last 7 days",
+  "compare_label": "vs previous 7 days",
+  "granularity": "day",
+  "value": 230.76,
+  "previous": 32804.37,
+  "delta_pct": -99.3,
+  "good_direction": "none",
+  "series": [
+    {
+      "date": "2026-10-08",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 7080.76
+    },
+    {
+      "date": "2026-10-11",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-12",
+      "value": -6850.0
+    },
+    {
+      "date": "2026-10-13",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-14",
+      "value": 0.0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Supplier group",
+  "dimension_options": [
+    {
+      "key": "Customs & government",
+      "label": "Customs & government"
+    },
+    {
+      "key": "Freight & shipping lines",
+      "label": "Freight & shipping lines"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By supplier group",
+    "rows": [
+      {
+        "key": "Customs & government",
+        "label": "Customs & government",
+        "value": 7080.76
+      },
+      {
+        "key": "Freight & shipping lines",
+        "label": "Freight & shipping lines",
+        "value": -6850.0
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/PI/2610/202",
+      "title": "Shipping line A (sample)",
+      "date": "2026-10-12",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F202",
+      "subtitle": "Freight & shipping lines · Due 11 Nov",
+      "value": -6850.0,
+      "status": "Debit Note"
+    },
+    {
+      "name": "FPS/PI/2610/201",
+      "title": "Port charges (sample)",
+      "date": "2026-10-10",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F201",
+      "subtitle": "Customs & government · Due 9 Nov",
+      "value": 7080.76,
+      "status": "Unpaid"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/purchase-invoice?docstatus=1"
+    }
+  ]
+}

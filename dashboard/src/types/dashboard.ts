@@ -1,6 +1,9 @@
 /**
  * Payload contract between the React dashboard and the read-only Python API
- * in fps_erpnext/api/command_center.py.
+ * in fps_erpnext/api/command_center.py (the FPS OPS Dashboard). The shapes
+ * here are shared with the FPS ACC Dashboard (./acc.ts,
+ * fps_erpnext/api/acc_dashboard.py), which reuses Kpi, Insight, TrendMode,
+ * MetricDetail and friends.
  *
  * Every field here is produced by a whitelisted READ-ONLY method. Nothing in
  * the dashboard writes to ERPNext; the only side effects it may cause are
@@ -32,7 +35,10 @@ export type KpiKey =
   | "deliveries"
   | "job_activity"
   | "invoiced"
-  | "collected";
+  | "collected"
+  // FPS ACC Dashboard only (./acc.ts AccKpiKey).
+  | "paid_out"
+  | "purchases";
 
 export interface SeriesPoint {
   /** ISO date (yyyy-mm-dd). For weekly buckets: the first day of the bucket. */
@@ -143,7 +149,12 @@ export interface TrendPoint {
   values: Record<string, number>;
 }
 
-export type TrendModeKey = "pipeline" | "activity" | "money";
+/**
+ * "pipeline" / "activity": FPS OPS. "money": the old finance tab, no longer
+ * sent by the OPS API (kept so an older payload still type-checks).
+ * "billing" / "cashflow": FPS ACC (./acc.ts AccPayload.trend).
+ */
+export type TrendModeKey = "pipeline" | "activity" | "money" | "billing" | "cashflow";
 
 export interface TrendMode {
   key: TrendModeKey;
@@ -159,7 +170,10 @@ export interface TrendMode {
 }
 
 export interface Viewer {
-  /** Has Accounts User, Accounts Manager or System Manager. */
+  /**
+   * Always false on the FPS OPS Dashboard since 14 Oct 2026 (money moved to
+   * the FPS ACC Dashboard, ./acc.ts). Kept so the UI's money gate stays shut.
+   */
   finance: boolean;
   full_name?: string;
 }
@@ -175,10 +189,13 @@ export interface DashboardPayload {
   /** "vs previous 7 days" etc. */
   compare_label: string;
   viewer: Viewer;
-  /** 0–8 KPIs, in display order. The UI renders whatever subset arrives. */
+  /**
+   * 0–6 operations KPIs, in display order (the API no longer sends the money
+   * KPIs on this page). The UI renders whatever subset arrives.
+   */
   kpis: Kpi[];
   stages: Stages;
-  /** 0–3 modes; money only for finance viewers. */
+  /** 0–2 modes: "pipeline" and "activity" (no money on this page). */
   trend: TrendMode[];
   /** 0–6 insights, most severe first: critical, warning, positive, info. */
   insights: Insight[];
@@ -223,7 +240,10 @@ export interface DimensionOption {
   label: string;
 }
 
-/** fps_erpnext.api.command_center.get_metric_detail(key, period, dimension) */
+/**
+ * fps_erpnext.api.command_center.get_metric_detail(key, period, dimension) for
+ * the OPS KPIs, fps_erpnext.api.acc_dashboard.get_metric_detail for the ACC ones.
+ */
 export interface MetricDetail {
   key: KpiKey;
   label: string;

@@ -1,0 +1,70 @@
+/* FPS ACC Overview block styles. Two jobs only:
+     1. the placeholder whose contents the dashboard bundle swaps for its own
+        element (and restores on unmount) -- the same rules as fps_overview.css;
+     2. the one-line message the loader shows if the bundle fails. There is no
+        classic strip on this page.
+   The dashboard brings its own CSS into this shadow root; nothing here may
+   target :host or bare elements, or it would leak into the dashboard.
+
+   THEME. Shadow DOM: only inherited custom properties reach this stylesheet.
+   Colours read the desk variables and the FPS theme tokens (set by
+   public/css/fps_theme.css), each with a light fallback. */
+
+/* -- 1. Mount placeholder ------------------------------------------------- */
+
+.fps-cc-mount {
+	display: block;
+}
+
+.fps-cc-loading {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 96px;
+	padding: 24px;
+	border: 1px solid var(--fps-border, var(--border-color, #e2e8f0));
+	border-radius: var(--fps-radius-card, 10px);
+	background: var(--fps-surface-1, var(--card-bg, #fff));
+	box-shadow: var(--fps-shadow-card, none);
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--text-muted, #7c7c7c);
+}
+
+.fps-cc-loading-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--fps-electric, #0b4fe0);
+	animation: fps-cc-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes fps-cc-pulse {
+	0%,
+	100% {
+		opacity: 0.35;
+	}
+	50% {
+		opacity: 1;
+	}
+}
+
+/* -- 2. Load failure ------------------------------------------------------ */
+
+.fps-acc-msg {
+	padding: 16px 24px;
+	border: 1px solid var(--fps-border, var(--border-color, #e2e8f0));
+	border-radius: var(--fps-radius-card, 10px);
+	background: var(--fps-surface-1, var(--card-bg, #fff));
+	box-shadow: var(--fps-shadow-card, none);
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--text-color, #1f272e);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.fps-cc-loading-dot {
+		animation: none;
+		opacity: 1;
+	}
+}

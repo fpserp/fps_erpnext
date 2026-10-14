@@ -1,4 +1,4 @@
-"""Read-only data for the FPS Command Center, the dark dashboard in the FPS Overview block.
+"""Read-only data for the FPS OPS Dashboard (the Command Center in the FPS Overview block).
 
 Two whitelisted GET methods, both read-only, both permission-aware:
 
@@ -23,13 +23,21 @@ Delivery since July are drafts), and every date filter carries its
 builder rejects string aggregates in `fields`, and one read per doctype then
 serves the KPI, its sparkline, the 12-week trend and the insights.
 
-MONEY IS GATED HERE, NOT IN THE BROWSER. FPS Operations can read Sales Invoice
-and Payment Entry at permlevel 0 (checked 2026-10-10), so hiding the money
-cards client-side would be cosmetic. The invoiced/collected KPIs, the money
-trend, the money insights (duplicate drafts, invoicing stall, AR ageing),
-quotation amounts and the Sales Invoice / Payment Entry reads themselves only
-happen for Accounts User / Accounts Manager / System Manager, and
-logic.build_dashboard drops money rows again for anyone else.
+NO MONEY ON THIS PAGE, FOR ANYONE (Agam, 14 Oct 2026: keep this dashboard as
+the FPS OPS dashboard, open to all, without the invoices and collection
+parts). The money moved to the FPS ACC Dashboard (fps_erpnext.api.
+acc_dashboard, Accounts Manager only). So every viewer -- finance roles and
+Administrator included -- is built as a non-finance viewer (OPS_FINANCE): no
+Sales Invoice or Payment Entry read, no invoiced/collected KPI, no money trend,
+no money insight (duplicate drafts, invoicing stall, AR ageing), no quotation
+amount, viewer.finance always false, and get_metric_detail refuses the money
+metrics. The "invoices" tile (open Sales Invoices) is dropped from the stage
+strip here (logic.ops_stages), not in pipeline.TILES, which the classic strip
+and other callers keep. The gate is server-side because FPS Operations can
+read Sales Invoice and Payment Entry at permlevel 0 (checked 2026-10-10), so
+hiding money client-side would be cosmetic; and logic.build_dashboard drops
+money rows again for a non-finance viewer, so a caller mistake cannot leak
+them either.
 
 FIELD-LEVEL PERMISSIONS. The app's property setters put the Sales Invoice
 amounts (base_net_total, base_grand_total, outstanding_amount, ...) at
@@ -40,7 +48,9 @@ SELECTED field the viewer cannot read is silently dropped
 read raises frappe.PermissionError (Engine._check_field_permission).
 _read_invoices filters on outstanding_amount, so Sales Invoice is only read
 when the viewer holds permlevel-1 read (_can_read below). Otherwise it is left
-out and the logic omits the money metrics, never "AED 0".
+out and the logic omits the money metrics, never "AED 0". (Since 14 Oct 2026
+this page reads no Sales Invoice at all; the FPS ACC Dashboard reuses
+_read_invoices and _can_read.)
 
 FIELDS, VERIFIED READ-ONLY against the live site on 2026-10-10 (fps-erpnext MCP
 get_doctype_info / list_documents; fps_job_order re-checked as a Link to Job
@@ -80,26 +90,30 @@ from frappe.utils import get_fullname, getdate, now_datetime, today
 from fps_erpnext.api import command_center_logic as logic
 from fps_erpnext.api import pipeline
 
-FINANCE_ROLES = ("Accounts User", "Accounts Manager", "System Manager")
+# The OPS page is built as a non-finance viewer for EVERYONE (see the module
+# docstring). One constant, so no call site can pass True by accident.
+OPS_FINANCE = False
 
 # Polled every 60 s by the dashboard; the cache makes a poll from a second tab
 # (or a quick period toggle back) free. Versioned so a deploy that changes the
 # payload shape never serves the old one.
 CACHE_TTL = 60
-CACHE_KEY = "fps_command_center:v2:dashboard:%s"   # v2: spec-reconciled insights and context
+# v3: money-free for everyone (14 Oct 2026). The bump also makes sure no v2
+# payload -- which carried money for finance viewers -- is served after deploy.
+CACHE_KEY = "fps_command_center:v3:dashboard:%s"
 
 MAX_DIMENSION_LENGTH = 140
 
 
 @frappe.whitelist(methods=["GET"])
 def get_dashboard(period: str = "7d"):
-	"""KPIs, pipeline strip, weekly trend and insights for the viewer. Read-only."""
+	"""Operations KPIs, pipeline strip, weekly trend and insights. Read-only, no money."""
 	period = _check_period(period)
 	user = frappe.session.user
 	key = CACHE_KEY % period
 
 	# user= scopes the key to this user ("user:<user>:..."), so one viewer's
-	# numbers -- money included -- can never be served to another.
+	# numbers (permission-dependent) can never be served to another.
 	cached = frappe.cache().get_value(key, user=user, expires=True)
 	if cached is not None:
 		return cached
@@ -111,24 +125,27 @@ def get_dashboard(period: str = "7d"):
 
 @frappe.whitelist(methods=["GET"])
 def get_metric_detail(key: str, period: str = "30d", dimension: str | None = None):
-	"""One KPI's drawer: series, breakdown, latest records, quick actions. Read-only."""
+	"""One KPI's drawer: series, breakdown, latest records, quick actions. Read-only.
+
+	The money metrics (invoiced, collected) are refused for EVERY viewer here,
+	Administrator included: they live on the FPS ACC Dashboard now
+	(fps_erpnext.api.acc_dashboard.get_metric_detail).
+	"""
 	period = _check_period(period)
 	if not isinstance(key, str) or key not in logic.METRICS:
 		frappe.throw(_("Unknown metric"), frappe.ValidationError)
 	spec = logic.METRICS[key]
 
-	user = frappe.session.user
-	finance = _is_finance(user)
-	if (spec["finance"] and not finance) or not _can_read(spec["doctype"]):
+	if spec["finance"] or not _can_read(spec["doctype"]):
 		frappe.throw(_("Not permitted"), frappe.PermissionError)
 
 	dimension = _check_dimension(dimension)
 	as_of = getdate(today())
-	raw = _read_rows(logic.fetch_floor(period, as_of), finance=finance, keys=(key,))
+	raw = _read_rows(logic.fetch_floor(period, as_of), finance=OPS_FINANCE, keys=(key,))
 	can_create = bool(spec["new_doctype"]) and frappe.has_permission(spec["new_doctype"], "create")
 	return logic.build_metric_detail(
 		key, raw, period=period, as_of=as_of, dimension=dimension,
-		finance=finance, can_create=can_create)
+		finance=OPS_FINANCE, can_create=can_create)
 
 
 # --------------------------------------------------------------------------
@@ -137,23 +154,17 @@ def get_metric_detail(key: str, period: str = "30d", dimension: str | None = Non
 
 def _dashboard(period, user):
 	as_of = getdate(today())
-	finance = _is_finance(user)
-	raw = _read_rows(logic.fetch_floor(period, as_of), finance=finance, keys=logic.KPI_ORDER)
+	raw = _read_rows(logic.fetch_floor(period, as_of), finance=OPS_FINANCE, keys=logic.KPI_ORDER)
 	return logic.build_dashboard(
 		period=period,
 		as_of=as_of,
 		generated_at=logic.timestamp(now_datetime()),
-		viewer={"finance": finance, "full_name": get_fullname(user)},
+		viewer={"finance": OPS_FINANCE, "full_name": get_fullname(user)},
 		raw=raw,
-		stages=pipeline.get_overview(),
+		# The open-invoices tile belongs to the FPS ACC Dashboard.
+		stages=logic.ops_stages(pipeline.get_overview()),
 		creatable=_creatable(),
 	)
-
-
-def _is_finance(user):
-	if user == "Administrator":
-		return True
-	return not set(FINANCE_ROLES).isdisjoint(frappe.get_roles(user))
 
 
 def _can_read(doctype):
@@ -168,8 +179,10 @@ def _can_read(doctype):
 
 
 def _creatable():
-	"""DocTypes the viewer may open a blank "new" form for (the drawer's quick action)."""
-	doctypes = {m["new_doctype"] for m in logic.METRICS.values() if m["new_doctype"]}
+	"""DocTypes the viewer may open a blank "new" form for (the drawer's quick action).
+	Only the operations metrics' doctypes: this page has no money metric."""
+	doctypes = {m["new_doctype"] for m in logic.METRICS.values()
+	            if m["new_doctype"] and not m["finance"]}
 	return {dt for dt in doctypes if frappe.has_permission(dt, "create")}
 
 
@@ -201,7 +214,8 @@ def _read_rows(floor, *, finance, keys):
 	A doctype the viewer cannot read is left out of the dict entirely, and the
 	logic module then omits its metrics rather than reporting a zero -- the same
 	rule as pipeline.get_overview, so nothing confirms records the viewer has no
-	rights to. Money doctypes are not even read for a non-finance viewer.
+	rights to. Money doctypes are not even read for a non-finance viewer, which
+	on this page is everyone (OPS_FINANCE).
 	"""
 	keys = [k for k in keys if finance or not logic.METRICS[k]["finance"]]
 	need = {logic.METRIC_SOURCE[k] for k in keys}
@@ -291,7 +305,8 @@ def _read_deliveries(floor):
 
 
 def _read_invoices(floor):
-	"""Sales Invoices for the money KPIs and insights (finance viewers only).
+	"""Sales Invoices for the money KPIs and insights. Not read by this page any
+	more (OPS_FINANCE); fps_erpnext.api.acc_dashboard calls it for the ACC page.
 
 	Read: everything posted since the floor, everything still outstanding
 	however old (the AR figures include the legacy 2023-2025 book by design),

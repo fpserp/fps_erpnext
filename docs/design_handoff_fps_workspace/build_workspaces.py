@@ -7,6 +7,11 @@ fps_erpnext/fps/workspace_sidebar/fps/fps.json. Both `workspace` and
 `workspace_sidebar` are in Frappe v16's IMPORTABLE_DOCTYPES, so `bench migrate`
 imports these on deploy -- the layout lives in the app, not the site DB.
 
+EXCEPT THE SIDEBAR, since Frappe 16.51 (checked 14 Oct 2026): the desk builds
+the left sidebar from the "Sidebar" doctype, and the "Workspace Sidebar" this
+script writes is only an archive nothing reads at runtime. See "The v16
+sidebar" below before expecting a SIDEBAR_ITEMS edit to show on the site.
+
 Run:  python docs/design_handoff_fps_workspace/build_workspaces.py
 """
 
@@ -28,6 +33,21 @@ OWNER = "Administrator"
 # `modified` to now(), which would out-race the stamp and drop the whole import.
 STAMP = "2026-09-26 09:00:00.000000"
 CREATED = "2026-09-09 13:30:00.000000"
+
+# Per-file override for the FPS ACC Dashboard change (14 Oct 2026). Only the
+# records whose content changed carry it -- the new "FPS ACC" workspace, the
+# FPS sidebar (its new "FPS ACC Dashboard" link) and the new "FPS ACC Overview"
+# block -- so the import picks them up without bumping STAMP, which would
+# rewrite every workspace, client script and property setter file. A later
+# STAMP bump past this date overtakes it (the later of the two is used), and
+# this constant can then go.
+ACC_STAMP = "2026-10-14 12:00:00.000000"
+
+
+def stamp(override=None):
+    """STAMP, or a later per-file override. Same fixed-width format, so the
+    string max is the later timestamp."""
+    return max(STAMP, override or STAMP)
 
 
 # --------------------------------------------------------------------------
@@ -142,7 +162,7 @@ def chart_block(chart_name, bid, col=12):
 def workspace(name, title, sequence_id, icon, content, links,
               parent_page="", roles=None, indicator_color="",
               shortcuts=None, number_cards=None, charts=None,
-              quick_lists=None, custom_blocks=None, idx=0):
+              quick_lists=None, custom_blocks=None, idx=0, modified=None):
     return {
         "app": APP,
         "charts": charts or [],
@@ -159,7 +179,7 @@ def workspace(name, title, sequence_id, icon, content, links,
         "is_hidden": 0,
         "label": name,
         "links": links,
-        "modified": STAMP,
+        "modified": stamp(modified),
         "modified_by": OWNER,
         "module": MODULE,
         "name": name,
@@ -213,6 +233,29 @@ SETUP_ROLES = ["System Manager"]
 # cards take their place. The existing shortcuts and number cards stay put so
 # the page keeps working until steps 2-4 restyle them.
 # ==========================================================================
+
+# ==========================================================================
+# FPS ACC  (the accounting dashboard -- 14 Oct 2026)
+#
+# Agam: the home page's Command Center stays as the FPS OPS Dashboard, open to
+# everyone and without money, and a separate FPS ACC Dashboard carries the
+# accounting -- for Administrator, agam@ and abhishek@ only. Those three are
+# exactly the holders of Accounts Manager on 2026-10-14, so that is the one
+# role here: Frappe hides a workspace (and, in v16, a sidebar link to it) from
+# a user with none of its roles. The numbers are gated again in the API
+# (fps_erpnext.api.acc_dashboard: frappe.only_for("Accounts Manager") before
+# any read), so the page holds nothing a direct call could reach either.
+#
+# The page is one full-width custom block, "FPS ACC Overview", which mounts the
+# same dashboard bundle as "FPS Overview" with variant "acc".
+# ==========================================================================
+
+ACC_ROLES = ["Accounts Manager"]
+
+FPS_ACC_CONTENT = [
+    header("FPS ACC Dashboard", "acchdr"),
+    custom_block_block("FPS ACC Overview", "accoverview"),
+]
 
 FPS_HOME_LINKS = (
     # The Sales / Operations / Accounts link cards that used to sit at the bottom
@@ -498,6 +541,25 @@ CHILDREN = [
 # doc, NOT the parent_page tree the README assumes (that is v15 behaviour).
 # The doc must stay named "FPS" to match Module Def "FPS", otherwise Frappe
 # auto-generates one over the top of it.
+#
+# FRAPPE 16.51 (the live site, 14 Oct 2026): SIDEBAR_ITEMS NO LONGER REACHES
+# THE DESK. The runtime sidebar is the newer "Sidebar" doctype; on the site its
+# record "FPS" is site-owned (standard 0, merged_from ["FPS"], created
+# 2026-10-10 by patches/v16_0/convert_sidebars, which converts a module only
+# once -- it skips any module that already has a Sidebar). Workspace Sidebar is
+# "kept as an inert archive. Nothing reads this at runtime"
+# (frappe/desk/doctype/workspace_sidebar/workspace_sidebar.py), and
+# sidebar.resolve_sidebar renders the stored Sidebar rows plus the user's
+# PRIVATE workspaces only. So the fps.json this script writes is imported into
+# the archive and never rendered -- including the "FPS ACC Dashboard" row
+# below. To change the live sidebar, either
+#   (1) add the row with the desk sidebar editor -- a site customization, so
+#       Agam's OK first (customization rows still pass is_item_allowed, so a
+#       Workspace row stays hidden from users who cannot open it), or
+#   (2) ship a module "Sidebar" export (fps_erpnext/fps/sidebar/fps/fps.json),
+#       after checking on a bench how its import meets the site-owned "FPS".
+# Meanwhile the FPS OPS Dashboard header links to /desk/fps-acc for Accounts
+# Manager holders (CommandCenter.tsx), so the three can reach the ACC page.
 # ==========================================================================
 
 def s_link(label, link_type, link_to, icon=None, url=None, child=1,
@@ -557,6 +619,14 @@ def s_group(label, icon, keep_closed=0):
 # switcher.
 SIDEBAR_ITEMS = [
     s_link("FPS Home", "Workspace", "FPS", icon="home", child=0),
+    # 14 Oct 2026. INERT ON FRAPPE 16.51 -- this archive is not rendered (see
+    # "The v16 sidebar" above); the row is kept so the archive matches the
+    # intended sidebar if it is ever converted again. Where a Sidebar row like
+    # it IS rendered, a Workspace link is dropped for anyone who cannot open
+    # that workspace (sidebar.filter_sidebar_items -> desk.utils.is_item_allowed
+    # -> Workspace.is_permitted on its roles), so only Accounts Manager holders
+    # would see it. Until then the OPS header link is the way in.
+    s_link("FPS ACC Dashboard", "Workspace", "FPS ACC", icon="accounting", child=0),
 
     s_group("Sales", "sell"),
     s_link("Enquiry", "DocType", "FPS Enquiry"),
@@ -622,7 +692,8 @@ SIDEBAR = {
     "idx": 0,
     "items": [dict({"filters": None, "route_options": None,
                     "navigate_to_tab": None}, **it) for it in SIDEBAR_ITEMS],
-    "modified": STAMP,
+    # Per-file override: the "FPS ACC Dashboard" link is new (see ACC_STAMP).
+    "modified": stamp(ACC_STAMP),
     "modified_by": OWNER,
     "module": MODULE,
     "module_onboarding": None,
@@ -877,14 +948,16 @@ def custom_html_blocks():
         with open(os.path.join(BLOCKS_DIR, stem + "." + ext), encoding="utf-8") as fh:
             return fh.read()
 
-    def block(name, stem):
+    def block(name, stem, modified=None):
         return {
             "creation": CREATED,
             "docstatus": 0,
             "doctype": "Custom HTML Block",
             "html": read(stem, "html"),
             "idx": 0,
-            "modified": STAMP,
+            # Fixtures import with force=True, so this does not gate the
+            # import; a new block still carries the date it was added.
+            "modified": stamp(modified),
             "modified_by": OWNER,
             "name": name,
             "owner": OWNER,
@@ -901,6 +974,10 @@ def custom_html_blocks():
         block("FPS Overview", "fps_overview"),
         block("FPS Job Tracker", "fps_job_tracker"),
         block("FPS Customs Tracker", "fps_customs_tracker"),
+        # The FPS ACC Dashboard (same bundle, variant "acc"). Ungated like the
+        # others: the workspace roles hide the page and the API refuses
+        # anyone without Accounts Manager.
+        block("FPS ACC Overview", "fps_acc_overview", modified=ACC_STAMP),
     ]
 
 
@@ -1391,6 +1468,14 @@ def main():
             charts=spec.get("charts") or [],
             custom_blocks=spec.get("custom_blocks") or [],
         )))
+
+    written.append(write("workspace", "fps_acc", workspace(
+        name="FPS ACC", title="FPS ACC", sequence_id=7, icon="accounting",
+        parent_page="FPS", roles=ACC_ROLES, content=FPS_ACC_CONTENT, links=[],
+        custom_blocks=[{"custom_block_name": "FPS ACC Overview",
+                        "label": "FPS ACC Overview"}],
+        modified=ACC_STAMP,
+    )))
 
     written.append(write("workspace", "payment_receipts", payment_receipts()))
 

@@ -1,0 +1,264 @@
+{
+  "key": "purchases",
+  "label": "Purchases booked",
+  "unit": "currency",
+  "currency": "AED",
+  "period": "30d",
+  "period_label": "Last 30 days",
+  "compare_label": "vs previous 30 days",
+  "granularity": "day",
+  "value": 137554.39,
+  "previous": 150979.75,
+  "delta_pct": -8.9,
+  "good_direction": "none",
+  "series": [
+    {
+      "date": "2026-09-15",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-16",
+      "value": 2653.62
+    },
+    {
+      "date": "2026-09-17",
+      "value": 12675.49
+    },
+    {
+      "date": "2026-09-18",
+      "value": 2784.55
+    },
+    {
+      "date": "2026-09-19",
+      "value": 1559.74
+    },
+    {
+      "date": "2026-09-20",
+      "value": 9073.45
+    },
+    {
+      "date": "2026-09-21",
+      "value": 21530.59
+    },
+    {
+      "date": "2026-09-22",
+      "value": 470.3
+    },
+    {
+      "date": "2026-09-23",
+      "value": 18134.3
+    },
+    {
+      "date": "2026-09-24",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-25",
+      "value": 10189.79
+    },
+    {
+      "date": "2026-09-26",
+      "value": 13441.82
+    },
+    {
+      "date": "2026-09-27",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-28",
+      "value": 8229.71
+    },
+    {
+      "date": "2026-09-29",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-30",
+      "value": 3775.9
+    },
+    {
+      "date": "2026-10-01",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-02",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-03",
+      "value": 3136.99
+    },
+    {
+      "date": "2026-10-04",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 29667.38
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-08",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 7080.76
+    },
+    {
+      "date": "2026-10-11",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-12",
+      "value": -6850.0
+    },
+    {
+      "date": "2026-10-13",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-14",
+      "value": 0.0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Supplier group",
+  "dimension_options": [
+    {
+      "key": "Customs & government",
+      "label": "Customs & government"
+    },
+    {
+      "key": "Freight & shipping lines",
+      "label": "Freight & shipping lines"
+    },
+    {
+      "key": "Card spends",
+      "label": "Card spends"
+    },
+    {
+      "key": "Transport",
+      "label": "Transport"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By supplier group",
+    "rows": [
+      {
+        "key": "Freight & shipping lines",
+        "label": "Freight & shipping lines",
+        "value": 71867.67
+      },
+      {
+        "key": "Customs & government",
+        "label": "Customs & government",
+        "value": 40635.79
+      },
+      {
+        "key": "Card spends",
+        "label": "Card spends",
+        "value": 14365.79
+      },
+      {
+        "key": "Transport",
+        "label": "Transport",
+        "value": 10685.14
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/PI/2610/202",
+      "title": "Shipping line A (sample)",
+      "date": "2026-10-12",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F202",
+      "subtitle": "Freight & shipping lines · Due 11 Nov",
+      "value": -6850.0,
+      "status": "Debit Note"
+    },
+    {
+      "name": "FPS/PI/2610/201",
+      "title": "Port charges (sample)",
+      "date": "2026-10-10",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F201",
+      "subtitle": "Customs & government · Due 9 Nov",
+      "value": 7080.76,
+      "status": "Unpaid"
+    },
+    {
+      "name": "FPS/PI/2610/200",
+      "title": "Shipping line A (sample)",
+      "date": "2026-10-05",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F200",
+      "subtitle": "Freight & shipping lines · Due 4 Nov",
+      "value": 17399.2,
+      "status": "Unpaid"
+    },
+    {
+      "name": "FPS/PI/2610/199",
+      "title": "Fuel station (sample)",
+      "date": "2026-10-05",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F199",
+      "subtitle": "Card spends · Due 5 Oct",
+      "value": 3108.61,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/PI/2610/198",
+      "title": "Customs broker (sample)",
+      "date": "2026-10-05",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F198",
+      "subtitle": "Customs & government · Due 4 Nov",
+      "value": 9159.57,
+      "status": "Unpaid"
+    },
+    {
+      "name": "FPS/PI/2610/197",
+      "title": "Online fees portal (sample)",
+      "date": "2026-10-03",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F197",
+      "subtitle": "Card spends · Due 3 Oct",
+      "value": 3136.99,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/PI/2609/196",
+      "title": "Online fees portal (sample)",
+      "date": "2026-09-30",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2609%2F196",
+      "subtitle": "Card spends · Due 30 Sep",
+      "value": 3775.9,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/PI/2609/195",
+      "title": "Government fees (sample)",
+      "date": "2026-09-28",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2609%2F195",
+      "subtitle": "Customs & government · Due 28 Oct",
+      "value": 2881.24,
+      "status": "Unpaid"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/purchase-invoice?docstatus=1"
+    }
+  ]
+}

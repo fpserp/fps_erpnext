@@ -34,8 +34,13 @@
  *    and fan out to our own subscriber set, which we can unsubscribe from.
  */
 export const READ_METHODS = [
+  // FPS OPS Dashboard (Workspace "FPS"): every desk user, no money.
   "fps_erpnext.api.command_center.get_dashboard",
   "fps_erpnext.api.command_center.get_metric_detail",
+  // FPS ACC Dashboard (Workspace "FPS ACC"): Accounts Manager only — the
+  // server raises PermissionError for anyone else before reading anything.
+  "fps_erpnext.api.acc_dashboard.get_dashboard",
+  "fps_erpnext.api.acc_dashboard.get_metric_detail",
 ] as const;
 
 export type ReadMethod = (typeof READ_METHODS)[number];
@@ -211,6 +216,16 @@ function toCallError(raw: unknown, method: string): FrappeCallError {
     return new FrappeCallError(`Could not load ${short} (HTTP ${status}${statusText ? ` ${statusText}` : ""}).`, method, status, excType);
   }
   return new FrappeCallError(`Could not load ${short}.`, method, status, excType);
+}
+
+/**
+ * True for the server's "you may not read this" answer: frappe.PermissionError
+ * (frappe.only_for, an HTTP 403 with exc_type "PermissionError"). The ACC
+ * dashboard shows its calm no-access panel for it instead of an error.
+ */
+export function isPermissionError(err: unknown): boolean {
+  if (!(err instanceof FrappeCallError)) return false;
+  return err.excType === "PermissionError" || err.status === 403;
 }
 
 /**

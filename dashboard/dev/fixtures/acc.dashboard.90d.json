@@ -1,0 +1,984 @@
+{
+  "as_of": "2026-10-14",
+  "generated_at": "2026-10-14 09:30:00",
+  "period": "90d",
+  "period_label": "Last 13 weeks",
+  "compare_label": "vs previous 13 weeks",
+  "viewer": {
+    "full_name": "Sample Finance User"
+  },
+  "kpis": [
+    {
+      "key": "invoiced",
+      "label": "Invoiced (net)",
+      "definition": "Net value (before VAT) of submitted sales invoices, by posting date, credit notes included. Payment requests and drafts are left out.",
+      "unit": "currency",
+      "currency": "AED",
+      "value": 867426.65,
+      "previous": 256604.87,
+      "delta_pct": 238.0,
+      "good_direction": "up",
+      "granularity": "week",
+      "series": [
+        {
+          "date": "2026-07-16",
+          "value": 60683.52
+        },
+        {
+          "date": "2026-07-23",
+          "value": 57621.98
+        },
+        {
+          "date": "2026-07-30",
+          "value": 14543.15
+        },
+        {
+          "date": "2026-08-06",
+          "value": 621962.57
+        },
+        {
+          "date": "2026-08-13",
+          "value": 4668.19
+        },
+        {
+          "date": "2026-08-20",
+          "value": 23098.39
+        },
+        {
+          "date": "2026-08-27",
+          "value": 3437.5
+        },
+        {
+          "date": "2026-09-03",
+          "value": 26362.11
+        },
+        {
+          "date": "2026-09-10",
+          "value": 29224.37
+        },
+        {
+          "date": "2026-09-17",
+          "value": 25824.87
+        },
+        {
+          "date": "2026-09-24",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-01",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-08",
+          "value": 0.0,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Drafts waiting",
+          "value": "26 · AED 1.5M"
+        },
+        {
+          "label": "Last submitted",
+          "value": "23 Sep"
+        }
+      ],
+      "route": "/app/sales-invoice?docstatus=1",
+      "new_doctype": "Sales Invoice",
+      "finance": true
+    },
+    {
+      "key": "collected",
+      "label": "Collected",
+      "definition": "Customer receipts (submitted Payment Entries of type Receive), by posting date.",
+      "unit": "currency",
+      "currency": "AED",
+      "value": 1037971.29,
+      "previous": 391502.22,
+      "delta_pct": 165.1,
+      "good_direction": "up",
+      "granularity": "week",
+      "series": [
+        {
+          "date": "2026-07-16",
+          "value": 100000.0
+        },
+        {
+          "date": "2026-07-23",
+          "value": 21693.49
+        },
+        {
+          "date": "2026-07-30",
+          "value": 91582.34
+        },
+        {
+          "date": "2026-08-06",
+          "value": 73106.87
+        },
+        {
+          "date": "2026-08-13",
+          "value": 130317.89
+        },
+        {
+          "date": "2026-08-20",
+          "value": 55802.29
+        },
+        {
+          "date": "2026-08-27",
+          "value": 10959.84
+        },
+        {
+          "date": "2026-09-03",
+          "value": 483393.0
+        },
+        {
+          "date": "2026-09-10",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-17",
+          "value": 0.0
+        },
+        {
+          "date": "2026-09-24",
+          "value": 71115.57
+        },
+        {
+          "date": "2026-10-01",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-08",
+          "value": 0.0,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Outstanding AR",
+          "value": "AED 756.6K"
+        },
+        {
+          "label": "Receipts",
+          "value": "21"
+        }
+      ],
+      "caveat": "Receipts are booked a median of 28 days after the payment date, so recent weeks fill in later.",
+      "route": "/app/payment-entry?payment_type=Receive&docstatus=1",
+      "finance": true
+    },
+    {
+      "key": "paid_out",
+      "label": "Paid to suppliers",
+      "definition": "Supplier payments: submitted Payment Entries of type Pay plus purchase invoices paid at booking, by posting date. Salaries, partner drawings and other journal entries are not included.",
+      "unit": "currency",
+      "currency": "AED",
+      "value": 410874.76,
+      "previous": 546221.57,
+      "delta_pct": -24.8,
+      "good_direction": "none",
+      "granularity": "week",
+      "series": [
+        {
+          "date": "2026-07-16",
+          "value": 40262.29
+        },
+        {
+          "date": "2026-07-23",
+          "value": 15671.58
+        },
+        {
+          "date": "2026-07-30",
+          "value": 38642.11
+        },
+        {
+          "date": "2026-08-06",
+          "value": 94392.78
+        },
+        {
+          "date": "2026-08-13",
+          "value": 12256.52
+        },
+        {
+          "date": "2026-08-20",
+          "value": 45628.32
+        },
+        {
+          "date": "2026-08-27",
+          "value": 31136.95
+        },
+        {
+          "date": "2026-09-03",
+          "value": 26198.03
+        },
+        {
+          "date": "2026-09-10",
+          "value": 25621.91
+        },
+        {
+          "date": "2026-09-17",
+          "value": 16100.45
+        },
+        {
+          "date": "2026-09-24",
+          "value": 17977.76
+        },
+        {
+          "date": "2026-10-01",
+          "value": 16978.26
+        },
+        {
+          "date": "2026-10-08",
+          "value": 30007.8,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Supplier payments",
+          "value": "44 · AED 351.2K"
+        },
+        {
+          "label": "Paid at booking",
+          "value": "28 · AED 59.7K"
+        }
+      ],
+      "route": "/app/payment-entry?payment_type=Pay&docstatus=1",
+      "finance": true
+    },
+    {
+      "key": "purchases",
+      "label": "Purchases booked",
+      "definition": "Net value (before VAT) of submitted purchase invoices, by posting date. Debit notes count negative.",
+      "unit": "currency",
+      "currency": "AED",
+      "value": 469164.16,
+      "previous": 520510.19,
+      "delta_pct": -9.9,
+      "good_direction": "none",
+      "granularity": "week",
+      "series": [
+        {
+          "date": "2026-07-16",
+          "value": 56668.65
+        },
+        {
+          "date": "2026-07-23",
+          "value": 33447.22
+        },
+        {
+          "date": "2026-07-30",
+          "value": 22521.41
+        },
+        {
+          "date": "2026-08-06",
+          "value": 40853.66
+        },
+        {
+          "date": "2026-08-13",
+          "value": 45929.23
+        },
+        {
+          "date": "2026-08-20",
+          "value": 16351.22
+        },
+        {
+          "date": "2026-08-27",
+          "value": 24744.56
+        },
+        {
+          "date": "2026-09-03",
+          "value": 16169.4
+        },
+        {
+          "date": "2026-09-10",
+          "value": 77578.04
+        },
+        {
+          "date": "2026-09-17",
+          "value": 66228.42
+        },
+        {
+          "date": "2026-09-24",
+          "value": 35637.22
+        },
+        {
+          "date": "2026-10-01",
+          "value": 32804.37
+        },
+        {
+          "date": "2026-10-08",
+          "value": 230.76,
+          "partial": true
+        }
+      ],
+      "context": [
+        {
+          "label": "Bills booked",
+          "value": "78"
+        },
+        {
+          "label": "Debit notes",
+          "value": "2 · −AED 9.3K"
+        }
+      ],
+      "route": "/app/purchase-invoice?docstatus=1",
+      "finance": true
+    }
+  ],
+  "balances": [
+    {
+      "key": "receivables",
+      "label": "Receivables",
+      "definition": "Outstanding on submitted sales invoices less customer receipts not yet allocated to an invoice, credit notes netted, carried-over invoices included. Overdue is net of each customer's own credits.",
+      "currency": "AED",
+      "value": 723363.7,
+      "context": [
+        {
+          "label": "Overdue",
+          "value": "AED 713.4K"
+        },
+        {
+          "label": "Open invoices",
+          "value": "73"
+        },
+        {
+          "label": "Less unallocated receipts",
+          "value": "AED 18.5K"
+        },
+        {
+          "label": "Drafts waiting",
+          "value": "26 · AED 1.5M"
+        }
+      ],
+      "severity": "warning",
+      "route": "/app/query-report/FPS%20Customer%20Receivables"
+    },
+    {
+      "key": "payables",
+      "label": "Payables",
+      "definition": "Outstanding on submitted purchase invoices less supplier payments not yet allocated to a bill, debit notes netted. Overdue is net of each supplier's own credits.",
+      "currency": "AED",
+      "value": 194432.35,
+      "context": [
+        {
+          "label": "Overdue",
+          "value": "AED 58.9K"
+        },
+        {
+          "label": "Open bills",
+          "value": "24"
+        },
+        {
+          "label": "Less unallocated payments",
+          "value": "AED 16.8K"
+        },
+        {
+          "label": "Draft bills",
+          "value": "3"
+        }
+      ],
+      "route": "/app/query-report/Accounts%20Payable"
+    },
+    {
+      "key": "cash",
+      "label": "Cash & bank",
+      "definition": "General Ledger balance of every bank and cash account, up to today, checked against each bank's latest statement at its closing date.",
+      "currency": "AED",
+      "value": 428808.1,
+      "context": [
+        {
+          "label": "ADCB Current A/c",
+          "value": "AED 409.8K"
+        },
+        {
+          "label": "Bank statements, 30 Sep",
+          "value": "AED 414K"
+        },
+        {
+          "label": "Qashio card liability",
+          "value": "AED 6.2K"
+        },
+        {
+          "label": "Qashio Government wallet",
+          "value": "AED 21.9K"
+        }
+      ],
+      "caveat": "Book balances from ERPNext, not bank statements.",
+      "route": "/app/query-report/General%20Ledger?group_by=Group%20by%20Account"
+    },
+    {
+      "key": "vat",
+      "label": "VAT Jul–Sep 2026",
+      "definition": "Output VAT (sales invoices) less input VAT (purchase invoices) posted to the VAT accounts in the quarter; positive means payable. Journal and payment postings are left out.",
+      "currency": "AED",
+      "value": -7247.02,
+      "context": [
+        {
+          "label": "Output VAT",
+          "value": "AED 7.1K"
+        },
+        {
+          "label": "Input VAT",
+          "value": "AED 14.3K"
+        },
+        {
+          "label": "Due date",
+          "value": "28 Oct 2026 · 14 days"
+        }
+      ],
+      "severity": "warning",
+      "caveat": "From ERPNext postings; the return filed on EmaraTax may differ.",
+      "route": "/app/query-report/General%20Ledger?from_date=2026-07-01&to_date=2026-09-30&account=%5B%22VAT%205%25%20-%20FPS%22%2C%22Sales%20Taxes%20Receivables%20-%20FPS%22%5D"
+    }
+  ],
+  "ageing": [
+    {
+      "key": "receivables",
+      "label": "Receivables",
+      "currency": "AED",
+      "total": 723363.7,
+      "overdue": 713431.68,
+      "buckets": [
+        {
+          "key": "not_due",
+          "label": "Not due",
+          "value": 9932.02,
+          "count": 2
+        },
+        {
+          "key": "0_30",
+          "label": "0–30",
+          "value": 39276.23,
+          "count": 11
+        },
+        {
+          "key": "31_60",
+          "label": "31–60",
+          "value": 72366.74,
+          "count": 10
+        },
+        {
+          "key": "61_90",
+          "label": "61–90",
+          "value": -1250.0,
+          "count": 2
+        },
+        {
+          "key": "91_180",
+          "label": "91–180",
+          "value": 110687.5,
+          "count": 10
+        },
+        {
+          "key": "181_365",
+          "label": "181–365",
+          "value": 64745.38,
+          "count": 5
+        },
+        {
+          "key": "over_365",
+          "label": "Over 365",
+          "value": 427605.83,
+          "count": 35
+        }
+      ],
+      "top": [
+        {
+          "party": "Key account (sample)",
+          "label": "Key account (sample)",
+          "value": 394378.71,
+          "overdue": 387673.25,
+          "oldest_days": 1188,
+          "count": 38,
+          "route": "/app/sales-invoice?customer=Key%20account%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D"
+        },
+        {
+          "party": "Customer D",
+          "label": "Customer D",
+          "value": 86133.87,
+          "overdue": 82907.31,
+          "oldest_days": 806,
+          "count": 8,
+          "route": "/app/sales-invoice?customer=Customer%20D&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D"
+        },
+        {
+          "party": "Customer C",
+          "label": "Customer C",
+          "value": 66592.19,
+          "overdue": 66592.19,
+          "oldest_days": 1173,
+          "count": 6,
+          "route": "/app/sales-invoice?customer=Customer%20C&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D"
+        },
+        {
+          "party": "Customer A",
+          "label": "Customer A",
+          "value": 48181.59,
+          "overdue": 48181.59,
+          "oldest_days": 1193,
+          "count": 5,
+          "route": "/app/sales-invoice?customer=Customer%20A&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D"
+        },
+        {
+          "party": "Customer F",
+          "label": "Customer F",
+          "value": 39611.64,
+          "overdue": 39611.64,
+          "oldest_days": 905,
+          "count": 4,
+          "route": "/app/sales-invoice?customer=Customer%20F&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D"
+        }
+      ],
+      "route": "/app/query-report/FPS%20Customer%20Receivables",
+      "caveat": "Net of AED 18.5K received from customers but not yet allocated to invoices (2 payments), aged by payment date, as in the full report."
+    },
+    {
+      "key": "payables",
+      "label": "Payables",
+      "currency": "AED",
+      "total": 194432.35,
+      "overdue": 58914.13,
+      "buckets": [
+        {
+          "key": "not_due",
+          "label": "Not due",
+          "value": 132625.72,
+          "count": 16
+        },
+        {
+          "key": "0_30",
+          "label": "0–30",
+          "value": 55765.01,
+          "count": 9
+        },
+        {
+          "key": "31_60",
+          "label": "31–60",
+          "value": 0.0,
+          "count": 0
+        },
+        {
+          "key": "61_90",
+          "label": "61–90",
+          "value": 0.0,
+          "count": 0
+        },
+        {
+          "key": "91_180",
+          "label": "91–180",
+          "value": 6041.62,
+          "count": 1
+        },
+        {
+          "key": "181_365",
+          "label": "181–365",
+          "value": 0.0,
+          "count": 0
+        },
+        {
+          "key": "over_365",
+          "label": "Over 365",
+          "value": 0.0,
+          "count": 0
+        }
+      ],
+      "top": [
+        {
+          "party": "Shipping line A (sample)",
+          "label": "Shipping line A (sample)",
+          "value": 91298.47,
+          "overdue": 18470.87,
+          "oldest_days": 21,
+          "count": 8,
+          "route": "/app/purchase-invoice?supplier=Shipping%20line%20A%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D"
+        },
+        {
+          "party": "Shipping line B (sample)",
+          "label": "Shipping line B (sample)",
+          "value": 27600.21,
+          "overdue": 9680.01,
+          "oldest_days": 30,
+          "count": 3,
+          "route": "/app/purchase-invoice?supplier=Shipping%20line%20B%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D"
+        },
+        {
+          "party": "Government fees (sample)",
+          "label": "Government fees (sample)",
+          "value": 23838.53,
+          "overdue": 11883.84,
+          "oldest_days": 8,
+          "count": 4,
+          "route": "/app/purchase-invoice?supplier=Government%20fees%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D"
+        },
+        {
+          "party": "Transport sub-contractor (sample)",
+          "label": "Transport sub-contractor (sample)",
+          "value": 17058.17,
+          "overdue": 9118.89,
+          "oldest_days": 26,
+          "count": 2,
+          "route": "/app/purchase-invoice?supplier=Transport%20sub-contractor%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D"
+        },
+        {
+          "party": "Trailer hire (sample)",
+          "label": "Trailer hire (sample)",
+          "value": 12884.44,
+          "overdue": 9760.52,
+          "oldest_days": 17,
+          "count": 3,
+          "route": "/app/purchase-invoice?supplier=Trailer%20hire%20%28sample%29&docstatus=1&outstanding_amount=%5B%22%21%3D%22%2C0%5D"
+        }
+      ],
+      "route": "/app/query-report/Accounts%20Payable",
+      "caveat": "Net of AED 16.8K paid to suppliers but not yet allocated to bills (2 payments), aged by payment date, as in the full report."
+    }
+  ],
+  "banks": [
+    {
+      "bank": "ADCB",
+      "label": "ADCB",
+      "latest_month": "Sep 2026",
+      "status": "Reconciled",
+      "closing_balance": 409812.4,
+      "months_behind": 0,
+      "route": "/app/fps-bank-statement/FPS-BST-ADCB-2609"
+    },
+    {
+      "bank": "WIO",
+      "label": "WIO",
+      "latest_month": "Aug 2026",
+      "status": "Reconciled",
+      "closing_balance": 4215.3,
+      "months_behind": 1,
+      "open_months": "Sep missing",
+      "route": "/app/fps-bank-statement/FPS-BST-WIO-2608"
+    },
+    {
+      "bank": "QGEN",
+      "label": "Qashio – General",
+      "latest_month": "Sep 2026",
+      "status": "In Progress",
+      "closing_balance": 9102.75,
+      "months_behind": 0,
+      "route": "/app/fps-bank-statement/FPS-BST-QGEN-2609"
+    },
+    {
+      "bank": "QGOV",
+      "label": "Qashio – Government",
+      "latest_month": null,
+      "status": "Missing",
+      "closing_balance": null,
+      "months_behind": 4,
+      "open_months": "Jun–Sep missing",
+      "route": "/app/fps-bank-statement?name=%5B%22like%22%2C%22FPS-BST-QGOV-%25%22%5D"
+    }
+  ],
+  "trend": [
+    {
+      "key": "billing",
+      "label": "Billing",
+      "unit": "currency",
+      "currency": "AED",
+      "series": [
+        {
+          "key": "invoiced",
+          "label": "Invoiced (net)",
+          "slot": 1
+        },
+        {
+          "key": "collected",
+          "label": "Collected",
+          "slot": 2
+        }
+      ],
+      "points": [
+        {
+          "week_start": "2026-07-27",
+          "label": "27 Jul",
+          "partial": false,
+          "values": {
+            "invoiced": 26601.61,
+            "collected": 21693.49
+          }
+        },
+        {
+          "week_start": "2026-08-03",
+          "label": "3 Aug",
+          "partial": false,
+          "values": {
+            "invoiced": 2361.15,
+            "collected": 164689.21
+          }
+        },
+        {
+          "week_start": "2026-08-10",
+          "label": "10 Aug",
+          "partial": false,
+          "values": {
+            "invoiced": 621153.21,
+            "collected": 2090.0
+          }
+        },
+        {
+          "week_start": "2026-08-17",
+          "label": "17 Aug",
+          "partial": false,
+          "values": {
+            "invoiced": 28466.58,
+            "collected": 165322.5
+          }
+        },
+        {
+          "week_start": "2026-08-24",
+          "label": "24 Aug",
+          "partial": false,
+          "values": {
+            "invoiced": 2737.5,
+            "collected": 29667.52
+          }
+        },
+        {
+          "week_start": "2026-08-31",
+          "label": "31 Aug",
+          "partial": false,
+          "values": {
+            "invoiced": 0.0,
+            "collected": 478393.0
+          }
+        },
+        {
+          "week_start": "2026-09-07",
+          "label": "7 Sep",
+          "partial": false,
+          "values": {
+            "invoiced": 46956.13,
+            "collected": 5000.0
+          }
+        },
+        {
+          "week_start": "2026-09-14",
+          "label": "14 Sep",
+          "partial": false,
+          "values": {
+            "invoiced": 22404.11,
+            "collected": 0.0
+          }
+        },
+        {
+          "week_start": "2026-09-21",
+          "label": "21 Sep",
+          "partial": false,
+          "values": {
+            "invoiced": 12051.11,
+            "collected": 59064.46
+          }
+        },
+        {
+          "week_start": "2026-09-28",
+          "label": "28 Sep",
+          "partial": false,
+          "values": {
+            "invoiced": 0.0,
+            "collected": 12051.11
+          }
+        },
+        {
+          "week_start": "2026-10-05",
+          "label": "5 Oct",
+          "partial": false,
+          "values": {
+            "invoiced": 0.0,
+            "collected": 0.0
+          }
+        },
+        {
+          "week_start": "2026-10-12",
+          "label": "12 Oct",
+          "partial": true,
+          "values": {
+            "invoiced": 0.0,
+            "collected": 0.0
+          }
+        }
+      ],
+      "caveat": "Receipts are booked a median of 28 days after the payment date, so recent weeks fill in later.",
+      "finance": true
+    },
+    {
+      "key": "cashflow",
+      "label": "Cash flow",
+      "unit": "currency",
+      "currency": "AED",
+      "series": [
+        {
+          "key": "collected",
+          "label": "Collected",
+          "slot": 1
+        },
+        {
+          "key": "paid_out",
+          "label": "Paid to suppliers",
+          "slot": 2
+        }
+      ],
+      "points": [
+        {
+          "week_start": "2026-07-27",
+          "label": "27 Jul",
+          "partial": false,
+          "values": {
+            "collected": 21693.49,
+            "paid_out": 11533.47
+          }
+        },
+        {
+          "week_start": "2026-08-03",
+          "label": "3 Aug",
+          "partial": false,
+          "values": {
+            "collected": 164689.21,
+            "paid_out": 86383.21
+          }
+        },
+        {
+          "week_start": "2026-08-10",
+          "label": "10 Aug",
+          "partial": false,
+          "values": {
+            "collected": 2090.0,
+            "paid_out": 56882.68
+          }
+        },
+        {
+          "week_start": "2026-08-17",
+          "label": "17 Aug",
+          "partial": false,
+          "values": {
+            "collected": 165322.5,
+            "paid_out": 40912.28
+          }
+        },
+        {
+          "week_start": "2026-08-24",
+          "label": "24 Aug",
+          "partial": false,
+          "values": {
+            "collected": 29667.52,
+            "paid_out": 28860.31
+          }
+        },
+        {
+          "week_start": "2026-08-31",
+          "label": "31 Aug",
+          "partial": false,
+          "values": {
+            "collected": 478393.0,
+            "paid_out": 32455.53
+          }
+        },
+        {
+          "week_start": "2026-09-07",
+          "label": "7 Sep",
+          "partial": false,
+          "values": {
+            "collected": 5000.0,
+            "paid_out": 8888.97
+          }
+        },
+        {
+          "week_start": "2026-09-14",
+          "label": "14 Sep",
+          "partial": false,
+          "values": {
+            "collected": 0.0,
+            "paid_out": 33682.13
+          }
+        },
+        {
+          "week_start": "2026-09-21",
+          "label": "21 Sep",
+          "partial": false,
+          "values": {
+            "collected": 59064.46,
+            "paid_out": 445.38
+          }
+        },
+        {
+          "week_start": "2026-09-28",
+          "label": "28 Sep",
+          "partial": false,
+          "values": {
+            "collected": 12051.11,
+            "paid_out": 31691.98
+          }
+        },
+        {
+          "week_start": "2026-10-05",
+          "label": "5 Oct",
+          "partial": false,
+          "values": {
+            "collected": 0.0,
+            "paid_out": 27834.65
+          }
+        },
+        {
+          "week_start": "2026-10-12",
+          "label": "12 Oct",
+          "partial": true,
+          "values": {
+            "collected": 0.0,
+            "paid_out": 5437.19
+          }
+        }
+      ],
+      "caveat": "Receipts are booked a median of 28 days after the payment date, so recent weeks fill in later.",
+      "finance": true
+    }
+  ],
+  "insights": [
+    {
+      "id": "vat_due",
+      "severity": "warning",
+      "title": "VAT return Jul–Sep 2026 due in 14 days",
+      "detail": "Due 28 Oct 2026. Check output and input VAT in the General Ledger before filing on EmaraTax.",
+      "route": "/app/query-report/General%20Ledger?group_by=Group%20by%20Account"
+    },
+    {
+      "id": "bank_statements_behind",
+      "severity": "warning",
+      "title": "Bank statements behind for WIO and Qashio – Government",
+      "detail": "WIO: Sep missing; Qashio – Government: Jun–Sep missing. Last month was Sep 2026.",
+      "route": "/app/fps-bank-statement"
+    },
+    {
+      "id": "duplicate_drafts",
+      "severity": "warning",
+      "title": "2 draft invoices repeat an already submitted invoice",
+      "detail": "FPS/INV/2609/145 and FPS/INV/2609/146 have the Job Order and grand total of a submitted invoice (AED 631.1K in all); check before submitting.",
+      "route": "/app/sales-invoice?docstatus=0"
+    },
+    {
+      "id": "invoicing_stall",
+      "severity": "warning",
+      "title": "No invoice submitted for 21 days",
+      "detail": "The last one was posted 23 Sep. 26 draft invoices worth AED 1.5M are waiting.",
+      "metric_key": "invoiced"
+    },
+    {
+      "id": "unallocated_receipts",
+      "severity": "warning",
+      "title": "AED 18.5K received but not matched to invoices",
+      "detail": "Customer receipts with an unallocated amount; allocate them so receivables and statements agree.",
+      "route": "/app/payment-entry?payment_type=Receive&docstatus=1&unallocated_amount=%5B%22%3E%22%2C0%5D"
+    },
+    {
+      "id": "supplier_overdue",
+      "severity": "warning",
+      "title": "AED 58.9K overdue to 5 suppliers",
+      "detail": "Purchase invoices past their due date and still unpaid.",
+      "route": "/app/purchase-invoice?docstatus=1&status=Overdue"
+    }
+  ]
+}

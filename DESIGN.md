@@ -1,10 +1,17 @@
-# FPS Command Center — design system
+# FPS dashboards (OPS / ACC) — design system
 
-The "AI-look" executive theme for the FPS home dashboard in ERPNext
-(Workspace **FPS**, route `/desk/fps`) and the FPS workspace pages around it,
-in its **Pearl** finish: a matt, muted blue-grey plane under off-white glass
-cards, slate ink, and Electric Blue / Soft Violet accents stepped deep enough
-to pass on a light surface.
+The "AI-look" executive theme for the two FPS dashboards in ERPNext and the FPS
+workspace pages around them, in its **Pearl** finish: a matt, muted blue-grey
+plane under off-white glass cards, slate ink, and Electric Blue / Soft Violet
+accents stepped deep enough to pass on a light surface.
+
+| Page | Workspace · route | Who | What |
+|---|---|---|---|
+| **FPS OPS Dashboard** (formerly "Command Center") | **FPS** · `/desk/fps` (FPS Home) | every desk user | operations only — **no money for anyone**, finance roles included |
+| **FPS ACC Dashboard** (14 Oct 2026) | **FPS ACC** · `/desk/fps-acc` | Accounts Manager only (Administrator, agam@, abhishek@) | invoicing, collections, supplier payments, purchases, receivables / payables / cash / VAT positions, ageing, bank statements |
+
+Both are the same bundle and the same components; the block loader picks the
+page (`mount(root, { variant: "ops" | "acc" })`).
 
 > **Scope rule — presentation only.** Everything this file governs changes how
 > the dashboard *looks*. It never creates, edits, moves, submits or deletes an
@@ -223,31 +230,75 @@ computed against a zero or negative base (show "new" instead of `+∞%`).
 
 ## 8. Bento layout
 
-12-column CSS grid, 24px gutters (16px under 768px). Areas, top to bottom:
+12-column CSS grid, 24px gutters (16px under 768px). Both pages start with the
+same header — title ("FPS OPS Dashboard" / "FPS ACC Dashboard") · company ·
+as-of date · live status · refresh · appearance — and a text link to the
+other page under the subtitle (OPS → ACC only for Accounts Manager holders;
+ACC → OPS always).
+
+**FPS OPS Dashboard**, top to bottom:
 
 | Area | lg (≥ 1024) | md (768–1023) | sm (< 768) |
 |---|---|---|---|
 | AI insight banner | 12 | 12 | 12 |
-| KPI metric cards (×6) | 4 each (3 per row) · xl ≥ 1440: 2 each (6 in a row) | 6 each | 12 each |
-| Trend analytics chart | 8 | 12 | 12 |
-| Pipeline stages (the existing Overview tiles) | 4 | 12 | 12 |
+| KPI metric cards (×6, operations only) | 4 each (3 per row) · xl ≥ 1440: 2 each (6 in a row) | 6 each | 12 each |
+| Trend analytics chart (Sales pipeline / Operations tabs) | 8 | 12 | 12 |
+| Pipeline stages (the Overview tiles, no Invoices tile) | 4 | 12 | 12 |
 
 Below the bento the page keeps its existing blocks (Job Tracker, quick list),
 re-themed by the FPS Pearl desk theme — their content and behaviour are
 unchanged.
 
+**FPS ACC Dashboard**, top to bottom:
+
+| Area | lg (≥ 1024) | md (768–1023) | sm (< 768) |
+|---|---|---|---|
+| AI insight banner | 12 | 12 | 12 |
+| Period filter row | 12 | 12 | 12 |
+| KPI metric cards (×4: Invoiced (net), Collected, Paid to suppliers, Purchases booked) | 3 each | 6 each | 12 each |
+| Balance cards (×4, "Position as of …": Receivables, Payables, Cash & bank, VAT for the quarter) | 3 each | 6 each | 12 each |
+| Trend chart (Billing / Cash flow tabs) | 8 | 12 | 12 |
+| Bank statements card | 4 | 12 | 12 |
+| Ageing panels (receivables, payables) | 6 each | 12 each | 12 each |
+
+**BalanceCard** (a position, not a flow: no sparkline, no delta, ignores the
+period). Value 32/40 in ink, a real link to the report behind it; up to four
+server-formatted context lines; the data caveat behind an amber "Data caveat"
+button. **Severity** is shown twice, never by colour alone and never on the
+text: a 2px top edge in the state colour (rule 2 of §2) AND a chip with icon +
+label on its own row under the value. `info` adds no emphasis. The server sets
+it: receivables **warning** when overdue ≥ 50 % of the total; VAT **warning**
+≤ 14 days to the due date, **critical** past it; cash **critical** when the
+books differ from a bank's latest statement by more than 1 % at the
+statement's closing date (the caveat names the bank and the gap).
+
+**Bank statements card.** One link row per account: label, status chip
+(mint Reconciled / amber In progress / rose Missing, each with its icon),
+latest month · closing balance, and "Up to date" or an amber clock + "N months
+behind"; when behind, a third line names the open months ("Not reconciled:
+Jul missing, Aug in progress"). Behind counts every month since go-live up to
+last month without a reconciled statement.
+
+**AgeingPanel.** Outstanding and Overdue as links, 7 single-hue bars (the
+money role colour; a negative bucket draws no bar and prints its minus sign),
+a Table toggle, the top 5 parties as links, and the caveat (payments on
+account netted).
+
 ## 9. Desk integration (how the theme reaches ERPNext)
 
 Two independent pieces, both presentation only.
 
-**A. The Command Center (the FPS home dashboard).**
+**A. The two dashboards (FPS OPS on FPS Home, FPS ACC on Workspace FPS ACC).**
 
 1. The **FPS Overview** Custom HTML Block is a short loader
    (`docs/design_handoff_fps_workspace/custom_blocks/fps_overview.js`, compiled
    into `fps_erpnext/fixtures/custom_html_block.json` by `build_workspaces.py`).
    It `import()`s `/assets/fps_erpnext/dashboard/fps-command-center.js?v=<hash>`
-   and calls `mount(root_element, { mountPoint })`. If the bundle cannot load,
-   the loader renders the old Overview strip, so the page never loses content.
+   and calls `mount(root_element, { mountPoint })` (variant "ops"). If the
+   bundle cannot load, the loader renders the old Overview strip — without its
+   Invoices tile — so the page never loses content. The **FPS ACC Overview**
+   block (`fps_acc_overview.js`) imports the same bundle with variant "acc";
+   its fallback is a one-line "could not load" message, never a money strip.
 2. `mount()` inserts a `<fps-command-center>` element with its **own** shadow
    root. Frappe links its Bootstrap desk CSS into every block's shadow root
    (unlayered, with `!important` utilities that would beat Tailwind); the nested
@@ -261,16 +312,25 @@ Two independent pieces, both presentation only.
 4. Tailwind v4's `@property` registrations do not work inside shadow roots; a
    build-time PostCSS step turns them into plain defaults inside
    `@layer properties` instead of registering anything on the desk document.
-5. Data comes only from `fps_erpnext.api.command_center.get_dashboard` and
-   `get_metric_detail` (GET, read-only, permission-aware, money gated to
-   Accounts User / Accounts Manager / System Manager) plus the existing
-   `pipeline.get_overview` for the stage strip.
+5. Data comes only from GET, read-only, permission-aware methods: OPS from
+   `fps_erpnext.api.command_center.get_dashboard` / `get_metric_detail` (no
+   money for anyone since 14 Oct 2026) plus the existing
+   `pipeline.get_overview` for the stage strip; ACC from
+   `fps_erpnext.api.acc_dashboard.get_dashboard` / `get_metric_detail`, which
+   call `frappe.only_for("Accounts Manager")` before reading anything (a
+   refused viewer sees "You do not have access to the FPS ACC Dashboard.").
+6. **Reaching the ACC page.** On Frappe 16.51 the left sidebar is the
+   site-owned "Sidebar" record "FPS"; the "Workspace Sidebar" file
+   `build_workspaces.py` writes is an archive the desk never reads, so its
+   "FPS ACC Dashboard" row does not show. Until the row is added on the site
+   (desk sidebar editor, with Agam's OK) the OPS header's "Open the FPS ACC
+   Dashboard" link — rendered only for Accounts Manager — is the way in.
 
 **B. The FPS theme — every page under the FPS tile, in two palettes.**
 
 Each user picks a palette for themselves with Frappe's own **Toggle Theme**
-dialog (avatar menu, Ctrl+Shift+G, or the sun/moon button in the Command
-Center header): **Light → Pearl** (the base, §1–§5), **Dark → Matte Black**
+dialog (avatar menu, Ctrl+Shift+G, or the sun/moon button in either
+dashboard's header): **Light → Pearl** (the base, §1–§5), **Dark → Matte Black**
 (neutral near-black `#131416`, matte cards `#1B1C1E` at 90 %, no saturation,
 glows at 3–4 %, ink `#E8E8E6`; chart slots `#3C8DEA / #9B63B1 / #1AA598 /
 #C8800D`, validated on the card `#1A1B1D`, 382 contrast pairs ≥ minimum),
@@ -319,8 +379,10 @@ profile; nothing in this theme writes.
   carry the same `--fps-*` values. Change both in one commit, re-validate the
   chart slots on the new card colour, and bump `?v=`.
 - Don't add a 5th chart series colour, a second y-axis, or a pie/donut.
-- Don't show money to users without an Accounts role — the API omits those
-  KPIs, and the UI must render whatever subset it receives without gaps.
+- Don't put money on the FPS OPS Dashboard — not for finance roles either.
+  Money lives on the FPS ACC Dashboard, whose API refuses anyone without
+  Accounts Manager before it reads; the UI renders whatever subset it receives
+  without gaps.
 - Don't rely on the bundle filename being stable — `/assets` is served with a
   one-year immutable cache, so every build gets a new `?v=` hash in the block
   loader (`scripts/sync-block.mjs` does this).

@@ -3,13 +3,21 @@
  * uses (see FrappeGlobal in src/lib/frappe.ts). Nothing here talks to a server.
  *
  *  call()      serves dev/fixtures/*.json after ~400 ms:
- *                get_dashboard(period)                 -> dashboard.<viewer>.<period>.json
+ *              FPS OPS (command_center.*) - the same payload for every viewer:
+ *                get_dashboard(period)                 -> dashboard.<period>.json
  *                get_metric_detail(key, period)        -> metric_detail.<key>.<period>.json
  *                get_metric_detail(key, period, dim)   -> the first of
  *                    metric_detail.<key>.<period>.<slug(dim)>.json  (slug: "CC - Customs Clearance" -> "cc-customs-clearance")
  *                    metric_detail.<key>.<period>.dimension.json   (only if its "dimension" equals dim)
  *                    metric_detail.<key>.<period>.json             (unfiltered sample, logged as such)
- *              viewer = "finance" (default) or "ops" (?viewer=ops).
+ *              FPS ACC (acc_dashboard.*) - Accounts Manager only, like the API:
+ *                a viewer without that role gets frappe.PermissionError
+ *                (exc_type "PermissionError", as frappe.only_for raises it);
+ *                get_dashboard(period)                 -> acc.dashboard.<period>[.<scenario>].json
+ *                get_metric_detail(key, period[, dim]) -> acc.metric_detail.<key>.<period>… (same fallbacks)
+ *              viewer = "finance" (default: Accounts Manager) or "ops"
+ *              (?viewer=ops: no Accounts roles). ?scenario=edge serves the
+ *              ACC stress page (acc.dashboard.<period>.edge.json).
  *              ?fail=1 (or the toolbar toggle) answers every call with an error,
  *              shaped like Frappe's (417 + _server_messages).
  *  set_route / new_doc   log, show a toast, and do NOT navigate.
@@ -24,6 +32,10 @@ export type Viewer = "finance" | "ops";
 export interface MockOptions {
   viewer: Viewer;
   fail: boolean;
+  /** The desk route the page starts on, e.g. ["Workspaces", "FPS ACC"]. */
+  route?: string[];
+  /** ACC fixture scenario: "" (the default page) or "edge". */
+  scenario?: string;
   /** Shown as a toast by the harness shell. */
   notify: (message: string) => void;
   /** Called by new_doc so the shell can open a fake Quick Entry dialog. */
@@ -71,6 +83,19 @@ function errorBody(message: string): FrappeResponse {
   };
 }
 
+/** What frappe.only_for("Accounts Manager") answers (HTTP 403 on the live site). */
+function permissionBody(): FrappeResponse {
+  const message = "This action is only allowed for Accounts Manager";
+  return {
+    exc_type: "PermissionError",
+    exception: `frappe.exceptions.PermissionError: ${message}`,
+    _server_messages: JSON.stringify([JSON.stringify({ message, title: "Not permitted", indicator: "red" })]),
+  };
+}
+
+/** The role every acc_dashboard method checks first (fps_erpnext/api/acc_dashboard.py). */
+const ACC_ROLE = "Accounts Manager";
+
 interface Candidate {
   file: string;
   /** Reject a file whose content does not fit the request. */
@@ -85,16 +110,26 @@ function slug(value: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-function pickFixture(method: string, args: Record<string, unknown>, viewer: Viewer): { candidates: Candidate[] } | { error: string } {
+function pickFixture(method: string, args: Record<string, unknown>, scenario: string): { candidates: Candidate[] } | { error: string } {
   const period = typeof args.period === "string" ? args.period : "7d";
+  const prefix = method.startsWith("fps_erpnext.api.acc_dashboard.") ? "acc." : "";
   if (method === "fps_erpnext.api.command_center.get_dashboard") {
-    return { candidates: [{ file: `dashboard.${viewer}.${period}.json` }] };
+    return { candidates: [{ file: `dashboard.${period}.json` }] };
   }
-  if (method === "fps_erpnext.api.command_center.get_metric_detail") {
+  if (method === "fps_erpnext.api.acc_dashboard.get_dashboard") {
+    const files: Candidate[] = [];
+    if (scenario) files.push({ file: `acc.dashboard.${period}.${scenario}.json` });
+    files.push({
+      file: `acc.dashboard.${period}.json`,
+      note: scenario ? `no "${scenario}" scenario fixture for ${period}; serving the default page` : undefined,
+    });
+    return { candidates: files };
+  }
+  if (method === "fps_erpnext.api.command_center.get_metric_detail" || method === "fps_erpnext.api.acc_dashboard.get_metric_detail") {
     const key = typeof args.key === "string" ? args.key : "";
     if (!key) return { error: "get_metric_detail needs a key" };
     const dim = typeof args.dimension === "string" && args.dimension ? args.dimension : null;
-    const base = `metric_detail.${key}.${period}`;
+    const base = `${prefix}metric_detail.${key}.${period}`;
     if (!dim) return { candidates: [{ file: `${base}.json` }] };
     return {
       candidates: [
@@ -114,7 +149,8 @@ export function installMockFrappe(options: MockOptions): MockController {
   const latency = options.latencyMs ?? 400;
   let fail = options.fail;
   let calls = 0;
-  let currentRoute: string[] = ["Workspaces", "FPS"];
+  let currentRoute: string[] = options.route ?? ["Workspaces", "FPS"];
+  const scenario = options.scenario ?? "";
 
   const handlers = new Set<(data?: unknown) => void>();
   const router = {
@@ -148,14 +184,17 @@ export function installMockFrappe(options: MockOptions): MockController {
           let ok = false;
           if (failNow) {
             body = errorBody("Simulated failure from the dev harness (?fail=1).");
+          } else if (method.startsWith("fps_erpnext.api.acc_dashboard.") && !roles.includes(ACC_ROLE)) {
+            // Like the live API: the role is checked before anything is read.
+            body = permissionBody();
           } else {
-            const pick = pickFixture(method, args, options.viewer);
+            const pick = pickFixture(method, args, scenario);
             if ("error" in pick) {
               body = errorBody(pick.error);
             } else {
               body = errorBody(
-                `Fixture dev/fixtures/${pick.candidates[0].file} is missing. ` +
-                  "Generate the fixtures (dev/make_fixtures.py, see dashboard/README.md) or pick another period/viewer.",
+                `Fixture dev/fixtures/${pick.candidates[pick.candidates.length - 1].file} is missing. ` +
+                  "Generate the fixtures (dev/make_fixtures.py, see dashboard/README.md) or pick another period.",
               );
               for (const candidate of pick.candidates) {
                 const load = fixtureLoader(candidate.file);

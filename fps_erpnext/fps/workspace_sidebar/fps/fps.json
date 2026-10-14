@@ -27,6 +27,22 @@
    "child": 0,
    "collapsible": 1,
    "filters": null,
+   "icon": "accounting",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "FPS ACC Dashboard",
+   "link_to": "FPS ACC",
+   "link_type": "Workspace",
+   "navigate_to_tab": null,
+   "route_options": null,
+   "show_arrow": 0,
+   "type": "Link",
+   "url": null
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "filters": null,
    "icon": "sell",
    "indent": 1,
    "keep_closed": 0,
@@ -504,7 +520,7 @@
    "url": null
   }
  ],
- "modified": "2026-09-26 09:00:00.000000",
+ "modified": "2026-10-14 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "FPS",
  "module_onboarding": null,

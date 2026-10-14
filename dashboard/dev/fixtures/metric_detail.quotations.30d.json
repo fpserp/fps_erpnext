@@ -176,7 +176,6 @@
       "date": "2026-10-09",
       "route": "/app/quotation/FPS%2FQT%2F2610%2F067",
       "subtitle": "Lead · Valid till 16 Oct",
-      "value": 21000.0,
       "status": "Open"
     },
     {
@@ -185,7 +184,6 @@
       "date": "2026-10-09",
       "route": "/app/quotation/FPS%2FQT%2F2610%2F066",
       "subtitle": "Lead · Valid till 16 Oct",
-      "value": 21750.0,
       "status": "Open"
     },
     {
@@ -194,7 +192,6 @@
       "date": "2026-10-09",
       "route": "/app/quotation/FPS%2FQT%2F2610%2F065",
       "subtitle": "Valid till 16 Oct",
-      "value": 24600.0,
       "status": "Draft"
     },
     {
@@ -203,7 +200,6 @@
       "date": "2026-10-08",
       "route": "/app/quotation/FPS%2FQT%2F2610%2F064",
       "subtitle": "Valid till 15 Oct",
-      "value": 30380.95,
       "status": "Draft"
     },
     {
@@ -212,7 +208,6 @@
       "date": "2026-10-08",
       "route": "/app/quotation/FPS%2FQT%2F2610%2F063",
       "subtitle": "Valid till 15 Oct",
-      "value": 66848.33,
       "status": "Draft"
     },
     {
@@ -221,7 +216,6 @@
       "date": "2026-10-08",
       "route": "/app/quotation/FPS%2FQT%2F2610%2F062",
       "subtitle": "Valid till 15 Oct",
-      "value": 24236.09,
       "status": "Draft"
     },
     {
@@ -230,7 +224,6 @@
       "date": "2026-10-08",
       "route": "/app/quotation/FPS%2FQT%2F2610%2F061",
       "subtitle": "Valid till 15 Oct",
-      "value": 63754.03,
       "status": "Draft"
     },
     {
@@ -239,7 +232,6 @@
       "date": "2026-10-08",
       "route": "/app/quotation/FPS%2FQT%2F2610%2F060",
       "subtitle": "Valid till 15 Oct",
-      "value": 65842.69,
       "status": "Draft"
     }
   ],
@@ -249,12 +241,6 @@
       "label": "Open list",
       "kind": "route",
       "route": "/app/quotation"
-    },
-    {
-      "key": "new",
-      "label": "New Quotation",
-      "kind": "new_doc",
-      "doctype": "Quotation"
     }
   ]
 }

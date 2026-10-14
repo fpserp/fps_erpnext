@@ -1,4 +1,4 @@
-var FPS_CC_VERSION = "5e331f869c1e";
+var FPS_CC_VERSION = "48c98f51aec0";
 // ^ Rewritten with the bundle's content hash by dashboard/scripts/sync-block.mjs
 //   after every build (it matches that exact line). Keep it the only line of
 //   its kind in this file.
@@ -112,7 +112,13 @@ function renderLegacy() {
 	}
 
 	function render(data) {
-		var tiles = (data && data.tiles) || [];
+		// The FPS OPS Dashboard carries no money (14 Oct 2026): the "invoices"
+		// tile (open Sales Invoices) belongs to the FPS ACC Dashboard, so the
+		// fallback strip drops it too (command_center_logic.OPS_HIDDEN_TILES;
+		// pipeline.TILES keeps it for its other callers).
+		var tiles = ((data && data.tiles) || []).filter(function (t) {
+			return t && t.key !== "invoices";
+		});
 		if (!tiles.length) {
 			grid.innerHTML = '<div class="fps-ov-msg">No stages are visible to you.</div>';
 			return;

@@ -1228,6 +1228,138 @@ class TestMetricDetail(unittest.TestCase):
 
 
 # --------------------------------------------------------------------------
+# The FPS OPS Dashboard: no money for anyone (14 Oct 2026)
+# --------------------------------------------------------------------------
+
+OPS_KPIS = ["enquiries", "quotations", "jobs", "customs_cleared", "deliveries", "job_activity"]
+
+INVOICES_TILE = {"key": "invoices", "label": "Invoices", "note": "open", "count": 26,
+                 "route": "/app/sales-invoice?status=x"}
+
+
+def stages_with_invoices():
+	return {"tiles": STAGES["tiles"] + [dict(INVOICES_TILE)], "footnotes": list(STAGES["footnotes"])}
+
+
+def ops_build(period="7d", raw=None):
+	"""build_dashboard exactly as command_center._dashboard calls it now."""
+	return cc.build_dashboard(
+		period=period, as_of=AS_OF, generated_at="2026-10-10 09:30:00",
+		viewer={"finance": False, "full_name": "Test User"},
+		raw=raw if raw is not None else raw_fixture(),
+		stages=cc.ops_stages(stages_with_invoices()),
+		creatable={"FPS Enquiry", "Job Order", "Sales Invoice"})
+
+
+class TestOpsPayload(unittest.TestCase):
+	def test_ops_stages_drops_the_invoices_tile_only(self):
+		src = stages_with_invoices()
+		out = cc.ops_stages(src)
+		self.assertEqual([t["key"] for t in out["tiles"]], ["enquiry", "job_order", "delivered"])
+		self.assertEqual(out["footnotes"], STAGES["footnotes"])
+		self.assertIn("invoices", [t["key"] for t in src["tiles"]])   # input untouched
+		self.assertEqual(cc.ops_stages(None), {"tiles": [], "footnotes": []})
+		self.assertEqual(cc.OPS_HIDDEN_TILES, ("invoices",))
+
+	def test_pipeline_still_has_the_invoices_tile(self):
+		# The tile is filtered on the OPS page, not removed from pipeline.TILES
+		# (the classic strip and other callers keep it).
+		keys = [k for k, _dt, _r in TestDrift().pipeline_tiles()]
+		self.assertIn("invoices", keys)
+
+	def test_ops_payload_has_six_kpis_and_no_money(self):
+		for period in cc.PERIODS:
+			p = ops_build(period)
+			self.assertEqual([k["key"] for k in p["kpis"]], OPS_KPIS, period)
+			self.assertFalse([k for k in p["kpis"] if k["finance"] or k["unit"] == "currency"])
+			self.assertEqual([t["key"] for t in p["trend"]], ["pipeline", "activity"])
+			self.assertFalse([t for t in p["trend"] if t["finance"]])
+			self.assertEqual(p["viewer"], {"finance": False, "full_name": "Test User"})
+			self.assertNotIn("invoices", [t["key"] for t in p["stages"]["tiles"]])
+			ids = [i["id"] for i in p["insights"]]
+			self.assertFalse(set(ids) & set(FINANCE_ONLY_INSIGHTS), ids)
+			text = json.dumps(p)
+			self.assertNotIn("AED", text)
+			self.assertNotIn("Sales Invoice", text)
+			for name in ("I0", "I1", "I2", "I3", "R0", "R1", "R2"):   # money rows handed in anyway
+				self.assertNotIn('"%s"' % name, text)
+
+	def test_ops_keeps_delivered_not_invoiced_and_quote_drafts_without_amount(self):
+		p = ops_build()
+		by_id = {i["id"]: i for i in p["insights"]}
+		self.assertIn("delivered_not_invoiced", by_id)       # a job count, not money
+		self.assertEqual(by_id["quotation_drafts"]["title"], "5 quotations still in draft")
+
+	def test_ops_drawer_never_carries_a_value(self):
+		m = cc.build_metric_detail("quotations", raw_fixture(), period="7d", as_of=AS_OF, finance=False)
+		self.assertFalse([r for r in m["records"] if "value" in r])
+		self.assertNotIn("AED", json.dumps(m))
+
+
+class _FakeApiCase(unittest.TestCase):
+	def setUp(self):
+		from fps_erpnext.tests import fake_frappe
+		if fake_frappe.REAL_FRAPPE:
+			self.skipTest("a real frappe is importable; covered by the bench test run")
+		self.fake_frappe = fake_frappe
+
+	def fake(self, **kw):
+		raw = raw_fixture()
+		rows = {dt: raw[dt] for dt in ("FPS Enquiry", "Quotation", "Customs Tracker", "Proof of Delivery",
+		                               "Job Order", "Sales Invoice", "Payment Entry")}
+		rows["FPS Job Update"] = raw["FPS Job Update"]
+		return self.fake_frappe.FakeFrappe(rows=rows, today=AS_OF.isoformat(), **kw)
+
+
+class TestOpsApi(_FakeApiCase):
+	"""command_center.py itself, with a stand-in frappe: the money gate is now
+	"nobody", Administrator and the finance roles included."""
+
+	FINANCE = ["System Manager", "Accounts Manager", "Accounts User", "FPS Operations"]
+
+	def test_dashboard_reads_no_money_for_administrator(self):
+		fake = self.fake(user="Administrator", roles=self.FINANCE,
+		                 creatable={"Sales Invoice", "Job Order"})
+		with fake.installed() as mods:
+			p = mods["command_center"].get_dashboard("7d")
+		read = fake.read_doctypes()
+		self.assertNotIn("Sales Invoice", read)
+		self.assertNotIn("Payment Entry", read)
+		self.assertEqual([k["key"] for k in p["kpis"]], OPS_KPIS)
+		self.assertIs(p["viewer"]["finance"], False)
+		self.assertNotIn("invoices", [t["key"] for t in p["stages"]["tiles"]])
+		self.assertNotIn("AED", json.dumps(p))
+		# The cache key moved to v3, so no v2 payload with money is served after deploy.
+		self.assertIn(("cache_set", "fps_command_center:v3:dashboard:7d", "Administrator"), fake.calls)
+
+	def test_dashboard_for_ops_user(self):
+		fake = self.fake(user="ops@example.com", roles=["FPS Operations", "Desk User"])
+		with fake.installed() as mods:
+			p = mods["command_center"].get_dashboard("30d")
+		self.assertEqual([k["key"] for k in p["kpis"]], OPS_KPIS)
+		self.assertNotIn("Sales Invoice", fake.read_doctypes())
+
+	def test_drawer_refuses_money_metrics_for_everyone(self):
+		for user, roles in (("Administrator", self.FINANCE), ("agam@example.com", self.FINANCE),
+		                    ("ops@example.com", ["FPS Operations"])):
+			fake = self.fake(user=user, roles=roles)
+			with fake.installed() as mods:
+				api = mods["command_center"]
+				for key in ("invoiced", "collected"):
+					with self.assertRaises(self.fake_frappe.PermissionError, msg=(user, key)):
+						api.get_metric_detail(key, "30d")
+				m = api.get_metric_detail("quotations", "7d")
+			self.assertNotIn("Sales Invoice", fake.read_doctypes())
+			self.assertNotIn("Payment Entry", fake.read_doctypes())
+			self.assertFalse([r for r in m["records"] if "value" in r], user)
+
+	def test_creatable_has_no_money_doctype(self):
+		fake = self.fake(creatable={"Sales Invoice", "Job Order"})
+		with fake.installed() as mods:
+			self.assertEqual(mods["command_center"]._creatable(), {"Job Order"})
+
+
+# --------------------------------------------------------------------------
 # Drift checks
 # --------------------------------------------------------------------------
 
@@ -1309,12 +1441,16 @@ class TestDrift(unittest.TestCase):
 		self.assertEqual(self.ts_fields("MetricDetail"), list(cc.MetricDetailKeys))
 
 	def test_kpi_order_matches_typescript_union(self):
+		# KpiKey lists the OPS keys in KPI_ORDER, then the keys only the FPS ACC
+		# Dashboard returns (acc_dashboard_logic.KPI_ORDER, 14 Oct 2026).
+		from fps_erpnext.api import acc_dashboard_logic as acc
 		path = os.path.join(ROOT, "dashboard", "src", "types", "dashboard.ts")
 		if not os.path.exists(path):
 			self.skipTest("dashboard sources not shipped with this copy")
 		with open(path, encoding="utf-8") as fh:
 			union = re.search(r"export type KpiKey =(.*?);", fh.read(), re.S).group(1)
-		self.assertEqual(re.findall(r'"(\w+)"', union), list(cc.KPI_ORDER))
+		acc_only = [k for k in acc.KPI_ORDER if k not in cc.KPI_ORDER]
+		self.assertEqual(re.findall(r'"(\w+)"', union), list(cc.KPI_ORDER) + acc_only)
 
 	def test_fields_cover_every_metric_source(self):
 		for key, doctype in cc.METRIC_SOURCE.items():

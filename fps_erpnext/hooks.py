@@ -38,7 +38,8 @@ fixtures = [
     {"dt": "Number Card", "filters": [["module", "=", "FPS"]]},
     {"dt": "Dashboard Chart", "filters": [["module", "=", "FPS"]]},
     {"dt": "Custom HTML Block", "filters": [["name", "in", [
-        "FPS Overview", "FPS Job Tracker", "FPS Customs Tracker"]]]},
+        "FPS Overview", "FPS Job Tracker", "FPS Customs Tracker",
+        "FPS ACC Overview"]]]},
 ]
 
 # Includes in <head>

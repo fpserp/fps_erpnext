@@ -1,6 +1,6 @@
 {
-  "key": "collected",
-  "label": "Collected",
+  "key": "invoiced",
+  "label": "Invoiced (net)",
   "unit": "currency",
   "currency": "AED",
   "period": "7d",
@@ -8,26 +8,10 @@
   "compare_label": "vs previous 7 days",
   "granularity": "day",
   "value": 0.0,
-  "previous": 12051.11,
-  "delta_pct": -100.0,
+  "previous": 0.0,
+  "delta_pct": null,
   "good_direction": "up",
   "series": [
-    {
-      "date": "2026-10-04",
-      "value": 0.0
-    },
-    {
-      "date": "2026-10-05",
-      "value": 0.0
-    },
-    {
-      "date": "2026-10-06",
-      "value": 0.0
-    },
-    {
-      "date": "2026-10-07",
-      "value": 0.0
-    },
     {
       "date": "2026-10-08",
       "value": 0.0
@@ -38,11 +22,27 @@
     },
     {
       "date": "2026-10-10",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-11",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-12",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-13",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-14",
       "value": 0.0,
       "partial": true
     }
   ],
-  "dimension_label": "Mode of payment",
+  "dimension_label": "Status",
   "dimension_options": [],
   "dimension": null,
   "breakdown": null,
@@ -52,8 +52,19 @@
       "key": "open_list",
       "label": "Open list",
       "kind": "route",
-      "route": "/app/payment-entry?payment_type=Receive&docstatus=1"
+      "route": "/app/sales-invoice?docstatus=1"
+    },
+    {
+      "key": "new",
+      "label": "New Sales Invoice",
+      "kind": "new_doc",
+      "doctype": "Sales Invoice"
+    },
+    {
+      "key": "open_report",
+      "label": "Open report",
+      "kind": "route",
+      "route": "/app/query-report/Accounts%20Receivable"
     }
-  ],
-  "caveat": "Receipts are booked a median of 28 days after the payment date, so recent weeks fill in later."
+  ]
 }

@@ -1,10 +1,15 @@
 /// <reference types="vite/client" />
 /**
- * FPS Command Center — bundle entry.
+ * FPS dashboards — bundle entry. One bundle, two pages (lib/variant.tsx):
  *
- * The FPS Overview Custom HTML Block's script (a short loader) imports this
- * module from /assets/fps_erpnext/dashboard/fps-command-center.js?v=<hash> and
- * calls mount(root_element, { mountPoint }). Frappe renders every Custom HTML
+ *   variant "ops" (default)  FPS OPS Dashboard, block "FPS Overview" on
+ *                            Workspace "FPS" — every desk user, no money;
+ *   variant "acc"            FPS ACC Dashboard, block "FPS ACC Overview" on
+ *                            Workspace "FPS ACC" — Accounts Manager only.
+ *
+ * Each block's script (a short loader) imports this module from
+ * /assets/fps_erpnext/dashboard/fps-command-center.js?v=<hash> and calls
+ * mount(root_element, { mountPoint, variant }). Frappe renders every Custom HTML
  * Block inside an OPEN shadow root (frappe.create_shadow_element), and that
  * root also holds a <link> to desk.bundle.css: Bootstrap 4 and the desk
  * utilities, UNLAYERED (they beat every Tailwind @layer rule) and partly
@@ -42,7 +47,7 @@
  *     returns the existing handle. A registry on globalThis (shared by every
  *     copy of the bundle) backs unmountAll().
  *
- * Exports (the loader relies on these): mount(shadowRoot, { mountPoint }),
+ * Exports (the loaders rely on these): mount(shadowRoot, { mountPoint, variant }),
  * unmountAll(), version. The same three are put on window.FPSCommandCenter
  * when the module runs, so a loader that looks for a global gets the real API;
  * this file is an ES module, so a classic <script> / frappe.require load fails
@@ -52,10 +57,12 @@
  */
 import { Component, Fragment, StrictMode, type ErrorInfo, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
+import AccDashboard from "@/components/dashboard/AccDashboard";
 import CommandCenter from "@/components/dashboard/CommandCenter";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { trackPalette } from "@/lib/palette";
 import { LayerDismissProvider, ShadowProvider } from "@/lib/shadow";
+import { VARIANTS, VariantProvider, isVariant, type DashboardVariant } from "@/lib/variant";
 import themeCss from "./styles/theme.css?inline";
 
 declare const __FPS_CC_VERSION__: string;
@@ -71,6 +78,12 @@ export interface MountOptions {
    * is appended to the shadow root.
    */
   mountPoint?: HTMLElement | null;
+  /**
+   * Which dashboard to show: "ops" (default) = the FPS OPS Dashboard (block
+   * "FPS Overview"), "acc" = the FPS ACC Dashboard (block "FPS ACC Overview").
+   * Recorded on the element as data-variant. Anything else falls back to "ops".
+   */
+  variant?: DashboardVariant;
 }
 
 export interface MountHandle {
@@ -340,7 +353,7 @@ class CrashBoundary extends Component<{ children: ReactNode }, { failed: boolean
 /** StrictMode double-invokes effects in development only; production renders once. */
 const DevStrict = import.meta.env.DEV ? StrictMode : Fragment;
 
-function createController(handle: () => MountHandle): Controller {
+function createController(handle: () => MountHandle, variant: DashboardVariant): Controller {
   let stop: (() => void) | null = null;
   // Bumped by every connect/disconnect: a pending teardown only runs if it is
   // still the latest thing that happened to the element.
@@ -369,13 +382,13 @@ function createController(handle: () => MountHandle): Controller {
     reactRoot.render(
       <DevStrict>
         <ShadowProvider host={element} shadowRoot={shadowRoot} portalContainer={portal.container}>
-          <LayerDismissProvider>
-            <TooltipProvider delayDuration={200}>
-              <CrashBoundary>
-                <CommandCenter />
-              </CrashBoundary>
-            </TooltipProvider>
-          </LayerDismissProvider>
+          <VariantProvider value={variant}>
+            <LayerDismissProvider workspace={VARIANTS[variant].workspace}>
+              <TooltipProvider delayDuration={200}>
+                <CrashBoundary>{variant === "acc" ? <AccDashboard /> : <CommandCenter />}</CrashBoundary>
+              </TooltipProvider>
+            </LayerDismissProvider>
+          </VariantProvider>
         </ShadowProvider>
       </DevStrict>,
     );
@@ -433,10 +446,19 @@ export function mount(shadowRoot: ShadowRoot, options?: MountOptions): MountHand
     throw new TypeError("fps-command-center: mount() needs the block's shadow root (root_element).");
   }
   defineElement();
+  const requestedVariant: unknown = options?.variant;
+  if (requestedVariant !== undefined && !isVariant(requestedVariant)) {
+    console.warn(`fps-command-center: unknown variant ${JSON.stringify(requestedVariant)}; showing the FPS OPS Dashboard.`);
+  }
+  const variant: DashboardVariant = isVariant(requestedVariant) ? requestedVariant : "ops";
 
   // Idempotent: one dashboard per block shadow root.
   const existing = shadowRoot.querySelector<DashboardElement>(ELEMENT_TAG);
   if (existing) {
+    const shown = existing.getAttribute("data-variant") ?? "ops";
+    if (shown !== variant) {
+      console.warn(`fps-command-center: this block already shows the "${shown}" dashboard; mount({ variant: "${variant}" }) kept it.`);
+    }
     const known = existing[HANDLE];
     if (known) return known;
     const adopted: MountHandle = {
@@ -456,6 +478,7 @@ export function mount(shadowRoot: ShadowRoot, options?: MountOptions): MountHand
   }
 
   const element = document.createElement(ELEMENT_TAG) as DashboardElement;
+  element.setAttribute("data-variant", variant);
   let unmounted = false;
   let placeholder: ChildNode[] = [];
   const handle: MountHandle = {
@@ -471,7 +494,7 @@ export function mount(shadowRoot: ShadowRoot, options?: MountOptions): MountHand
   };
   element[HANDLE] = handle;
   // Set before insertion: inserting into a connected tree runs connectedCallback.
-  element[CONTROLLER] = createController(() => handle);
+  element[CONTROLLER] = createController(() => handle, variant);
 
   if (mountPoint) {
     placeholder = Array.from(mountPoint.childNodes);

@@ -1,0 +1,41 @@
+{
+ "app": "fps_erpnext",
+ "charts": [],
+ "content": "[{\"id\":\"acchdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>FPS ACC Dashboard</b></span>\",\"col\":12}},{\"id\":\"accoverview\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"FPS ACC Overview\",\"col\":12}}]",
+ "creation": "2026-09-09 13:30:00.000000",
+ "custom_blocks": [
+  {
+   "custom_block_name": "FPS ACC Overview",
+   "label": "FPS ACC Overview"
+  }
+ ],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "accounting",
+ "idx": 0,
+ "indicator_color": "",
+ "is_hidden": 0,
+ "label": "FPS ACC",
+ "links": [],
+ "modified": "2026-10-14 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "FPS",
+ "name": "FPS ACC",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "FPS",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  }
+ ],
+ "sequence_id": 7.0,
+ "shortcuts": [],
+ "title": "FPS ACC",
+ "type": "Workspace"
+}

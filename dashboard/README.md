@@ -1,11 +1,40 @@
-# FPS Command Center (`dashboard/`)
+# FPS dashboards (`dashboard/`)
 
-The "AI-look" executive dashboard on the FPS home workspace in ERPNext
-(Workspace **FPS**, `/desk/fps`), in the **FPS Pearl** finish: a matt
-blue-grey plane, off-white glass cards, slate ink. It is a React 19 +
-shadcn/ui + Tailwind v4 + recharts app, prebuilt into **one** ES module and
-mounted inside the existing Custom HTML Block **FPS Overview**. Design tokens
-and rules: `../DESIGN.md`. Payload contract: `src/types/dashboard.ts`.
+One React 19 + shadcn/ui + Tailwind v4 + recharts app, prebuilt into **one**
+ES module, that renders **two** pages in ERPNext, in the **FPS Pearl** /
+**Matte Black** finish (matt plane, glass cards, slate ink):
+
+| Page | Workspace (route) | Block | Mount variant | Who | Contract |
+|---|---|---|---|---|---|
+| **FPS OPS Dashboard** (was "Command Center") | **FPS** (`/desk/fps`) | FPS Overview | `"ops"` (default) | every desk user — **no money** | `src/types/dashboard.ts` |
+| **FPS ACC Dashboard** | **FPS ACC** (`/desk/fps-acc`) | FPS ACC Overview | `"acc"` | **Accounts Manager** only (Administrator, agam@, abhishek@ today) | `src/types/acc.ts` |
+
+Since 14 Oct 2026 the OPS page has no money for anyone (six operations KPIs,
+Sales pipeline / Operations trend, no money insights, no Invoices stage tile;
+`viewer.finance` is always false). Invoices, collections and the rest of the
+accounting moved to the ACC page: Invoiced (net), Collected, Paid to
+suppliers (KPI key `paid_out`), Purchases booked; Receivables, Payables, Cash &
+bank and VAT positions; Billing / Cash flow trend; bank statement status;
+receivables and payables ageing; accounting insights. Design tokens and rules:
+`../DESIGN.md`. Build brief: `../docs/acc_dashboard/SPEC.md`.
+
+**How the three reach the ACC page.** On the live Frappe 16.51 the left
+sidebar is the site-owned "Sidebar" record "FPS"; the "Workspace Sidebar" file
+that `build_workspaces.py` writes (with its "FPS ACC Dashboard" row) is an
+archive the desk never reads. So the OPS header shows an **"Open the FPS ACC
+Dashboard"** link to `/desk/fps-acc` — only when `hasRole("Accounts Manager")`
+(Administrator holds every role); the ACC page links back to OPS. Adding the
+sidebar row on the site (desk sidebar editor) is a site customization that
+needs Agam's OK.
+
+**Review fixes of 14 Oct 2026 (server side, `acc_dashboard_logic.py`).**
+Receivables and payables (card value = ageing total) are net of payments not
+yet allocated — the totals of the FPS Customer Receivables / Accounts Payable
+reports the cards open; a party's overdue is net of its own credits; VAT is
+split by voucher type (sales invoices output, purchase invoices input) with a
+caveat when input VAT looks missing; the cash card compares the books with the
+latest bank statements and turns critical over a 1 % gap; bank status counts
+every unreconciled month since go-live (`open_months` names them).
 
 ## The presentation-only rule
 
@@ -14,9 +43,11 @@ deletes, submits, cancels, renames or moves an ERPNext record, DocType, field,
 permission, workflow, naming series, number card, chart or setting, and it
 never sends mail or messages.
 
-- Data comes only from two read-only, whitelisted GET methods, listed in
+- Data comes only from four read-only, whitelisted GET methods, listed in
   `READ_METHODS` in `src/lib/frappe.ts`:
-  `fps_erpnext.api.command_center.get_dashboard` and `…get_metric_detail`.
+  `fps_erpnext.api.command_center.get_dashboard` / `…get_metric_detail` (OPS)
+  and `fps_erpnext.api.acc_dashboard.get_dashboard` / `…get_metric_detail`
+  (ACC; the server checks Accounts Manager before it reads anything).
   `call()` refuses anything else.
 - Quick actions only **navigate** (`navigate()` → `frappe.set_route`) or open a
   **blank** form (`newDoc()` → `frappe.new_doc`) that the user saves themselves.
@@ -28,7 +59,7 @@ never sends mail or messages.
 
 There are two palettes and **each user picks one for themselves** with
 Frappe's own Toggle Theme dialog (avatar menu, Ctrl+Shift+G, or the sun/moon
-button in the Command Center header): Light → **Pearl**, Dark → **Matte
+button in either dashboard's header): Light → **Pearl**, Dark → **Matte
 Black**, Automatic → follows the computer. Frappe saves the choice on the
 user's own profile (`User.desk_theme`); our code never writes it.
 
@@ -62,7 +93,10 @@ palette: a new `data-fps-theme` value, a new section at the end of
 ## Architecture
 
 ```
-Workspace FPS  →  Custom HTML Block "FPS Overview"
+Workspace FPS      →  Custom HTML Block "FPS Overview"      → mount(root, { mountPoint })                  → <CommandCenter/>
+Workspace FPS ACC  →  Custom HTML Block "FPS ACC Overview"  → mount(root, { mountPoint, variant: "acc" })  → <AccDashboard/>
+
+Workspace FPS  →  Custom HTML Block "FPS Overview"   (the ACC block is laid out the same way)
                      └─ <custom-block-xxxxx>  (Frappe: open shadow root — never modified by us)
                           ├─ <link desk.bundle.css>             ← Frappe's; stays (it cannot reach our own root)
                           ├─ <div> block HTML
@@ -78,19 +112,31 @@ document.body
 document.head: untouched (no @property registrations, no styles)
 ```
 
-**Loader.** The block's *Script* field (source:
-`docs/design_handoff_fps_workspace/custom_blocks/fps_overview.js`, maintained
-with the block, not here) imports the bundle and calls `mount()`. Frappe wraps
-that script as `(function(){ let root_element = …shadowRoot; … })()`, so it
-uses dynamic `import()`. The contract it relies on:
+**Loaders.** Each block's *Script* field (sources:
+`docs/design_handoff_fps_workspace/custom_blocks/fps_overview.js` and
+`fps_acc_overview.js`, maintained with the blocks, not here) imports the SAME
+bundle and calls `mount()`. Frappe wraps that script as
+`(function(){ let root_element = …shadowRoot; … })()`, so it uses dynamic
+`import()`. The contract they rely on:
 
 ```js
 var FPS_CC_VERSION = "<12 hex chars, written by scripts/sync-block.mjs>";
 import("/assets/fps_erpnext/dashboard/fps-command-center.js?v=" + FPS_CC_VERSION)
-  .then((m) => m.mount(root_element, { mountPoint: root_element.querySelector('[data-fps="cc-root"]') }));
+  .then((m) => m.mount(root_element, {
+    mountPoint: root_element.querySelector('[data-fps="cc-root"]'),
+    variant: "acc",            // FPS ACC Overview only; omitted (= "ops") in FPS Overview
+  }));
 ```
 
-Exports of `src/main.tsx`: `mount(shadowRoot, { mountPoint? }) → { unmount() }`,
+`variant` picks the page (`src/lib/variant.tsx`): `"ops"` (default, also for
+any unknown value, with a console warning) renders `CommandCenter`, `"acc"`
+renders `AccDashboard`. The element records it as
+`<fps-command-center data-variant="…">`, and a `VariantProvider` hands it to
+the data hooks and the shared drawer, so each page calls its own methods,
+keeps its own caches and closes its overlays when the route leaves ITS
+workspace.
+
+Exports of `src/main.tsx`: `mount(shadowRoot, { mountPoint?, variant? }) → { unmount() }`,
 `version` (package.json version) and `unmountAll()` (debugging). The same three
 are assigned to `window.FPSCommandCenter` when the module runs, so a loader
 that looks for a global finds the real API. The file is an ES module: loading
@@ -98,14 +144,18 @@ it as a classic `<script>` or with `frappe.require` fails loudly (a SyntaxError
 on `export`), never silently. The app renders inside `ShadowProvider` → `LayerDismissProvider` →
 Radix `TooltipProvider` (200 ms delay) → an error boundary (a render crash
 shows one line in the block instead of an empty gap) → `CommandCenter`
-(`src/components/dashboard/CommandCenter.tsx`, default export). `StrictMode`
+(`src/components/dashboard/CommandCenter.tsx`) or `AccDashboard`
+(`src/components/dashboard/AccDashboard.tsx`), both default exports, inside
+`VariantProvider`. `StrictMode`
 wraps the tree in the dev server only; production renders once.
 
 **Cache-busting.** Frappe Cloud serves `/assets` with
 `Cache-Control: max-age=31536000, immutable`. The bundle keeps one filename, so
-every build must change the `?v=` in the loader. `scripts/sync-block.mjs`
+every build must change the `?v=` in BOTH loaders. `scripts/sync-block.mjs`
 writes the first 12 hex chars of the bundle's sha256 into the
-`var FPS_CC_VERSION = "…";` line and regenerates the fixtures.
+`var FPS_CC_VERSION = "…";` line of `fps_overview.js` and `fps_acc_overview.js`
+(a loader that is missing or has no such line is skipped with a warning, never
+a failure) and regenerates the fixtures.
 
 **Why this output path.** `fps_erpnext/public/dashboard/fps-command-center.js`
 is served as `/assets/fps_erpnext/dashboard/fps-command-center.js`. It is not
@@ -176,15 +226,21 @@ dashboard never renders in that root, and never touches it:
    returns the existing handle. A registry on `globalThis` (shared by every
    copy of the bundle) backs `unmountAll()`.
 
-**Data hooks** (`src/hooks/useDashboard.ts`). `useDashboard(period)` polls
-`get_dashboard` every 60 s only while the block is visible (connected, rendered,
-tab in front — `useHostVisible()`), refetches when the route returns to
-`Workspaces/FPS` or the block becomes visible again, keeps the previous payload
-while refetching (`refreshing: true`), ignores out-of-order answers, backs off
-after failures (frappe.call opens a desk dialog on 5xx), and only sets `error`
-when there is no payload at all. `useMetricDetail(key, period, dimension)`
-loads the drawer; `key = null` means closed. Both cache per page, so a remount
-(edit toggle) paints the last numbers at once. Identical requests in flight are
+**Data hooks** (`src/hooks/useDashboard.ts`). `useDashboard(period)` (OPS) and
+`useAccDashboard(period)` (ACC) share one implementation: poll `get_dashboard`
+every 60 s only while the block is visible (connected, rendered, tab in front
+— `useHostVisible()`), refetch when the route returns to the page's own
+workspace (`Workspaces/FPS` or `Workspaces/FPS ACC`) or the block becomes
+visible again, keep the previous payload while refetching (`refreshing:
+true`), ignore out-of-order answers, back off after failures (frappe.call opens
+a desk dialog on 5xx), and only set `error` when there is no payload at all. A
+`PermissionError` (the ACC role gate) sets `denied`, drops the payload and the
+page's cached numbers and stops the automatic polls; `AccDashboard` then shows
+"You do not have access to the FPS ACC Dashboard." and nothing else.
+`useMetricDetail(key, period, dimension)` loads the drawer from the variant in
+context; `key = null` means closed. Caches are per page AND per variant (the
+OPS and ACC numbers never mix), so a remount (edit toggle) paints the last
+numbers at once. Identical requests in flight are
 shared (keyed by method + arguments), so StrictMode's dev double-run, two hooks
 on the same period or a manual refresh during a poll make ONE `frappe.call`; a
 production mount fetches `get_dashboard` once.
@@ -263,19 +319,21 @@ delete `package-lock.json` in the same commit.
 | `build:bundle` | `vite build` only (no loader stamp, no fixtures) |
 | `sync-block` | Stamp `FPS_CC_VERSION` in the loader, regenerate fixtures (`--dry-run`, `--no-python`, `--block=<file>`; `PYTHON=` picks the interpreter) |
 | `check:format` | Assertions for `src/lib/format.ts` |
-| `check:fixtures` | Structural check of `dev/fixtures/*.json` against `src/types/dashboard.ts` plus the API's promises (7/30/13 points ending on `as_of`, `partial` only last, KPI order, delta rule, money only for finance, insight limits and order, records newest first and unique, drawer = card). Optional argument: another fixtures folder |
+| `check:fixtures` | Structural check of `dev/fixtures/*.json` against `src/types/dashboard.ts` and `acc.ts` plus the APIs' promises (7/30/13 points ending on `as_of`, `partial` only last, KPI order, delta rule, NO money anywhere on OPS, no Invoices tile on OPS, insight limits and order, records newest first and unique, drawer = card; ACC: balances / ageing / banks in contract order, ageing total = balance, all 7 buckets summing to total and overdue, top ≤ 5 largest first, a consistent "Missing" bank, no "New" on paid_out / purchases). Optional argument: another fixtures folder |
 
 ### Deploy, step by step
 
 1. `npm run build`. Output:
    `fps_erpnext/public/dashboard/fps-command-center.js` (sizes printed by
-   `sync-block`), the stamped loader
-   `docs/design_handoff_fps_workspace/custom_blocks/fps_overview.js`, and the
+   `sync-block`), the two stamped loaders
+   `docs/design_handoff_fps_workspace/custom_blocks/fps_overview.js` and
+   `fps_acc_overview.js`, and the
    regenerated `fps_erpnext/fixtures/custom_html_block.json` (plus the
    workspace module JSON under `fps_erpnext/fps/` that `build_workspaces.py`
    always rewrites; with `STAMP` unchanged those come out byte-identical).
-   If `sync-block` warns that the loader or its `FPS_CC_VERSION` line is
-   missing, the bundle was built but nothing else changed.
+   If `sync-block` warns that a loader or its `FPS_CC_VERSION` line is
+   missing, that block was not stamped (the other one still was); with no
+   loader at all, the bundle was built but nothing else changed.
 2. Leave `STAMP` in `docs/design_handoff_fps_workspace/build_workspaces.py`
    alone for a dashboard build. The block ships as a **fixture**, and
    `bench migrate` imports every `fps_erpnext/fixtures/*.json` with
@@ -285,16 +343,17 @@ delete `package-lock.json` in the same commit.
    (`sync_all` skips a file whose `modified` is not newer than the database
    row); bump it only when a workspace itself changes, since bumping it
    rewrites every one of those files.
-3. Review `git diff --ignore-cr-at-eol`: expect the bundle, the loader, and
+3. Review `git diff --ignore-cr-at-eol`: expect the bundle, both loaders, and
    `fps_erpnext/fixtures/custom_html_block.json`, and nothing else under
    `fps_erpnext/fps` or `fps_erpnext/fixtures`.
 4. Commit and push (with Agam's OK). The Frappe Cloud deploy runs
    `bench build` + `bench migrate`, which imports the fixtures.
 5. Hard-reload the desk. The block document is cached per session, so open
    tabs keep the old loader until reloaded.
-6. Do not edit the FPS Overview block in the desk UI: the next migrate
-   overwrites it from the fixture. Change
-   `docs/design_handoff_fps_workspace/custom_blocks/fps_overview.*` and rebuild.
+6. Do not edit the FPS Overview or FPS ACC Overview block in the desk UI: the
+   next migrate overwrites them from the fixture. Change
+   `docs/design_handoff_fps_workspace/custom_blocks/fps_overview.*` /
+   `fps_acc_overview.*` and rebuild.
 
 ## Dev harness
 
@@ -319,11 +378,26 @@ off at any width.
   Refresh it by downloading `/assets/frappe/dist/css/desk.bundle.<hash>.css`
   from the site (the hash is in `/assets/assets.json`). Without it the harness
   still runs, minus the Bootstrap-leak check.
-- Fixtures: `dev/fixtures/*.json` (`dashboard.<finance|ops>.<period>.json`,
-  `metric_detail.<key>.<period>.json`, generated by `dev/make_fixtures.py`).
-  A missing fixture comes back as a clear error.
-- `?viewer=ops` serves the ops payload and ops roles; `?fail=1` makes every
-  call fail. The mock users are placeholders (`finance.viewer@example.com`,
+- Pages: `?variant=ops` (default) is the FPS OPS Dashboard on
+  `Workspaces/FPS`; `?variant=acc` is the FPS ACC Dashboard on
+  `Workspaces/FPS ACC`, in the real `fps_acc_overview.{html,css}` block when
+  present (a built-in copy with the same mount point otherwise).
+  `?scenario=edge` serves the ACC stress page: empty payables ageing, a VAT
+  quarter past due (critical), every bank behind or Missing, cash overdrawn.
+- Fixtures: `dev/fixtures/*.json`, generated by `dev/make_fixtures.py` (OPS,
+  through the real `command_center_logic`) and `dev/acc_fixtures.py` (ACC;
+  shared helpers from `command_center_logic`, the new ACC pieces per the
+  spec): `dashboard.<period>.json`, `metric_detail.<key>.<period>.json` for
+  OPS; `acc.dashboard.<period>[.edge].json`,
+  `acc.metric_detail.<key>.<period>.json` for ACC. The default ACC page
+  carries the edge cases on purpose: a receivables bucket that nets negative
+  (an unapplied credit note), a negative bank book balance, a debit-note day,
+  refundable VAT, a Missing bank. A missing fixture comes back as a clear
+  error.
+- `?viewer=ops` gives the mock user no Accounts roles: OPS looks the same
+  (it has no money for anyone), and the ACC API answers `PermissionError`, so
+  the ACC page shows its no-access panel. `?fail=1` makes every call fail. The
+  mock users are placeholders (`finance.viewer@example.com`,
   `ops.viewer@example.com`).
 - Inter: the desk declares `InterVariable` at document level; the harness
   registers the same family from the `@fontsource-variable/inter`
@@ -335,7 +409,8 @@ off at any width.
   (`html[data-fps-theme="pearl"]`; `?palette=black` starts in Matte Black);
   if the file is missing it emulates it. The dashboard's sun/moon button flips
   the palette through a mock `frappe.ui.ThemeSwitcher` (nothing is saved).
-- Toolbar (outside the shadow root): viewer finance/ops, **Leave FPS route** /
+- Toolbar (outside the shadow root): page OPS/ACC, viewer finance/ops, ACC
+  scenario default/edge, **Leave route** /
   Return (hides the page and fires router `change`, then reports whether the
   drawer and any tooltip closed), remount (re-runs the block script on a new
   element, no teardown, like Frappe), edit mode (re-render + EditorJS controls
@@ -387,25 +462,29 @@ dashboard/
 │  ├─ main.dev.tsx         fake desk + toolbar, calls the real mount()
 │  ├─ mock-frappe.ts       window.frappe stand-in serving fixtures
 │  ├─ desk-shell.css       fake desk chrome
-│  ├─ make_fixtures.py     fixture generator
+│  ├─ make_fixtures.py     fixture generator (OPS; calls acc_fixtures)
+│  ├─ acc_fixtures.py      FPS ACC fixtures (fictional, incl. the edge scenario)
 │  └─ fixtures/            sample payloads
 ├─ dev-vendor/             copy of the live desk.bundle.css (gitignored)
 ├─ scripts/
-│  ├─ sync-block.mjs       stamp ?v= into the block loader, regenerate fixtures
+│  ├─ sync-block.mjs       stamp ?v= into both block loaders, regenerate fixtures
 │  ├─ fixtures.check.mjs   fixtures against the payload contract
 │  └─ format.check.ts      assertions for lib/format.ts
 └─ src/
-   ├─ main.tsx             mount()/version: <fps-command-center>, portal host, keydown guard, registry
-   ├─ types/dashboard.ts   payload contract with fps_erpnext/api/command_center.py
+   ├─ main.tsx             mount()/version: <fps-command-center data-variant>, portal host, keydown guard, registry
+   ├─ types/dashboard.ts   payload contract with fps_erpnext/api/command_center.py (shapes shared with ACC)
+   ├─ types/acc.ts         payload contract with fps_erpnext/api/acc_dashboard.py
    ├─ styles/theme.css     Tailwind v4 theme = DESIGN.md tokens (Pearl; twin of ../fps_erpnext/public/css/fps_theme.css)
-   ├─ lib/frappe.ts        read-only desk bridge (call, navigate, newDoc, roles, routes)
+   ├─ lib/frappe.ts        read-only desk bridge (call, navigate, newDoc, roles, routes, isPermissionError)
+   ├─ lib/variant.tsx      "ops" | "acc": title, workspace, read methods; VariantProvider
    ├─ lib/format.ts        number/date formatting (en-US, U+2212, AED 12.9K)
    ├─ lib/shadow.tsx       ShadowProvider, usePortalContainer, useHostVisible, LayerDismissProvider
    ├─ lib/utils.ts         cn()
-   ├─ hooks/useDashboard.ts useDashboard / useMetricDetail
+   ├─ hooks/useDashboard.ts useDashboard (OPS) / useAccDashboard (ACC) / useMetricDetail
    └─ components/
       ├─ ui/               shadcn/ui (sheet + tooltip patched for the two shadow roots)
-      └─ dashboard/        CommandCenter and its parts (+ *.meta.ts contracts)
+      └─ dashboard/        CommandCenter (OPS), AccDashboard (ACC: BalanceCard, AgeingPanel,
+                           BankStatusCard), the shared parts and DashboardChrome (+ *.meta.ts contracts)
 ```
 
 ## Troubleshooting

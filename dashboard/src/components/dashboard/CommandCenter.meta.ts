@@ -8,14 +8,20 @@ export const meta = {
   component: "CommandCenter",
   file: "dashboard/src/components/dashboard/CommandCenter.tsx",
   purpose:
-    "Root of the FPS Command Center (default export, rendered by main.tsx in the <fps-command-center> element's own shadow root inside the FPS Overview Custom HTML Block). Owns the period filter and the open drawer, loads the payload, and lays out header, InsightBanner, filter row, KPI cards, TrendChart and StageStrip on the bento.",
+    "Root of the FPS OPS Dashboard, formerly 'Command Center' (default export, rendered by main.tsx for mount variant 'ops' in the <fps-command-center> element's own shadow root inside the FPS Overview Custom HTML Block on FPS Home). Open to every desk user; no money (invoices and collections moved to the FPS ACC Dashboard, AccDashboard.tsx). Owns the period filter and the open drawer, loads the payload, and lays out header, InsightBanner, filter row, KPI cards, TrendChart and StageStrip on the bento.",
   props: {},
   variants: {
-    finance: { description: "8 KPIs (adds Invoiced, Collected) and a Money trend tab.", when: "payload.viewer.finance is true (Accounts User / Accounts Manager / System Manager)." },
-    operations: { description: "6 KPIs, Pipeline + Activity trend tabs only.", when: "payload.viewer.finance is false." },
+    operations: {
+      description: "6 KPIs, Sales pipeline + Operations trend tabs, stage strip without the Invoices tile.",
+      when: "Always: since 14 Oct 2026 the OPS API sends viewer.finance = false and no money to every viewer, finance roles included.",
+    },
+    accLink: {
+      description: "Header link 'Open the FPS ACC Dashboard' (/desk/fps-acc) under the subtitle.",
+      when: "hasRole('Accounts Manager') (Administrator holds every role). The live Frappe 16.51 sidebar is the site-owned 'Sidebar' record, so the shipped sidebar file does not add an FPS ACC row; this link is how its holders reach the page. No money: the ACC API gate still refuses everyone else.",
+    },
   },
   states: [
-    "first-load (skeleton in the final layout's shapes: 8 KPI placeholders for finance roles, 6 otherwise — decided from the desk roles (hasRole, mirrors the API's FINANCE_ROLES) before the fetch, so the cards do not reflow when the payload lands)",
+    "first-load (skeleton in the final layout's shapes: always 6 KPI placeholders — the OPS page has no money KPIs for anyone — so the cards do not reflow when the payload lands)",
     "error-without-data (inline error + Retry)",
     "ready",
     "refetching after period change or manual refresh (frame at 60% opacity, aria-busy)",
@@ -34,11 +40,12 @@ export const meta = {
       "useDashboard(period) → fps_erpnext.api.command_center.get_dashboard (GET, whitelisted, read-only). Drawer: useMetricDetail → get_metric_detail. Period preference: localStorage key 'fps-cc:period:v1' (try/catch; per-viewer convenience only).",
     readOnly: true,
     permissions:
-      "The API returns only what the viewer may read: money KPIs and the Money trend only for finance roles, stage tiles only for readable doctypes. The UI renders whatever subset arrives and additionally drops finance KPIs/modes when viewer.finance is false.",
+      "The API returns only what the viewer may read: no money for anyone (viewer.finance is always false), stage tiles only for readable doctypes (and never the Invoices tile). The UI renders whatever subset arrives and additionally drops finance KPIs/modes because viewer.finance is false.",
   },
   a11y: [
-    "One h2 ('Command Center'); every card heading is an h3.",
+    "One h2 ('FPS OPS Dashboard'); every card heading is an h3.",
     "Refresh is an icon button with aria-label 'Refresh dashboard'.",
+    "The FPS ACC link is a real <a href> (DeskLink) with visible text; its arrow icon is aria-hidden.",
     "Live status is icon + text ('Live' / 'Stale' · 'Updated 09:30'), never colour alone, and is NOT a live region (it changes every minute).",
     "The period summary next to the filter is aria-live=polite so a period change is announced.",
     "Ambient glows are aria-hidden and removed under prefers-reduced-transparency and forced-colors.",
@@ -47,7 +54,7 @@ export const meta = {
   safety: [
     "Do not add a write call. Data comes only from the two whitelisted read methods via hooks/useDashboard.",
     "Interactions may only navigate (navigate/deskHref), open the read-only drawer, or open a BLANK new form (newDoc) the user saves themselves.",
-    "Money only when finance: never render a finance KPI or trend mode for a non-finance viewer.",
+    "No money on this page: never render a finance KPI or trend mode (viewer.finance is false for everyone; the ACC page has them).",
     "Keep the frame on refetch (60% opacity) — never swap back to the skeleton once data has been shown.",
     "No count-up or animated numbers: a number must be correct in every frame.",
     "Default period is 7d; the stored preference must be validated with isPeriod before use.",

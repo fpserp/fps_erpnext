@@ -1,0 +1,228 @@
+{
+  "key": "paid_out",
+  "label": "Paid to suppliers",
+  "unit": "currency",
+  "currency": "AED",
+  "period": "30d",
+  "period_label": "Last 30 days",
+  "compare_label": "vs previous 30 days",
+  "granularity": "day",
+  "value": 15084.09,
+  "previous": 25714.99,
+  "delta_pct": -41.3,
+  "good_direction": "none",
+  "series": [
+    {
+      "date": "2026-09-15",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-16",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-17",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-18",
+      "value": 2923.78
+    },
+    {
+      "date": "2026-09-19",
+      "value": 1637.73
+    },
+    {
+      "date": "2026-09-20",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-21",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-22",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-23",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-24",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-25",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-26",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-27",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-28",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-29",
+      "value": 0.0
+    },
+    {
+      "date": "2026-09-30",
+      "value": 3964.7
+    },
+    {
+      "date": "2026-10-01",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-02",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-03",
+      "value": 3293.84
+    },
+    {
+      "date": "2026-10-04",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-05",
+      "value": 3264.04
+    },
+    {
+      "date": "2026-10-06",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-07",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-08",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-09",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-11",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-12",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-13",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-14",
+      "value": 0.0,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Paid via",
+  "dimension_options": [
+    {
+      "key": "ADCB (paid at booking)",
+      "label": "ADCB (paid at booking)"
+    },
+    {
+      "key": "Cheque",
+      "label": "Cheque"
+    },
+    {
+      "key": "Bank Transfer",
+      "label": "Bank Transfer"
+    },
+    {
+      "key": "DubaiPay",
+      "label": "DubaiPay"
+    }
+  ],
+  "dimension": "ADCB (paid at booking)",
+  "breakdown": {
+    "title": "By paid via",
+    "rows": [
+      {
+        "key": "ADCB (paid at booking)",
+        "label": "ADCB (paid at booking)",
+        "value": 15084.09
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/PI/2610/199",
+      "title": "Fuel station (sample)",
+      "date": "2026-10-05",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F199",
+      "subtitle": "ADCB (paid at booking)",
+      "value": 3264.04,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/PI/2610/197",
+      "title": "Online fees portal (sample)",
+      "date": "2026-10-03",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F197",
+      "subtitle": "ADCB (paid at booking)",
+      "value": 3293.84,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/PI/2609/196",
+      "title": "Online fees portal (sample)",
+      "date": "2026-09-30",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2609%2F196",
+      "subtitle": "ADCB (paid at booking)",
+      "value": 3964.7,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/PI/2609/184",
+      "title": "Software store (sample)",
+      "date": "2026-09-19",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2609%2F184",
+      "subtitle": "ADCB (paid at booking)",
+      "value": 1637.73,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/PI/2609/183",
+      "title": "Fuel station (sample)",
+      "date": "2026-09-18",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2609%2F183",
+      "subtitle": "ADCB (paid at booking)",
+      "value": 2923.78,
+      "status": "Paid"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/payment-entry?payment_type=Pay&docstatus=1"
+    },
+    {
+      "key": "open_paid_bills",
+      "label": "Open bills paid at booking",
+      "kind": "route",
+      "route": "/app/purchase-invoice?is_paid=1&docstatus=1"
+    }
+  ]
+}

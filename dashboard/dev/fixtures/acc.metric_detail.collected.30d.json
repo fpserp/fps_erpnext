@@ -8,26 +8,10 @@
   "compare_label": "vs previous 30 days",
   "granularity": "day",
   "value": 71115.57,
-  "previous": 680473.02,
+  "previous": 678383.02,
   "delta_pct": -89.5,
   "good_direction": "up",
   "series": [
-    {
-      "date": "2026-09-11",
-      "value": 0.0
-    },
-    {
-      "date": "2026-09-12",
-      "value": 0.0
-    },
-    {
-      "date": "2026-09-13",
-      "value": 0.0
-    },
-    {
-      "date": "2026-09-14",
-      "value": 0.0
-    },
     {
       "date": "2026-09-15",
       "value": 0.0
@@ -130,6 +114,22 @@
     },
     {
       "date": "2026-10-10",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-11",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-12",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-13",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-14",
       "value": 0.0,
       "partial": true
     }

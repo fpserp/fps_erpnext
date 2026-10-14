@@ -929,6 +929,23 @@ def caveat_for(key, raw, as_of):
 	return None
 
 
+# Pipeline tiles the FPS OPS Dashboard leaves out of its stage strip. "invoices"
+# counts open Sales Invoices -- money-side work that belongs to the FPS ACC
+# Dashboard (14 Oct 2026). pipeline.TILES itself keeps the tile: the classic
+# strip (renderLegacy in the block loader) and other callers still show it.
+OPS_HIDDEN_TILES = ("invoices",)
+
+
+def ops_stages(stages):
+	"""The stage strip for the OPS page: pipeline.get_overview() without the
+	OPS_HIDDEN_TILES. Returns a new dict; the input is not modified."""
+	stages = stages or {}
+	return {
+		"tiles": [t for t in stages.get("tiles", []) if t.get("key") not in OPS_HIDDEN_TILES],
+		"footnotes": list(stages.get("footnotes", [])),
+	}
+
+
 def tile_count(stages, key):
 	"""Count of one pipeline tile, or None when the tile was omitted."""
 	for tile in (stages or {}).get("tiles", []):

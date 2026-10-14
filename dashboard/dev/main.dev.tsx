@@ -18,7 +18,16 @@
  *    from the @fontsource-variable/inter devDependency (dev only; never in the
  *    bundle) under the same family name.
  *
- * Toolbar: viewer (finance / ops reloads with ?viewer=), "Leave FPS route"
+ * Pages: ?variant=ops (default) is the FPS OPS Dashboard in the "FPS Overview"
+ * block on Workspaces/FPS; ?variant=acc is the FPS ACC Dashboard in the "FPS
+ * ACC Overview" block on Workspaces/FPS ACC (docs/…/custom_blocks/
+ * fps_acc_overview.{html,css} when present). ?scenario=edge serves the ACC
+ * stress page (empty payables, VAT past due, banks behind, cash overdrawn).
+ * With ?viewer=ops the ACC API answers PermissionError (no Accounts Manager),
+ * so the page shows its no-access panel.
+ *
+ * Toolbar: page (OPS / ACC), viewer (finance / ops reloads with ?viewer=),
+ * ACC scenario (default / edge), "Leave route"
  * (hides the page and fires router "change" like the desk; the drawer and any
  * tooltip must close, which the harness reports), remount (re-runs the "block
  * script" on a fresh element and drops the old one with no teardown, like
@@ -34,6 +43,14 @@ import { installMockFrappe, type Viewer } from "./mock-frappe";
 
 const params = new URLSearchParams(window.location.search);
 const viewer: Viewer = params.get("viewer") === "ops" ? "ops" : "finance";
+const variant: "ops" | "acc" = params.get("variant") === "acc" ? "acc" : "ops";
+const scenario = variant === "acc" && params.get("scenario") === "edge" ? "edge" : "";
+/** The page the block sits on, as frappe.get_route() reports it (lib/variant.tsx). */
+const WORKSPACE = variant === "acc" ? "FPS ACC" : "FPS";
+const BLOCK_NAME = variant === "acc" ? "FPS ACC Overview" : "FPS Overview";
+const HOME_ROUTE = ["Workspaces", WORKSPACE];
+document.body.dataset.route = HOME_ROUTE.join("/"); // index.html starts on Workspaces/FPS
+document.title = variant === "acc" ? "FPS ACC Dashboard · harness" : "FPS OPS Dashboard · harness";
 
 /* ---- Inter, under the desk's family name ------------------------------------ */
 
@@ -89,17 +106,20 @@ if (hostCssUrl) {
 
 /* ---- the block's own HTML and CSS (read-only), with a fallback copy ------- */
 
-const blockFiles = import.meta.glob<string>("../../docs/design_handoff_fps_workspace/custom_blocks/fps_overview.{html,css}", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
-const blockFile = (ext: string) => Object.entries(blockFiles).find(([file]) => file.endsWith(ext))?.[1];
+// Both blocks' files (the ACC block is written by the backend work; until it
+// exists the harness uses a built-in copy with the same mount point).
+const blockFiles = import.meta.glob<string>(
+  "../../docs/design_handoff_fps_workspace/custom_blocks/fps_{overview,acc_overview}.{html,css}",
+  { query: "?raw", import: "default", eager: true },
+);
+const blockFile = (name: string) => Object.entries(blockFiles).find(([file]) => file.endsWith(`/${name}`))?.[1];
+const FALLBACK_LOADING = variant === "acc" ? "Loading the FPS ACC Dashboard…" : "Loading the FPS OPS Dashboard…";
 const BLOCK_HTML =
-  blockFile(".html") ??
-  '<div data-fps="cc-root" class="fps-cc-mount"><div class="fps-cc-loading" role="status">Loading the FPS Command Center…</div></div>';
+  blockFile(variant === "acc" ? "fps_acc_overview.html" : "fps_overview.html") ??
+  `<div data-fps="cc-root" class="fps-cc-mount"><div class="fps-cc-loading" role="status">${FALLBACK_LOADING}</div></div>`;
 const BLOCK_CSS =
-  blockFile(".css") ??
+  (variant === "acc" ? blockFile("fps_acc_overview.css") : undefined) ??
+  blockFile("fps_overview.css") ??
   ".fps-cc-mount{display:block}.fps-cc-loading{min-height:96px;padding:24px;font-size:13px;color:var(--text-muted,#7c869c)}";
 
 /* ---- shell ---------------------------------------------------------------- */
@@ -107,11 +127,13 @@ const BLOCK_CSS =
 const harness = document.getElementById("fps-harness");
 if (!harness) throw new Error("index.html is missing #fps-harness");
 
-// Static markup only (no data interpolated), so innerHTML is safe here.
+// Static markup only (the interpolations are the harness's own constants, never
+// data), so innerHTML is safe here.
 harness.innerHTML = `
 <nav class="fps-dev-sidebar" aria-label="Desk sidebar (fake)">
   <h2>FPS</h2>
-  <a href="#" aria-current="page">FPS Home</a>
+  <a href="?variant=ops"${variant === "ops" ? ' aria-current="page"' : ""}>FPS Home</a>
+  <a href="?variant=acc"${variant === "acc" ? ' aria-current="page"' : ""}>FPS ACC Dashboard</a>
   <div class="fps-dev-section">Sales</div>
   <a href="#">Enquiry</a><a href="#">Quotation</a><a href="#">Customer</a>
   <div class="fps-dev-section">Operations</div>
@@ -121,12 +143,16 @@ harness.innerHTML = `
 </nav>
 <div class="fps-dev-main">
   <header class="fps-dev-navbar">
-    <span class="fps-dev-brand">FPS Command Center · harness</span>
+    <span class="fps-dev-brand">FPS dashboards · harness</span>
     <div class="fps-dev-toolbar" role="toolbar" aria-label="Harness controls">
+      <button type="button" data-action="variant" data-variant="ops">Page: OPS</button>
+      <button type="button" data-action="variant" data-variant="acc">Page: ACC</button>
+      <span class="fps-dev-sep" aria-hidden="true"></span>
       <button type="button" data-action="viewer" data-viewer="finance">Viewer: finance</button>
       <button type="button" data-action="viewer" data-viewer="ops">Viewer: ops</button>
+      <button type="button" data-action="scenario"${variant === "acc" ? "" : " disabled"}>ACC scenario: ${scenario || "default"}</button>
       <span class="fps-dev-sep" aria-hidden="true"></span>
-      <button type="button" data-action="route">Leave FPS route</button>
+      <button type="button" data-action="route">Leave ${WORKSPACE} route</button>
       <button type="button" data-action="remount">Remount</button>
       <button type="button" data-action="edit">Edit mode</button>
       <button type="button" data-action="fullwidth">Full width</button>
@@ -139,15 +165,15 @@ harness.innerHTML = `
   </header>
   <div id="page-Workspaces" class="page-container" data-page-route="Workspaces">
     <div class="page-head fps-dev-pagehead">
-      <span class="fps-dev-title">FPS</span>
-      <span class="fps-dev-crumb">Workspaces / FPS</span>
+      <span class="fps-dev-title">${WORKSPACE}</span>
+      <span class="fps-dev-crumb">Workspaces / ${WORKSPACE}</span>
     </div>
     <div class="container page-body">
       <div class="page-wrapper"><div class="page-content"><div class="layout-main">
         <div class="layout-main-section-wrapper"><div class="layout-main-section">
           <div class="editor-js-container"><div class="codex-editor"><div class="codex-editor__redactor">
             <div class="ce-block col-xs-12"><div class="ce-block__content">
-              <div custom_block_name="FPS Overview" data-role="block-slot"></div>
+              <div custom_block_name="${BLOCK_NAME}" data-role="block-slot"></div>
             </div></div>
             <div class="fps-dev-below">Below the bento the live page keeps its other blocks
               (FPS Job Tracker, "Jobs needing action" quick list). Not rendered in the harness.</div>
@@ -160,7 +186,7 @@ harness.innerHTML = `
     Simulated List / Job Order page. The workspace page is hidden (display:none),
     exactly like the desk does; the dashboard stops polling, and the drawer and
     tooltips (which live in the body-level portal host, outside this page) have
-    closed. Use "Return to FPS route" to come back.
+    closed. Use "Return to ${WORKSPACE} route" to come back.
   </div>
 </div>
 <div class="fps-dev-toast" role="status" aria-live="polite" data-role="toast"></div>
@@ -221,6 +247,8 @@ function openDeskDialog(title: string): void {
 const mock = installMockFrappe({
   viewer,
   fail: params.get("fail") === "1",
+  route: HOME_ROUTE,
+  scenario,
   notify: toast,
   onNewDoc: (doctype) => openDeskDialog(`New ${doctype} (Quick Entry stand-in)`),
 });
@@ -273,7 +301,7 @@ function renderBlock(): void {
         // The live loader awaits import(); a microtask keeps that ordering.
         queueMicrotask(() => {
           try {
-            mount(root, { mountPoint });
+            mount(root, { mountPoint, variant });
           } catch (err) {
             console.error("[harness] mount failed", err);
             toast(`mount() threw: ${String(err)}`);
@@ -303,6 +331,10 @@ function setPressed(action: string, pressed: boolean, label?: string): void {
 harness.querySelectorAll<HTMLButtonElement>("[data-viewer]").forEach((btn) => {
   btn.setAttribute("aria-pressed", String(btn.dataset.viewer === viewer));
 });
+harness.querySelectorAll<HTMLButtonElement>("[data-variant]").forEach((btn) => {
+  btn.setAttribute("aria-pressed", String(btn.dataset.variant === variant));
+});
+setPressed("scenario", scenario === "edge");
 setPressed("fail", mock.fail);
 
 function liveRoots(): number {
@@ -362,6 +394,19 @@ harness.addEventListener("click", (event) => {
       window.location.search = next.toString(); // a different user = a fresh page load
       break;
     }
+    case "variant": {
+      const next = new URLSearchParams(window.location.search);
+      next.set("variant", btn.dataset.variant === "acc" ? "acc" : "ops");
+      window.location.search = next.toString(); // another workspace = another page
+      break;
+    }
+    case "scenario": {
+      const next = new URLSearchParams(window.location.search);
+      if (scenario === "edge") next.delete("scenario");
+      else next.set("scenario", "edge");
+      window.location.search = next.toString();
+      break;
+    }
     case "route": {
       isAway = !isAway;
       const before = portalState();
@@ -369,19 +414,19 @@ harness.addEventListener("click", (event) => {
       // new page first, then fire the route event the dashboard listens to.
       page.classList.toggle("fps-dev-hidden", isAway);
       away.classList.toggle("fps-dev-hidden", !isAway);
-      const nextRoute = isAway ? ["List", "Job Order", "List"] : ["Workspaces", "FPS"];
+      const nextRoute = isAway ? ["List", "Job Order", "List"] : HOME_ROUTE;
       document.body.dataset.route = nextRoute.join("/"); // like frappe.get_route_str() on page-change
       mock.setRoute(nextRoute);
-      setPressed("route", isAway, isAway ? "Return to FPS route" : "Leave FPS route");
+      setPressed("route", isAway, isAway ? `Return to ${WORKSPACE} route` : `Leave ${WORKSPACE} route`);
       if (!isAway) {
-        toast("Back on Workspaces/FPS");
+        toast(`Back on ${HOME_ROUTE.join("/")}`);
         break;
       }
       // React commits the close asynchronously; check once it has settled.
       window.setTimeout(() => {
         const after = portalState();
         toast(
-          `Left Workspaces/FPS (page hidden). Drawer open: ${before.drawerOpen} → ${after.drawerOpen}; ` +
+          `Left ${HOME_ROUTE.join("/")} (page hidden). Drawer open: ${before.drawerOpen} → ${after.drawerOpen}; ` +
             `tooltip open: ${before.tooltipOpen} → ${after.tooltipOpen}` +
             (after.drawerOpen || after.tooltipOpen ? "  ✗ an overlay is still showing" : "  ✓ overlays closed"),
         );
@@ -438,7 +483,9 @@ harness.addEventListener("click", (event) => {
 
 const statusEl = q<HTMLElement>('[data-role="status"]');
 function renderStatus(): void {
-  statusEl.textContent = `v${version} · viewer ${viewer} · roots ${liveRoots()} · calls ${mock.calls} · ${document.visibilityState}`;
+  statusEl.textContent =
+    `v${version} · ${variant}${scenario ? `/${scenario}` : ""} · viewer ${viewer} · roots ${liveRoots()} · ` +
+    `calls ${mock.calls} · ${document.visibilityState}`;
 }
 renderStatus();
 window.setInterval(renderStatus, 1000);

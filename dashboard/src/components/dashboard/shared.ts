@@ -14,19 +14,29 @@ import { useCallback, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Activity,
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  BanknoteArrowUp,
   BriefcaseBusiness,
   CircleAlert,
+  CircleCheck,
+  CircleDashed,
+  Clock,
   FileText,
   Inbox,
   Info,
+  Landmark,
+  Percent,
   ReceiptText,
   ShieldCheck,
+  ShoppingCart,
   TrendingUp,
   TriangleAlert,
   Truck,
   Wallet,
 } from "lucide-react";
 import { formatValue } from "@/lib/format";
+import type { BalanceKey, BankStatus } from "@/types/acc";
 import type { Granularity, KpiKey, Period, SeriesSlot, Severity, Unit } from "@/types/dashboard";
 
 /* ------------------------------------------------------------------------ */
@@ -43,6 +53,17 @@ export const KPI_ICON: Readonly<Record<KpiKey, LucideIcon>> = {
   job_activity: Activity,
   invoiced: ReceiptText,
   collected: Wallet,
+  // FPS ACC Dashboard
+  paid_out: BanknoteArrowUp,
+  purchases: ShoppingCart,
+};
+
+/** One icon per ACC balance card (AccDashboard / BalanceCard), keyed by BalanceKey. */
+export const BALANCE_ICON: Readonly<Record<BalanceKey, LucideIcon>> = {
+  receivables: ArrowDownToLine,
+  payables: ArrowUpFromLine,
+  cash: Landmark,
+  vat: Percent,
 };
 
 /**
@@ -82,6 +103,27 @@ export const SEVERITY_META: Readonly<Record<Severity, SeverityMeta>> = {
   warning: { icon: TriangleAlert, label: "Warning", text: "text-amber", chip: "bg-amber/10 border-amber/25" },
   positive: { icon: TrendingUp, label: "Positive", text: "text-mint", chip: "bg-mint/10 border-mint/25" },
   info: { icon: Info, label: "Info", text: "text-electric-ui", chip: "bg-electric-ui/10 border-electric-ui/25" },
+};
+
+export interface BankStatusMeta {
+  icon: LucideIcon;
+  /** Always rendered next to the icon: status is never colour alone. */
+  label: string;
+  /** Text/icon colour utility (status token). */
+  text: string;
+  /** Tinted chip background + hairline. */
+  chip: string;
+}
+
+/**
+ * FPS Bank Statement status of the latest statement (BankStatusCard). Mint /
+ * amber / rose are STATE colours (DESIGN.md §4) and always ship with the icon
+ * and the label.
+ */
+export const BANK_STATUS_META: Readonly<Record<BankStatus["status"], BankStatusMeta>> = {
+  Reconciled: { icon: CircleCheck, label: "Reconciled", text: "text-mint", chip: "bg-mint/10 border-mint/25" },
+  "In Progress": { icon: Clock, label: "In progress", text: "text-amber", chip: "bg-amber/10 border-amber/25" },
+  Missing: { icon: CircleDashed, label: "Missing", text: "text-rose", chip: "bg-rose/10 border-rose/25" },
 };
 
 /* ------------------------------------------------------------------------ */

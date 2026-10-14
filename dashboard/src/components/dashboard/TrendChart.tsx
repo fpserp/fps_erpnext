@@ -299,7 +299,10 @@ export function TrendChart({ modes, viewerFinance, defaultKind = "area", classNa
                 key={p.mode.key}
                 value={p.mode.key}
                 title={p.mode.label}
-                className="h-8 min-w-0 px-2 text-[13px] leading-5 text-ink-secondary focus-visible:ring-2 focus-visible:ring-electric data-[state=active]:border-transparent data-[state=active]:bg-electric/15 data-[state=active]:text-ink @min-[480px]/trend:px-4 dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-electric/15"
+                // flex-auto, not shadcn's flex-1: equal-width tabs truncated the longer
+                // label ("Cash flow") although the list had room; sized by content they
+                // only truncate when the card is really too narrow.
+                className="h-8 min-w-0 flex-auto px-2 text-[13px] leading-5 text-ink-secondary focus-visible:ring-2 focus-visible:ring-electric data-[state=active]:border-transparent data-[state=active]:bg-electric/15 data-[state=active]:text-ink @min-[480px]/trend:px-4 dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-electric/15"
               >
                 <span className="truncate">{p.mode.label}</span>
               </TabsTrigger>

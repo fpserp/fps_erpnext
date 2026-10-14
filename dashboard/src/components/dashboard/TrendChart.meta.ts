@@ -9,7 +9,7 @@ export const meta = {
   component: "TrendChart",
   file: "dashboard/src/components/dashboard/TrendChart.tsx",
   purpose:
-    "'Trends · last 12 weeks' glass card: one tab per trend mode (Pipeline / Activity / Money), Area | Bar toggle, Table toggle (accessible twin), legend, direct end-labels, partial-week note and the mode's data caveat. Weekly totals, independent of the period filter.",
+    "'Trends · last 12 weeks' glass card: one tab per trend mode (FPS OPS: Sales pipeline / Operations; FPS ACC: Billing / Cash flow), Area | Bar toggle, Table toggle (accessible twin), legend, direct end-labels, partial-week note and the mode's data caveat. Weekly totals, independent of the period filter.",
   props: {
     modes: {
       type: "readonly TrendMode[]",
@@ -36,9 +36,9 @@ export const meta = {
       "Plot is a fixed 280px including the x-axis band (no nested scroll). X ticks thin automatically on narrow widths (interval preserveEnd: the last, still-filling week's label is always kept); the table view scrolls inside a focusable 280px region. Direct end-labels only when the plot is ≥ 480px wide. The tab list is 40px (32px tabs + 4px padding), like the other segmented controls. Under a 480px card width (@container/trend): 16px padding and tab labels that shrink and truncate (full label in title) instead of overflowing.",
   },
   data: {
-    source: "payload.trend from fps_erpnext.api.command_center.get_dashboard.",
+    source: "payload.trend from fps_erpnext.api.command_center.get_dashboard (OPS: pipeline, activity) or fps_erpnext.api.acc_dashboard.get_dashboard (ACC: billing, cashflow — money, viewerFinance true).",
     readOnly: true,
-    permissions: "The Money mode (finance: true) is only sent to finance viewers and is also filtered client-side.",
+    permissions: "Money modes (finance: true) are dropped client-side unless viewerFinance is true. The OPS API sends none (viewer.finance is always false there); the ACC page passes true because its API only answers Accounts Managers.",
   },
   a11y: [
     "Tabs, chart-type toggle group and Table toggle are keyboard operable (Radix: arrow keys within groups, aria-pressed / aria-selected).",
@@ -53,7 +53,7 @@ export const meta = {
     "Max 4 series; a 5th+ folds into 'Other' (--fps-series-other). Never generate a hue.",
     "No dual axis: one y-axis per plot; different units live in different tabs.",
     "Value text never uses the series colour — labels, values and legends use ink tokens.",
-    "Money only when finance: never show the Money mode to a non-finance viewer.",
+    "Money only when finance: never show a money mode to a non-finance viewer (OPS); the ACC page is server-gated to Accounts Managers.",
     "Gridlines solid 1px --fps-grid, horizontal only; never dashed.",
     "No pie/donut, no stacked bars, no chart animation (polls re-render every minute).",
   ],

@@ -7,27 +7,11 @@
   "period_label": "Last 30 days",
   "compare_label": "vs previous 30 days",
   "granularity": "day",
-  "value": 55049.24,
-  "previous": 64571.31,
-  "delta_pct": -14.7,
+  "value": 34455.22,
+  "previous": 78160.21,
+  "delta_pct": -55.9,
   "good_direction": "up",
   "series": [
-    {
-      "date": "2026-09-11",
-      "value": 9625.98
-    },
-    {
-      "date": "2026-09-12",
-      "value": 10968.04
-    },
-    {
-      "date": "2026-09-13",
-      "value": 0.0
-    },
-    {
-      "date": "2026-09-14",
-      "value": 0.0
-    },
     {
       "date": "2026-09-15",
       "value": 6386.15
@@ -130,6 +114,22 @@
     },
     {
       "date": "2026-10-10",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-11",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-12",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-13",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-14",
       "value": 0.0,
       "partial": true
     }
@@ -152,12 +152,7 @@
       {
         "key": "Key account (sample)",
         "label": "Key account (sample)",
-        "value": 35977.86
-      },
-      {
-        "key": "Customer B",
-        "label": "Customer B",
-        "value": 10968.04
+        "value": 26351.88
       },
       {
         "key": "Customer C",
@@ -225,24 +220,6 @@
       "subtitle": "FPS/JO/2606/025 · Due 14 Nov",
       "value": 6386.15,
       "status": "Unpaid"
-    },
-    {
-      "name": "FPS/INV/2609/126",
-      "title": "Customer B",
-      "date": "2026-09-12",
-      "route": "/app/sales-invoice/FPS%2FINV%2F2609%2F126",
-      "subtitle": "FPS/JO/2605/009 · Due 12 Oct",
-      "value": 10968.04,
-      "status": "Paid"
-    },
-    {
-      "name": "FPS/INV/2609/124",
-      "title": "Key account (sample)",
-      "date": "2026-09-11",
-      "route": "/app/sales-invoice/FPS%2FINV%2F2609%2F124",
-      "subtitle": "FPS/JO/2608/078 · Due 10 Nov",
-      "value": 9625.98,
-      "status": "Paid"
     }
   ],
   "actions": [

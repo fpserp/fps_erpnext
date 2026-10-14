@@ -1,23 +1,29 @@
 #!/usr/bin/env node
 /**
- * After `vite build`: stamp the bundle's content hash into the FPS Overview
- * block loader, then regenerate the Frappe fixtures from the block sources.
+ * After `vite build`: stamp the bundle's content hash into BOTH block loaders
+ * that import it, then regenerate the Frappe fixtures from the block sources.
+ *
+ *   FPS Overview      custom_blocks/fps_overview.js      FPS OPS Dashboard (variant "ops")
+ *   FPS ACC Overview  custom_blocks/fps_acc_overview.js  FPS ACC Dashboard (variant "acc")
  *
  * Why: Frappe Cloud serves /assets with "Cache-Control: max-age=31536000,
- * immutable". The bundle keeps one stable filename, so the block loader must
+ * immutable". The bundle keeps one stable filename, so each block loader must
  * import it as fps-command-center.js?v=<hash>; a new build that kept the old
- * ?v= would never reach a browser that has the old file cached.
+ * ?v= would never reach a browser that has the old file cached. Both loaders
+ * import the SAME bundle, so both carry the same hash.
  *
  * Steps:
  *  1. sha256(fps_erpnext/public/dashboard/fps-command-center.js), first 12 hex.
- *  2. Rewrite the line `var FPS_CC_VERSION = "<anything>";` in
- *     docs/design_handoff_fps_workspace/custom_blocks/fps_overview.js.
- *     If that file or that marker is missing: print a warning and exit 0
- *     (the loader is maintained separately and may not exist yet).
- *  3. Run `python docs/design_handoff_fps_workspace/build_workspaces.py` from
- *     the repo root, which writes fps_erpnext/fixtures/custom_html_block.json
- *     (and the workspace fixtures). Its output is printed; a failure exits
- *     non-zero.
+ *  2. Rewrite the line `var FPS_CC_VERSION = "<anything>";` in each loader
+ *     under docs/design_handoff_fps_workspace/custom_blocks/. A loader that is
+ *     missing, or has no such line, is skipped with a WARNING (the loaders are
+ *     maintained with the blocks, not here, and the ACC one may not exist yet)
+ *     -- never a failure.
+ *  3. If at least one loader is in place, run
+ *     `python docs/design_handoff_fps_workspace/build_workspaces.py` from the
+ *     repo root, which writes fps_erpnext/fixtures/custom_html_block.json (and
+ *     the workspace fixtures). Its output is printed; a failure exits
+ *     non-zero. With no loader at all, nothing else is touched (exit 0).
  *
  * This only edits files in the repo. It never talks to the live site; the
  * fixtures reach ERPNext through a normal deploy (`bench migrate`). No STAMP
@@ -28,8 +34,8 @@
  *
  * Options:
  *   --dry-run      compute and report, write nothing, do not run python
- *   --no-python    stamp the loader but skip the fixture regeneration
- *   --block=<path> use another loader file (testing)
+ *   --no-python    stamp the loaders but skip the fixture regeneration
+ *   --block=<path> stamp only this loader file (testing); may be repeated
  * Env: PYTHON=<interpreter> to choose the Python executable.
  */
 import { createHash } from "node:crypto";
@@ -43,15 +49,20 @@ const dashboardDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 
 const repoRoot = path.resolve(dashboardDir, "..");
 
 const BUNDLE = path.join(repoRoot, "fps_erpnext", "public", "dashboard", "fps-command-center.js");
-const DEFAULT_BLOCK = path.join(repoRoot, "docs", "design_handoff_fps_workspace", "custom_blocks", "fps_overview.js");
+const BLOCKS_DIR = path.join(repoRoot, "docs", "design_handoff_fps_workspace", "custom_blocks");
+/** Every block loader that imports the bundle: [block name, loader file]. */
+const DEFAULT_BLOCKS = [
+  ["FPS Overview (FPS OPS Dashboard)", path.join(BLOCKS_DIR, "fps_overview.js")],
+  ["FPS ACC Overview (FPS ACC Dashboard)", path.join(BLOCKS_DIR, "fps_acc_overview.js")],
+];
 const GENERATOR = path.join("docs", "design_handoff_fps_workspace", "build_workspaces.py");
 const MARKER = /var FPS_CC_VERSION = "[^"]*";/g;
 
 const argv = process.argv.slice(2);
 const dryRun = argv.includes("--dry-run");
 const skipPython = argv.includes("--no-python");
-const blockArg = argv.find((a) => a.startsWith("--block="));
-const blockFile = blockArg ? path.resolve(blockArg.slice("--block=".length)) : DEFAULT_BLOCK;
+const blockArgs = argv.filter((a) => a.startsWith("--block=")).map((a) => path.resolve(a.slice("--block=".length)));
+const blocks = blockArgs.length > 0 ? blockArgs.map((file) => [path.basename(file), file]) : DEFAULT_BLOCKS;
 
 const rel = (p) => path.relative(repoRoot, p).split(path.sep).join("/");
 const kb = (n) => `${(n / 1024).toFixed(1)} KiB`;
@@ -69,32 +80,40 @@ const bytes = readFileSync(BUNDLE);
 const hash = createHash("sha256").update(bytes).digest("hex").slice(0, 12);
 console.log(`[sync-block] ${rel(BUNDLE)}: ${kb(bytes.length)} raw, ${kb(gzipSync(bytes, { level: 9 }).length)} gzip, v=${hash}`);
 
-// 2. Stamp the loader ----------------------------------------------------------
-if (!existsSync(blockFile)) {
-  warn(`${rel(blockFile)} not found, so no loader was stamped and the fixtures were not regenerated.`);
+// 2. Stamp the loaders ---------------------------------------------------------
+let inPlace = 0;
+for (const [name, blockFile] of blocks) {
+  if (!existsSync(blockFile)) {
+    warn(`${rel(blockFile)} (${name}) not found, so that loader was not stamped. The other loader(s) still are.`);
+    continue;
+  }
+  const source = readFileSync(blockFile, "utf8");
+  const matches = source.match(MARKER) ?? [];
+  if (matches.length === 0) {
+    warn(
+      `${rel(blockFile)} (${name}) has no line matching  var FPS_CC_VERSION = "...";\n` +
+        "  Add it to the loader (it must build the import URL from it), then rebuild.\n" +
+        "  That loader was not stamped.",
+    );
+    continue;
+  }
+  inPlace += 1;
+  if (matches.length > 1) {
+    warn(`${rel(blockFile)} has ${matches.length} FPS_CC_VERSION lines; all of them are stamped.`);
+  }
+  const stamped = source.replace(MARKER, `var FPS_CC_VERSION = "${hash}";`);
+  if (stamped === source) {
+    console.log(`[sync-block] ${rel(blockFile)} already at v=${hash}.`);
+  } else if (dryRun) {
+    console.log(`[sync-block] (dry run) would stamp ${rel(blockFile)} with v=${hash}.`);
+  } else {
+    writeFileSync(blockFile, stamped, "utf8");
+    console.log(`[sync-block] stamped ${rel(blockFile)} with v=${hash}.`);
+  }
+}
+if (inPlace === 0) {
+  warn("No block loader could be stamped, so the fixtures were not regenerated (the bundle was built).");
   process.exit(0);
-}
-const source = readFileSync(blockFile, "utf8");
-const matches = source.match(MARKER) ?? [];
-if (matches.length === 0) {
-  warn(
-    `${rel(blockFile)} has no line matching  var FPS_CC_VERSION = "...";\n` +
-      "  Add it to the loader (it must build the import URL from it), then rebuild.\n" +
-      "  Nothing was stamped and the fixtures were not regenerated.",
-  );
-  process.exit(0);
-}
-if (matches.length > 1) {
-  warn(`${rel(blockFile)} has ${matches.length} FPS_CC_VERSION lines; all of them are stamped.`);
-}
-const stamped = source.replace(MARKER, `var FPS_CC_VERSION = "${hash}";`);
-if (stamped === source) {
-  console.log(`[sync-block] ${rel(blockFile)} already at v=${hash}.`);
-} else if (dryRun) {
-  console.log(`[sync-block] (dry run) would stamp ${rel(blockFile)} with v=${hash}.`);
-} else {
-  writeFileSync(blockFile, stamped, "utf8");
-  console.log(`[sync-block] stamped ${rel(blockFile)} with v=${hash}.`);
 }
 
 // 3. Regenerate the fixtures ---------------------------------------------------

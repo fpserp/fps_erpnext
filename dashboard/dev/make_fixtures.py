@@ -1,8 +1,14 @@
-"""Dev fixtures for the FPS Command Center, built by the REAL server logic.
+"""Dev fixtures for the FPS OPS and FPS ACC Dashboards, built by the REAL server logic.
 
     python dashboard/dev/make_fixtures.py              # writes dashboard/dev/fixtures/*.json
     python dashboard/dev/make_fixtures.py --typecheck  # ...then checks every file against
-                                                       # dashboard/src/types/dashboard.ts with tsc
+                                                       # dashboard/src/types/{dashboard,acc}.ts with tsc
+
+FPS OPS (dashboard.<period>.json, metric_detail.<key>.<period>.json): since
+14 Oct 2026 the OPS API sends the same money-free payload to every viewer
+(viewer.finance is always false, the six operations KPIs, no Invoices stage
+tile), so there is one set, built as a viewer without Accounts roles, and the
+drawers carry no amounts. FPS ACC (acc.*.json): see acc_fixtures.py.
 
 Nothing here talks to ERPNext. A synthetic "site" is built from the live profile
 of 2026-10-10 (research_livedata.json: daily and weekly counts, AED amounts,
@@ -35,6 +41,9 @@ REPO = DASHBOARD.parent
 sys.path.insert(0, str(REPO))
 
 from fps_erpnext.api import command_center_logic as logic  # noqa: E402 -- path set above
+
+sys.path.insert(0, str(HERE))
+import acc_fixtures  # noqa: E402 -- dev/acc_fixtures.py, next to this file
 
 AS_OF = date(2026, 10, 10)
 GENERATED_AT = "2026-10-10 09:30:00"
@@ -722,32 +731,39 @@ def simulate_stages(site, *, with_invoices):
 # Output
 # --------------------------------------------------------------------------
 
+# The six operations KPIs: everything on the OPS page (no money for anyone).
+OPS_KPIS = tuple(k for k in logic.KPI_ORDER if not logic.METRICS[k]["finance"])
+
+
 def build_all():
 	site = make_site()
 	files = {}
-	for viewer_key, viewer in VIEWERS.items():
-		finance = viewer["finance"]
-		# The ops fixture models a viewer without Accounts roles AND without
-		# Sales Invoice read (like hello@), so get_overview omits the invoices
-		# tile too. ops@ itself can read Sales Invoice and would see that tile.
-		stages = simulate_stages(site, with_invoices=finance)
-		for period in logic.PERIODS:
-			raw = simulate_reads(site, logic.fetch_floor(period, AS_OF), finance=finance)
-			files["dashboard.%s.%s.json" % (viewer_key, period)] = logic.build_dashboard(
-				period=period, as_of=AS_OF, generated_at=GENERATED_AT, viewer=viewer, raw=raw,
-				stages=stages, creatable=CREATABLE[viewer_key])
-	# Drawer fixtures, as a finance viewer (so the money keys exist).
-	for key in logic.KPI_ORDER:
+	# FPS OPS. The API builds every payload with finance=False and drops the
+	# "invoices" tile from the stage strip (command_center_logic.ops_stages),
+	# so the strip here is built without it. The viewer is one without
+	# Accounts roles; a finance user gets exactly the same page.
+	viewer = VIEWERS["ops"]
+	creatable = CREATABLE["ops"]
+	stages = simulate_stages(site, with_invoices=False)
+	for period in logic.PERIODS:
+		raw = simulate_reads(site, logic.fetch_floor(period, AS_OF), finance=False)
+		files["dashboard.%s.json" % period] = logic.build_dashboard(
+			period=period, as_of=AS_OF, generated_at=GENERATED_AT, viewer=viewer, raw=raw,
+			stages=stages, creatable=creatable)
+	# OPS drawers: no amounts (finance=False), "New" only where the viewer may create.
+	for key in OPS_KPIS:
 		spec = logic.METRICS[key]
 		for period in logic.PERIODS:
-			raw = simulate_reads(site, logic.fetch_floor(period, AS_OF), finance=True, keys=(key,))
+			raw = simulate_reads(site, logic.fetch_floor(period, AS_OF), finance=False, keys=(key,))
 			files["metric_detail.%s.%s.json" % (key, period)] = logic.build_metric_detail(
-				key, raw, period=period, as_of=AS_OF, finance=True,
-				can_create=bool(spec["new_doctype"]))
-	raw = simulate_reads(site, logic.fetch_floor("30d", AS_OF), finance=True, keys=("jobs",))
+				key, raw, period=period, as_of=AS_OF, finance=False,
+				can_create=bool(spec["new_doctype"]) and spec["new_doctype"] in creatable)
+	raw = simulate_reads(site, logic.fetch_floor("30d", AS_OF), finance=False, keys=("jobs",))
 	files["metric_detail.jobs.30d.dimension.json"] = logic.build_metric_detail(
-		"jobs", raw, period="30d", as_of=AS_OF, finance=True, can_create=True,
+		"jobs", raw, period="30d", as_of=AS_OF, finance=False, can_create=True,
 		dimension="CC - Customs Clearance")
+	# FPS ACC (Accounts Manager only), from the same synthetic site.
+	files.update(acc_fixtures.build_acc_files(site))
 	return files
 
 
@@ -772,9 +788,15 @@ def typecheck(files):
 	if work.exists():
 		shutil.rmtree(work)
 	work.mkdir(parents=True)
-	lines = ['import type { DashboardPayload, MetricDetail } from "../../../src/types/dashboard";', ""]
+	lines = ['import type { DashboardPayload, MetricDetail } from "../../../src/types/dashboard";',
+	         'import type { AccPayload } from "../../../src/types/acc";', ""]
 	for i, (name, payload) in enumerate(sorted(files.items())):
-		kind = "DashboardPayload" if name.startswith("dashboard.") else "MetricDetail"
+		if name.startswith("acc.dashboard."):
+			kind = "AccPayload"
+		elif name.startswith("dashboard."):
+			kind = "DashboardPayload"
+		else:
+			kind = "MetricDetail"
 		lines.append("// %s" % name)
 		lines.append("export const f%d: %s = %s;" % (i, kind, json.dumps(payload, ensure_ascii=False)))
 	(work / "check.ts").write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -791,15 +813,15 @@ def typecheck(files):
 		shutil.rmtree(work, ignore_errors=True)
 	if result.returncode:
 		print(result.stdout + result.stderr)
-		sys.exit("fixtures do NOT match dashboard.ts")
-	print("typecheck ok: %d fixtures match dashboard.ts (tsc --strict, exactOptionalPropertyTypes)"
+		sys.exit("fixtures do NOT match dashboard.ts / acc.ts")
+	print("typecheck ok: %d fixtures match dashboard.ts / acc.ts (tsc --strict, exactOptionalPropertyTypes)"
 	      % len(files))
 
 
 def main():
 	parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
 	parser.add_argument("--typecheck", action="store_true",
-	                    help="also check every fixture against dashboard/src/types/dashboard.ts")
+	                    help="also check every fixture against dashboard/src/types/{dashboard,acc}.ts")
 	args = parser.parse_args()
 	files = build_all()
 	write(files)

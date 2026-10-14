@@ -1,0 +1,129 @@
+{
+  "key": "paid_out",
+  "label": "Paid to suppliers",
+  "unit": "currency",
+  "currency": "AED",
+  "period": "7d",
+  "period_label": "Last 7 days",
+  "compare_label": "vs previous 7 days",
+  "granularity": "day",
+  "value": 30007.8,
+  "previous": 16978.26,
+  "delta_pct": 76.7,
+  "good_direction": "none",
+  "series": [
+    {
+      "date": "2026-10-08",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-09",
+      "value": 24570.61
+    },
+    {
+      "date": "2026-10-10",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-11",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-12",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-13",
+      "value": 0.0
+    },
+    {
+      "date": "2026-10-14",
+      "value": 5437.19,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Paid via",
+  "dimension_options": [
+    {
+      "key": "Cheque",
+      "label": "Cheque"
+    },
+    {
+      "key": "Bank Transfer",
+      "label": "Bank Transfer"
+    },
+    {
+      "key": "DubaiPay",
+      "label": "DubaiPay"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By paid via",
+    "rows": [
+      {
+        "key": "Cheque",
+        "label": "Cheque",
+        "value": 22899.18
+      },
+      {
+        "key": "Bank Transfer",
+        "label": "Bank Transfer",
+        "value": 4300.0
+      },
+      {
+        "key": "DubaiPay",
+        "label": "DubaiPay",
+        "value": 2808.62
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/PV/2610/109",
+      "title": "Government fees (sample)",
+      "date": "2026-10-14",
+      "route": "/app/payment-entry/FPS%2FPV%2F2610%2F109",
+      "subtitle": "DubaiPay · Ref SAMPLE-481631",
+      "value": 2808.62
+    },
+    {
+      "name": "FPS/PV/2610/108",
+      "title": "Customs broker (sample)",
+      "date": "2026-10-14",
+      "route": "/app/payment-entry/FPS%2FPV%2F2610%2F108",
+      "subtitle": "Cheque · Ref SAMPLE-796336",
+      "value": 2628.57
+    },
+    {
+      "name": "FPS/PV/2610/107",
+      "title": "Shipping line A (sample)",
+      "date": "2026-10-09",
+      "route": "/app/payment-entry/FPS%2FPV%2F2610%2F107",
+      "subtitle": "Cheque · Ref SAMPLE-811265",
+      "value": 20270.61
+    },
+    {
+      "name": "FPS/PV/2610/106",
+      "title": "Customs broker (sample)",
+      "date": "2026-10-09",
+      "route": "/app/payment-entry/FPS%2FPV%2F2610%2F106",
+      "subtitle": "Bank Transfer · Ref SAMPLE-691553",
+      "value": 4300.0
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/payment-entry?payment_type=Pay&docstatus=1"
+    },
+    {
+      "key": "open_paid_bills",
+      "label": "Open bills paid at booking",
+      "kind": "route",
+      "route": "/app/purchase-invoice?is_paid=1&docstatus=1"
+    }
+  ]
+}

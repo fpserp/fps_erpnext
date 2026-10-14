@@ -23,7 +23,7 @@ export const meta = {
   variants: {
     "with-dimension": { description: "Chips 'All' + dimension_options in the filter row.", when: "detail.dimension_label is set and dimension_options is non-empty." },
     "with-breakdown": { description: "Horizontal single-hue bars with value labels at the bar tip.", when: "detail.breakdown has rows." },
-    money: { description: "Violet-series chart and bars, full AED figures, Finance chip.", when: "detail.unit === 'currency' (finance viewers only)." },
+    money: { description: "Violet-series chart and bars, full AED figures, Finance chip.", when: "detail.unit === 'currency' (the FPS ACC KPIs; Accounts Managers only)." },
   },
   states: [
     "closed",
@@ -40,10 +40,10 @@ export const meta = {
       "Header, filter bar and footer are fixed; the body scrolls (overscroll-contain). Dimension chips scroll horizontally inside their own strip so the filter bar stays one row. Record titles truncate; values and dates never do; breakdown value labels are never clipped (the bar shrinks first).",
   },
   data: {
-    source: "useMetricDetail(key, period, dimension) → fps_erpnext.api.command_center.get_metric_detail (GET, whitelisted, read-only).",
+    source: "useMetricDetail(key, period, dimension) → get_metric_detail of the dashboard variant in context (lib/variant.tsx): fps_erpnext.api.command_center.get_metric_detail on FPS OPS, fps_erpnext.api.acc_dashboard.get_metric_detail on FPS ACC (GET, whitelisted, read-only). Caches never mix between the two.",
     readOnly: true,
     permissions:
-      "The API checks read permission per metric; money metrics only for finance roles. CommandCenter only opens the drawer for KPIs present in the viewer's payload.",
+      "The API checks read permission per metric. The OPS API rejects the money metrics for everyone; the ACC API answers Accounts Managers only (a refusal shows 'You do not have access to these details.'). CommandCenter / AccDashboard only open the drawer for KPIs present in the viewer's payload.",
   },
   a11y: [
     "Shadow-safe Sheet: aria-modal, focus trapped (Tab/Shift+Tab wrap), first focus on the 32px 'Close details' button, Escape and overlay click close, focus returns to the card that opened it.",

@@ -16,12 +16,21 @@ export const meta = {
       notes: "One element of payload.kpis. Icon is looked up by kpi.key (KPI_ICON), never by position.",
     },
     compareLabel: { type: "string", required: true, notes: "payload.compare_label, e.g. 'vs previous 7 days'." },
-    onOpen: { type: "(key: KpiKey) => void", required: true, notes: "Opens the drawer; CommandCenter owns the drawer state." },
+    onOpen: { type: "(key: KpiKey) => void", required: true, notes: "Opens the drawer; CommandCenter / AccDashboard own the drawer state." },
+    financeChip: {
+      type: "boolean",
+      required: false,
+      default: true,
+      notes: "Show the 'Finance' chip on money KPIs. AccDashboard passes false (every number on the FPS ACC Dashboard is money).",
+    },
     className: { type: "string", required: false },
   },
   variants: {
     count: { description: "Electric Blue sparkline; value formatted as a count ('1,284', '12.9K').", when: "kpi.unit === 'count'." },
-    money: { description: "Violet-series sparkline, 'AED 12.9K' value and a 'Finance' chip.", when: "kpi.unit === 'currency' (finance viewers only)." },
+    money: {
+      description: "Violet-series sparkline, 'AED 12.9K' value and a 'Finance' chip (no chip when financeChip is false).",
+      when: "kpi.unit === 'currency': the four FPS ACC KPIs (the FPS OPS page no longer receives money KPIs).",
+    },
     caveat: { description: "Amber TriangleAlert 'Data caveat' button with tooltip.", when: "kpi.caveat is set." },
   },
   states: ["default", "hover (border strengthens)", "focus-visible (2px Electric Blue outline, 2px offset, around the whole card)", "no-activity (flat-zero sparkline caption)"],
@@ -33,7 +42,7 @@ export const meta = {
       "Label and value truncate with ellipsis (full text in title; the value also as sr-only text); context labels truncate (full text in title), values never; cards stretch to the row height. Padding 16px while the bento is under 480px wide, 24px from 480px. Spans per count: 8 KPIs → sm 12 / md 6 / lg 3; 6 KPIs → sm 12 / md 6 / lg 4 / xl 2; other counts auto-fit ≥ 240px.",
   },
   data: {
-    source: "payload.kpis[n] from fps_erpnext.api.command_center.get_dashboard.",
+    source: "payload.kpis[n] from fps_erpnext.api.command_center.get_dashboard (OPS) or fps_erpnext.api.acc_dashboard.get_dashboard (ACC).",
     readOnly: true,
     permissions: "Money KPIs (finance: true) are only sent to, and only rendered for, finance viewers.",
   },

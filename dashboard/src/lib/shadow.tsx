@@ -78,9 +78,12 @@ export function getDeepActiveElement(root: Document | ShadowRoot = document): El
 const DismissContext = React.createContext(0);
 DismissContext.displayName = "FpsDismissSignal";
 
-/** The workspace route the dashboard was mounted on; ["Workspaces", "FPS"] when unknown. */
-function homeWorkspace(route: readonly string[]): string {
-  return route[0] === "Workspaces" && route[1] ? route[1] : "FPS";
+/**
+ * The workspace route the dashboard was mounted on; `fallback` (the variant's
+ * own workspace: "FPS" or "FPS ACC") when the route is not a workspace yet.
+ */
+function homeWorkspace(route: readonly string[], fallback: string): string {
+  return route[0] === "Workspaces" && route[1] ? route[1] : fallback;
 }
 
 /** True when the desk route is the dashboard's workspace (Workspaces/<name>). */
@@ -93,14 +96,21 @@ export function isOnWorkspace(route: readonly string[], workspace: string): bool
  * the dashboard's own workspace. Overlays (Sheet, Tooltip) close on a bump.
  * One router subscription per mounted dashboard, released on unmount.
  */
-export function LayerDismissProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
+export function LayerDismissProvider({
+  workspace = "FPS",
+  children,
+}: {
+  /** The dashboard's own workspace, used when the route at mount is not a workspace. */
+  workspace?: string;
+  children: React.ReactNode;
+}): React.JSX.Element {
   const [epoch, setEpoch] = React.useState(0);
   React.useEffect(() => {
-    const home = homeWorkspace(getRoute());
+    const home = homeWorkspace(getRoute(), workspace);
     return onRouteChange((route) => {
       if (!isOnWorkspace(route, home)) setEpoch((n) => n + 1);
     });
-  }, []);
+  }, [workspace]);
   return <DismissContext value={epoch}>{children}</DismissContext>;
 }
 

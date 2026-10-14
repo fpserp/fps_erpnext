@@ -1,0 +1,206 @@
+{
+  "key": "paid_out",
+  "label": "Paid to suppliers",
+  "unit": "currency",
+  "currency": "AED",
+  "period": "90d",
+  "period_label": "Last 13 weeks",
+  "compare_label": "vs previous 13 weeks",
+  "granularity": "week",
+  "value": 410874.76,
+  "previous": 546221.57,
+  "delta_pct": -24.8,
+  "good_direction": "none",
+  "series": [
+    {
+      "date": "2026-07-16",
+      "value": 40262.29
+    },
+    {
+      "date": "2026-07-23",
+      "value": 15671.58
+    },
+    {
+      "date": "2026-07-30",
+      "value": 38642.11
+    },
+    {
+      "date": "2026-08-06",
+      "value": 94392.78
+    },
+    {
+      "date": "2026-08-13",
+      "value": 12256.52
+    },
+    {
+      "date": "2026-08-20",
+      "value": 45628.32
+    },
+    {
+      "date": "2026-08-27",
+      "value": 31136.95
+    },
+    {
+      "date": "2026-09-03",
+      "value": 26198.03
+    },
+    {
+      "date": "2026-09-10",
+      "value": 25621.91
+    },
+    {
+      "date": "2026-09-17",
+      "value": 16100.45
+    },
+    {
+      "date": "2026-09-24",
+      "value": 17977.76
+    },
+    {
+      "date": "2026-10-01",
+      "value": 16978.26
+    },
+    {
+      "date": "2026-10-08",
+      "value": 30007.8,
+      "partial": true
+    }
+  ],
+  "dimension_label": "Paid via",
+  "dimension_options": [
+    {
+      "key": "ADCB (paid at booking)",
+      "label": "ADCB (paid at booking)"
+    },
+    {
+      "key": "Bank Transfer",
+      "label": "Bank Transfer"
+    },
+    {
+      "key": "Cheque",
+      "label": "Cheque"
+    },
+    {
+      "key": "DubaiPay",
+      "label": "DubaiPay"
+    },
+    {
+      "key": "Rosoom",
+      "label": "Rosoom"
+    }
+  ],
+  "dimension": null,
+  "breakdown": {
+    "title": "By paid via",
+    "rows": [
+      {
+        "key": "Bank Transfer",
+        "label": "Bank Transfer",
+        "value": 163549.0
+      },
+      {
+        "key": "Cheque",
+        "label": "Cheque",
+        "value": 103741.64
+      },
+      {
+        "key": "ADCB (paid at booking)",
+        "label": "ADCB (paid at booking)",
+        "value": 59651.94
+      },
+      {
+        "key": "DubaiPay",
+        "label": "DubaiPay",
+        "value": 50135.18
+      },
+      {
+        "key": "Rosoom",
+        "label": "Rosoom",
+        "value": 33797.0
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "FPS/PV/2610/109",
+      "title": "Government fees (sample)",
+      "date": "2026-10-14",
+      "route": "/app/payment-entry/FPS%2FPV%2F2610%2F109",
+      "subtitle": "DubaiPay · Ref SAMPLE-481631",
+      "value": 2808.62
+    },
+    {
+      "name": "FPS/PV/2610/108",
+      "title": "Customs broker (sample)",
+      "date": "2026-10-14",
+      "route": "/app/payment-entry/FPS%2FPV%2F2610%2F108",
+      "subtitle": "Cheque · Ref SAMPLE-796336",
+      "value": 2628.57
+    },
+    {
+      "name": "FPS/PV/2610/107",
+      "title": "Shipping line A (sample)",
+      "date": "2026-10-09",
+      "route": "/app/payment-entry/FPS%2FPV%2F2610%2F107",
+      "subtitle": "Cheque · Ref SAMPLE-811265",
+      "value": 20270.61
+    },
+    {
+      "name": "FPS/PV/2610/106",
+      "title": "Customs broker (sample)",
+      "date": "2026-10-09",
+      "route": "/app/payment-entry/FPS%2FPV%2F2610%2F106",
+      "subtitle": "Bank Transfer · Ref SAMPLE-691553",
+      "value": 4300.0
+    },
+    {
+      "name": "FPS/PI/2610/199",
+      "title": "Fuel station (sample)",
+      "date": "2026-10-05",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F199",
+      "subtitle": "ADCB (paid at booking)",
+      "value": 3264.04,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/PV/2610/105",
+      "title": "Shipping line A (sample)",
+      "date": "2026-10-04",
+      "route": "/app/payment-entry/FPS%2FPV%2F2610%2F105",
+      "subtitle": "Cheque · Ref SAMPLE-264817",
+      "value": 10420.38
+    },
+    {
+      "name": "FPS/PI/2610/197",
+      "title": "Online fees portal (sample)",
+      "date": "2026-10-03",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2610%2F197",
+      "subtitle": "ADCB (paid at booking)",
+      "value": 3293.84,
+      "status": "Paid"
+    },
+    {
+      "name": "FPS/PI/2609/196",
+      "title": "Online fees portal (sample)",
+      "date": "2026-09-30",
+      "route": "/app/purchase-invoice/FPS%2FPI%2F2609%2F196",
+      "subtitle": "ADCB (paid at booking)",
+      "value": 3964.7,
+      "status": "Paid"
+    }
+  ],
+  "actions": [
+    {
+      "key": "open_list",
+      "label": "Open list",
+      "kind": "route",
+      "route": "/app/payment-entry?payment_type=Pay&docstatus=1"
+    },
+    {
+      "key": "open_paid_bills",
+      "label": "Open bills paid at booking",
+      "kind": "route",
+      "route": "/app/purchase-invoice?is_paid=1&docstatus=1"
+    }
+  ]
+}

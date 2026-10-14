@@ -40,7 +40,7 @@ export const meta = {
       "Insight titles and details wrap (detail capped at 72ch, long tokens break); never truncated. Below a 480px banner width (container query @container/insight): 16px padding, the 'rule-based · updated' line stacks under the title and truncates with its full text in title, and the pager controls (prev, n of N, next, Show all) take their own full-width row. 24px padding and one header row from 480px.",
   },
   data: {
-    source: "payload.insights from fps_erpnext.api.command_center.get_dashboard (rule-based, computed server-side).",
+    source: "payload.insights from fps_erpnext.api.command_center.get_dashboard (OPS) or fps_erpnext.api.acc_dashboard.get_dashboard (ACC) — rule-based, computed server-side.",
     readOnly: true,
     permissions: "The server only emits insights over data the viewer may read; a metric_key the viewer lacks is degraded to its route.",
   },
