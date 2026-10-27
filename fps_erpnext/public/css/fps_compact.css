@@ -86,37 +86,77 @@
 .fps-side-toggle:hover { color: var(--text-color, #1f272e); background: var(--bg-light-gray, #ececec); }
 .fps-side-toggle svg { width: 14px; height: 14px; }
 
+/* Left sidebar collapse arrow: Frappe puts it at the bottom edge; moved to the
+ * top (beside Search when open, beside the logo when folded) and made visible. */
+:root .body-sidebar-container .sidebar-collapse-arrow {
+	top: 52px !important;
+	bottom: auto !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+	border: 1px solid var(--border-color, #d1d8dd);
+	border-radius: 50%;
+	background: var(--card-bg, #fff);
+	box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.08));
+}
+:root .body-sidebar-container:not(.expanded) .sidebar-collapse-arrow { top: 14px !important; }
+
 /* Right-hand form sidebar hidden: the form takes the full width. */
 body.fps-form-sidebar-hidden .layout-side-section.right { display: none !important; }
 body.fps-form-sidebar-hidden .layout-main-section-wrapper { flex: 1 1 100% !important; width: 100% !important; max-width: 100% !important; }
 
-/* ---- wide landscape screens: use the full width ----------------------
- * Agam, 28 Oct 2026: on a landscape monitor the form sat in a 900px strip in
- * the middle with empty bands left and right, with or without the sidebars.
- * Frappe caps every form section at --page-max-width (900px) unless the user
- * picked "Toggle Full Width" (body.full-width). On a landscape screen of
- * 1200px or more this lifts the cap, and each column lays its fields out in
- * an auto-fill grid (min 200px per field): as many fields per row as fit,
- * so the form reflows by itself when the left or right sidebar is collapsed
- * or opened. Tables, HTML blocks, editors and long text stay full width.
- * Portrait screens and anything narrower keep Frappe's normal layout.
- * Scoped to .std-form-layout (document forms) so dialogs are left alone. */
-@media (min-width: 1200px) and (orientation: landscape) {
+/* ---- wide landscape screens: one clean grid per section ---------------
+ * Agam, 28 Oct 2026 (first pass): on a landscape monitor the form sat in a
+ * 900px strip with empty bands left and right. Frappe caps sections at
+ * --page-max-width unless the user picked "Toggle Full Width"; here that cap
+ * is lifted.
+ * Agam, 28 Oct 2026 (second pass): "looks like a messy web ... arrange
+ * properly to look decent and clean". A grid inside each Frappe column gave
+ * ragged rows (columns hold different numbers of fields), single text boxes
+ * sitting among inputs, and long help text pushing rows apart. Now each
+ * section is ONE grid: the columns and their inner form are display:contents,
+ * so every field becomes a cell of equal width (min 230px, as many per row as
+ * fit), read left to right in the doctype's own field order. Text boxes span
+ * two cells and are placed after the one-line fields of their section;
+ * tables, HTML panels and editors take a full row at the end. Help text shows
+ * one line and opens fully on hover or while the field is in use.
+ * Only the arrangement changes: mandatory, read-only, depends_on and every
+ * script rule work as before (hidden fields still drop out of the grid).
+ * Reflows by itself when a sidebar is collapsed or opened. Applies to every
+ * screen 768px or wider, landscape or portrait (a portrait monitor simply gets
+ * fewer cells per row); phones keep Frappe's one-column layout and dialogs are
+ * left alone. */
+@media (min-width: 768px) {
 	:root body .std-form-layout .section-head,
 	:root body .std-form-layout .section-body { max-width: none !important; }
-	:root .std-form-layout .form-section .section-body > .form-column > form {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-		column-gap: 16px;
+	:root .std-form-layout .form-section .section-body {
+		display: grid !important;
+		grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+		column-gap: 20px;
+		grid-auto-flow: row dense;
 		align-items: start;
 	}
-	:root .std-form-layout .form-column > form > .frappe-control:is(
+	:root .std-form-layout .form-section .section-body > .form-column,
+	:root .std-form-layout .form-section .section-body > .form-column > form { display: contents; }
+	/* Frappe caps fields in one-column sections at 50%; inside the grid each cell is the limit */
+	:root .std-form-layout .section-body .frappe-control { min-width: 0; max-width: none !important; }
+	:root .std-form-layout .section-body .frappe-control:is(
+		[data-fieldtype="Small Text"], [data-fieldtype="Text"], [data-fieldtype="Long Text"], [data-fieldtype="Code"]
+	) { order: 1; grid-column: span 2; }
+	:root .std-form-layout .section-body .frappe-control:is(
 		[data-fieldtype="Table"], [data-fieldtype="Table MultiSelect"], [data-fieldtype="HTML"],
 		[data-fieldtype="Text Editor"], [data-fieldtype="HTML Editor"], [data-fieldtype="Markdown Editor"],
-		[data-fieldtype="Code"], [data-fieldtype="JSON"], [data-fieldtype="Long Text"], [data-fieldtype="Text"],
-		[data-fieldtype="Heading"], [data-fieldtype="Signature"], [data-fieldtype="Geolocation"], [data-fieldtype="Image"]
-	) { grid-column: 1 / -1; }
-	:root .std-form-layout .form-column .frappe-control.input-max-width,
-	:root .std-form-layout .form-column .input-max-width .control-input,
-	:root .std-form-layout .form-column .input-max-width .form-control { max-width: none; }
+		[data-fieldtype="JSON"], [data-fieldtype="Heading"], [data-fieldtype="Signature"], [data-fieldtype="Geolocation"]
+	) { order: 2; grid-column: 1 / -1; }
+	:root .std-form-layout .section-body .frappe-control .help-box {
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		opacity: 0.8;
+	}
+	:root .std-form-layout .section-body .frappe-control:is(:hover, :focus-within) .help-box { display: block; -webkit-line-clamp: unset; }
+	:root .std-form-layout .section-body .frappe-control .control-value.like-disabled-input { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	:root .std-form-layout .frappe-control.input-max-width,
+	:root .std-form-layout .input-max-width .control-input,
+	:root .std-form-layout .input-max-width .form-control { max-width: none; }
 }

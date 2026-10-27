@@ -71,10 +71,10 @@ fixtures = [
 app_include_css = [
     "/assets/fps_erpnext/css/fps_list_chrome.css",
     "/assets/fps_erpnext/css/fps_theme.css?v=1",
-    "/assets/fps_erpnext/css/fps_compact.css?v=2",  # after the theme on purpose: same-specificity spacing rules must win
+    "/assets/fps_erpnext/css/fps_compact.css?v=3",  # after the theme on purpose: same-specificity spacing rules must win
 ]
 # app_include_js = "/assets/fps_erpnext/js/fps_erpnext.js"
-app_include_js = ["/assets/fps_erpnext/js/fps_theme.js?v=1", "/assets/fps_erpnext/js/fps_compact.js?v=2"]
+app_include_js = ["/assets/fps_erpnext/js/fps_theme.js?v=1", "/assets/fps_erpnext/js/fps_compact.js?v=3"]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/fps_erpnext/css/fps_erpnext.css"
