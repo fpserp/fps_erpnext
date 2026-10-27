@@ -1,0 +1,91 @@
+/* FPS compact desk -- tighter vertical rhythm on EVERY desk page (all modules,
+ * not only under the FPS tile), plus the two sidebar toggles that
+ * public/js/fps_compact.js puts in the page head. Agam, 27 Oct 2026:
+ * "bring all the fields in all modules a little closer ... tighten the gap in
+ * a way that it looks professional as well, not cheap tight: many entries
+ * visible without scrolling".
+ *
+ * WHAT CHANGES (measured on Frappe 16.53 before/after):
+ *   field block   64px -> 46px  (form-group margin 16 -> 6, label gap 6 -> 2,
+ *                                input 28 -> 26, wrapper gap 6 -> 2)
+ *   section head  15px padding all round -> 10px top, 2px bottom
+ *   section body  12px top padding -> 2px
+ *   Small Text / Text boxes 150px tall -> 64px (still resizable by drag)
+ *   list rows     40px -> 32px;  child-table rows 36px -> 30px
+ *   module sidebar items and form sidebar menu: 2px spacing instead of 6-8px
+ * Font sizes stay at 13-14px, inputs keep their 26px click target, section
+ * titles keep their weight; nothing is hidden and no column changes.
+ *
+ * The ":root" prefix is deliberate: the FPS theme (fps_theme.css) writes
+ * several of the same properties under html[data-fps-theme] (specificity
+ * 0,1,1). ":root .x" ties that, and this file is included AFTER the theme in
+ * hooks.py, so these spacing rules win on FPS pages too while every colour,
+ * border and shadow of the theme stays as it is.
+ */
+
+/* ---- form fields ---------------------------------------------------- */
+:root .form-section .section-head { padding: 10px 12px 2px; }
+:root .form-section .section-body { padding-top: 2px; }
+:root .form-section { padding: 0 8px; }
+:root .form-column { padding: 0 8px; }
+:root .frappe-control .form-group { margin-bottom: 6px; }
+:root .frappe-control .control-label { margin-bottom: 1px; }
+:root .frappe-control .control-input-wrapper { margin-bottom: 2px; }
+:root .frappe-control .form-control { height: 26px; padding: 3px 7px; }
+:root .frappe-control select.form-control { padding-top: 2px; padding-bottom: 2px; }
+:root .frappe-control .help-box { margin: 0 0 2px; line-height: 13px; }
+:root .frappe-control .control-value.like-disabled-input { min-height: 26px; padding: 3px 7px; line-height: 18px; }
+:root .frappe-control[data-fieldtype="Small Text"] textarea.form-control,
+:root .frappe-control[data-fieldtype="Text"] textarea.form-control {
+	height: 64px !important; /* Frappe sets 150px inline */
+	min-height: 40px;
+	resize: vertical;
+}
+:root .frappe-control[data-fieldtype="Check"] .form-group { margin-bottom: 2px; }
+:root .frappe-control[data-fieldtype="Check"] .help-box { margin-left: 20px; }
+:root .layout-main-section .form-layout .form-message { padding: 6px 12px; }
+
+/* ---- form chrome ---------------------------------------------------- */
+:root .form-tabs-list .form-tabs .nav-item .nav-link { padding: 8px 10px; }
+:root .layout-side-section .form-sidebar .sidebar-menu { margin-bottom: 6px; }
+:root .layout-side-section .form-sidebar .sidebar-menu > li { margin: 2px 0; }
+
+/* ---- child tables (grids) ------------------------------------------- */
+:root .form-grid .grid-row .data-row { min-height: 30px; }
+:root .form-grid .grid-row .row-index,
+:root .form-grid .grid-row .grid-static-col { padding: 3px 6px; line-height: 22px; }
+:root .form-grid .grid-heading-row .grid-static-col { padding: 4px 6px; }
+
+/* ---- lists and report views ----------------------------------------- */
+:root .frappe-list .list-row,
+:root .frappe-list .list-row-head { height: 32px; min-height: 32px; }
+:root .frappe-list .list-row-container { min-height: 32px; }
+:root .report-view .dt-cell { padding: 2px 6px; }
+
+/* ---- module sidebar (left) ------------------------------------------ */
+:root .body-sidebar .standard-sidebar-item { padding: 2px 8px; }
+:root .body-sidebar .sidebar-item-label { line-height: 20px; }
+
+/* ---- sidebar toggles (buttons added by fps_compact.js) -------------- */
+.fps-side-toggle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	margin-right: 6px;
+	border: 1px solid var(--border-color, #d1d8dd);
+	border-radius: var(--border-radius, 6px);
+	background: var(--control-bg, #f3f3f3);
+	color: var(--text-muted, #6c7680);
+	font-size: 14px;
+	line-height: 1;
+	cursor: pointer;
+	user-select: none;
+}
+.fps-side-toggle:hover { color: var(--text-color, #1f272e); background: var(--bg-light-gray, #ececec); }
+.fps-side-toggle svg { width: 14px; height: 14px; }
+
+/* Right-hand form sidebar hidden: the form takes the full width. */
+body.fps-form-sidebar-hidden .layout-side-section.right { display: none !important; }
+body.fps-form-sidebar-hidden .layout-main-section-wrapper { flex: 1 1 100% !important; width: 100% !important; max-width: 100% !important; }
