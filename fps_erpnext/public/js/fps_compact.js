@@ -54,6 +54,7 @@
 	function toggle_right() {
 		remember(!hidden());
 		apply_right();
+		fit_head_soon();
 	}
 	function add_buttons() {
 		const page = document.querySelector(".page-container:not(.hide) .page-head, .page-head");
@@ -78,13 +79,42 @@
 			actions.prepend(mk("fps-side-toggle-right", ICON_RIGHT, __("Hide / show the right sidebar"), toggle_right));
 		}
 	}
+	// Page head on a narrow / portrait screen (Agam, 28 Oct 2026): when the full
+	// title ("Job Order / FPS/JO/2610/101" + status) and the buttons do not fit on
+	// one line, the head gets two rows -- title on top, buttons below on the
+	// right -- instead of squeezing the title to a few letters. Decided from the
+	// title's natural width, so it never flips back and forth.
+	function fit_head() {
+		const pc = document.querySelector(".page-container:not(.hide)");
+		if (!pc) return;
+		const head = pc.querySelector(".page-head .page-head-content");
+		const title = pc.querySelector(".page-head .page-title .title-area");
+		const actions = pc.querySelector(".page-head .standard-items-section");
+		if (!head || !title || !actions || !head.clientWidth) return;
+		const probe = title.cloneNode(true);
+		probe.style.cssText = "position:absolute;visibility:hidden;left:-9999px;top:0;width:max-content;max-width:none";
+		probe.querySelectorAll("*").forEach((e) => { e.style.maxWidth = "none"; e.style.overflow = "visible"; });
+		document.body.appendChild(probe);
+		const need = probe.getBoundingClientRect().width;
+		probe.remove();
+		pc.classList.toggle("fps-head-stacked", need + actions.scrollWidth + 40 > head.clientWidth);
+	}
+	let fit_timer = null;
+	function fit_head_soon() {
+		clearTimeout(fit_timer);
+		fit_timer = setTimeout(fit_head, 120);
+	}
+	window.addEventListener("resize", fit_head_soon);
+	$(document).on("sidebar-expand", fit_head_soon);
+
 	function refresh() {
 		keep_left_open();
 		apply_right();
 		// the page head is built after the route event; try now and again shortly after
 		add_buttons();
-		setTimeout(add_buttons, 300);
-		setTimeout(add_buttons, 1200);
+		fit_head();
+		setTimeout(() => { add_buttons(); fit_head(); }, 300);
+		setTimeout(() => { add_buttons(); fit_head(); }, 1200);
 	}
 	$(document).on("page-change", refresh);
 	$(document).on("form-refresh", refresh);
