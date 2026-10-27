@@ -89,3 +89,34 @@
 /* Right-hand form sidebar hidden: the form takes the full width. */
 body.fps-form-sidebar-hidden .layout-side-section.right { display: none !important; }
 body.fps-form-sidebar-hidden .layout-main-section-wrapper { flex: 1 1 100% !important; width: 100% !important; max-width: 100% !important; }
+
+/* ---- wide landscape screens: use the full width ----------------------
+ * Agam, 28 Oct 2026: on a landscape monitor the form sat in a 900px strip in
+ * the middle with empty bands left and right, with or without the sidebars.
+ * Frappe caps every form section at --page-max-width (900px) unless the user
+ * picked "Toggle Full Width" (body.full-width). On a landscape screen of
+ * 1200px or more this lifts the cap, and each column lays its fields out in
+ * an auto-fill grid (min 200px per field): as many fields per row as fit,
+ * so the form reflows by itself when the left or right sidebar is collapsed
+ * or opened. Tables, HTML blocks, editors and long text stay full width.
+ * Portrait screens and anything narrower keep Frappe's normal layout.
+ * Scoped to .std-form-layout (document forms) so dialogs are left alone. */
+@media (min-width: 1200px) and (orientation: landscape) {
+	:root body .std-form-layout .section-head,
+	:root body .std-form-layout .section-body { max-width: none !important; }
+	:root .std-form-layout .form-section .section-body > .form-column > form {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		column-gap: 16px;
+		align-items: start;
+	}
+	:root .std-form-layout .form-column > form > .frappe-control:is(
+		[data-fieldtype="Table"], [data-fieldtype="Table MultiSelect"], [data-fieldtype="HTML"],
+		[data-fieldtype="Text Editor"], [data-fieldtype="HTML Editor"], [data-fieldtype="Markdown Editor"],
+		[data-fieldtype="Code"], [data-fieldtype="JSON"], [data-fieldtype="Long Text"], [data-fieldtype="Text"],
+		[data-fieldtype="Heading"], [data-fieldtype="Signature"], [data-fieldtype="Geolocation"], [data-fieldtype="Image"]
+	) { grid-column: 1 / -1; }
+	:root .std-form-layout .form-column .frappe-control.input-max-width,
+	:root .std-form-layout .form-column .input-max-width .control-input,
+	:root .std-form-layout .form-column .input-max-width .form-control { max-width: none; }
+}
